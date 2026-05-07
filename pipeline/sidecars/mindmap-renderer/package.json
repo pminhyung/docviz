@@ -1,0 +1,14 @@
+{
+  "name": "mindmap-renderer",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interactive mindmap renderer with D3.js — self-contained HTML output",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "puppeteer": "^22.0.0"
+  }
+}

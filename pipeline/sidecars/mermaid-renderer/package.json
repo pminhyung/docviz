@@ -1,0 +1,14 @@
+{
+  "name": "mermaid-renderer",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Mermaid diagram renderer — mermaid.js direct + puppeteer with custom themes",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "puppeteer": "^22.0.0"
+  }
+}

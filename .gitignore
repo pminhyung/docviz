@@ -1,0 +1,20 @@
+
+# harness (managed by wire-harness.sh)
+.harness/
+docs/active
+docs/reference
+
+# session-local state
+.orchestrator_state/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+
+# node
+node_modules/
+
+# env
+.env
+.env.local
