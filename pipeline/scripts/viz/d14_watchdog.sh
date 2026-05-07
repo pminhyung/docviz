@@ -8,13 +8,18 @@
 #   logs/vllm_{model}_{port}.log — per-server logs
 #   logs/d14_{model}.log    — per-model inference progress
 set -u
-cd /ex_disk2/mhpark/poc/visubench
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${DOCVIZ_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 
-LOG=logs/d14_watchdog.log
-mkdir -p logs
+LOGS_DIR="${DOCVIZ_LOGS_DIR:-logs}"
+LOG="$LOGS_DIR/d14_watchdog.log"
+mkdir -p "$LOGS_DIR"
 echo "[$(date)] d14_watchdog started" >> "$LOG"
 
-CHARTVR_MODELS=/ex_disk2/mhpark/poc/chartvr/models
+# NOTE (docviz): step4/5/6_*.py are NOT included in docviz (eval-side, out
+# of scope). The downstream calls below will fail until the eval pipeline is
+# rewired. Generation portion (start_vllm_model + model_inference) is OK.
+CHARTVR_MODELS="${MODELS_ROOT:-/ex_disk2/mhpark/poc/chartvr/models}"
 # (model_id, checkpoint_dir, gpu_id, port, tp)
 MODELS=(
   "qwen9b ${CHARTVR_MODELS}/qwen3.5-9b 10 8100 1"

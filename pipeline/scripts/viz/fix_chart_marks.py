@@ -36,8 +36,9 @@ from typing import Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.utils.rendering import render_vegalite
+from scripts.config import DATA_DIR as _DATA_DIR, RESULTS_DIR
 
-DATA_DIR = Path("/ex_disk2/mhpark/poc/visubench/data")
+DATA_DIR = Path(_DATA_DIR)
 MODEL_OUTPUT_DIR = DATA_DIR / "model_outputs"
 GOLD_DIR = DATA_DIR / "gold"
 
@@ -210,8 +211,8 @@ def main():
             print(f"  {k}: {v}")
 
     # write summary
-    out = Path("/ex_disk2/mhpark/poc/visubench/research_memory/10-steps"
-               "/d14_chart_mark_normalization.md")
+    out = Path(RESULTS_DIR) / "fix-reports" / "d14_chart_mark_normalization.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
     content = ["# D14 chart mark normalization (2026-04-09)\n",
                "## Problem",
                "Comparison models wrote `mark: pie/doughnut/scatter/scattergl`"

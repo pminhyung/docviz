@@ -1,11 +1,25 @@
-"""Central configuration for VisuBench research pipeline."""
+"""Central configuration for the docviz agentic 3-way viz pipeline."""
 import os
+from pathlib import Path
 
 # ── Paths ──────────────────────────────────────────────────────────────────
-VISUBENCH_ROOT = "/ex_disk2/mhpark/poc/visubench"
-DOCAI_BASE = "/ex_disk2/mhpark/poc/docai/out"
-DATA_DIR = os.path.join(VISUBENCH_ROOT, "data")
-RESULTS_DIR = os.path.join(VISUBENCH_ROOT, "results")
+# DOCVIZ_ROOT: project root. Defaults to the parent of pipeline/
+# (config.py is at <root>/pipeline/scripts/config.py → parents[2]).
+# Override via env DOCVIZ_ROOT for non-standard layouts.
+DOCVIZ_ROOT = os.environ.get("DOCVIZ_ROOT", str(Path(__file__).resolve().parents[2]))
+
+# External asset roots — env-overridable, defaults preserved for the
+# current dev box only. Set these when running outside /ex_disk2/mhpark/poc/.
+DOCAI_BASE = os.environ.get("DOCAI_BASE", "/ex_disk2/mhpark/poc/docai/out")
+MODELS_ROOT = os.environ.get("MODELS_ROOT", "/ex_disk2/mhpark/poc/chartvr/models")
+VLLM_PYTHON = os.environ.get("VLLM_PYTHON", "/ex_disk2/mhpark/poc/vllm_nightly_env/bin/python")
+
+DATA_DIR = os.environ.get("DOCVIZ_DATA_DIR", os.path.join(DOCVIZ_ROOT, "data"))
+RESULTS_DIR = os.environ.get("DOCVIZ_RESULTS_DIR", os.path.join(DOCVIZ_ROOT, "results"))
+LOGS_DIR = os.environ.get("DOCVIZ_LOGS_DIR", os.path.join(DOCVIZ_ROOT, "logs"))
+
+# Back-compat alias (some legacy imports may still reference this name).
+VISUBENCH_ROOT = DOCVIZ_ROOT
 
 SIDECAR_MERMAID_URL = "http://localhost:3005"
 SIDECAR_MINDMAP_URL = "http://localhost:3004"
@@ -54,7 +68,7 @@ MODEL_CONFIGS = {
     },
     "qwen9b": {
         "type": "vllm_multi",
-        "model": "/ex_disk2/mhpark/poc/chartvr/models/qwen3.5-9b",
+        "model": f"{MODELS_ROOT}/qwen3.5-9b",
         "gpus": [3],
         "ports": [8100],  # D14 retry 2026-04-09: GPU 3 (0-2 have zombie memory)
         "thinking_toggle": False,  # Qwen3.5: must disable thinking
@@ -68,14 +82,14 @@ MODEL_CONFIGS = {
     # ── Open-source models (Unsloth versions) ──────────────────────────────
     "gpt_oss_20b": {
         "type": "vllm_multi",
-        "model": "/ex_disk2/mhpark/poc/chartvr/models/gpt-oss-20b",
+        "model": f"{MODELS_ROOT}/gpt-oss-20b",
         "gpus": [4],
         "ports": [8101],  # D14 retry 2026-04-09: GPU 4
         "note": "Unsloth/gpt-oss-20b, active 3.6B, TP=1×8, reasoning model",
     },
     "llama4_scout": {
         "type": "vllm_multi",
-        "model": "/ex_disk2/mhpark/poc/chartvr/models/llama4-scout",
+        "model": f"{MODELS_ROOT}/llama4-scout",
         "gpus": ALLOWED_GPUS,
         "ports": [8100],
         "tp": 8,
@@ -83,14 +97,14 @@ MODEL_CONFIGS = {
     },
     "gemma3_4b": {
         "type": "vllm_multi",
-        "model": "/ex_disk2/mhpark/poc/chartvr/models/gemma3-4b-it",
+        "model": f"{MODELS_ROOT}/gemma3-4b-it",
         "gpus": [5],
         "ports": [8102],  # D14 retry 2026-04-09: GPU 5
         "note": "Unsloth/gemma-3-4b-it, 4B, TP=1×8",
     },
     "mistral_small_3_24b": {
         "type": "vllm_multi",
-        "model": "/ex_disk2/mhpark/poc/chartvr/models/mistral-small-3.1-24b-instruct",
+        "model": f"{MODELS_ROOT}/mistral-small-3.1-24b-instruct",
         "gpus": [0, 1],
         "ports": [8103],
         "tp": 2,

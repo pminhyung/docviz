@@ -40,10 +40,11 @@ from scripts.viz.prompts import (
 from scripts.viz.context_builder import prepare_full_context
 from scripts.utils.llm_clients import call_model
 from scripts.utils.rendering import render_vegalite, render_mermaid
+from scripts.config import DATA_DIR
 
-CORPUS_PATH = "/ex_disk2/mhpark/poc/visubench/data/documents/corpus.jsonl"
-QUERIES_PATH = "/ex_disk2/mhpark/poc/visubench/data/viz/queries.jsonl"
-GOLD_DIR = "/ex_disk2/mhpark/poc/visubench/data/gold"
+CORPUS_PATH = os.path.join(DATA_DIR, "documents/corpus.jsonl")
+QUERIES_PATH = os.path.join(DATA_DIR, "viz/queries.jsonl")
+GOLD_DIR = os.path.join(DATA_DIR, "gold")
 FAIL_PATH = os.path.join(GOLD_DIR, "failures.jsonl")
 
 # Label language invariance — corpus lang → full language name for explicit

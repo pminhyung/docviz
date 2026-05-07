@@ -28,8 +28,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.viz.reference_generator import sanitize_mermaid
 from scripts.utils.rendering import render_mermaid
+from scripts.config import DATA_DIR as _DATA_DIR, RESULTS_DIR
 
-DATA_DIR = Path("/ex_disk2/mhpark/poc/visubench/data")
+DATA_DIR = Path(_DATA_DIR)
 
 
 def find_unrendered(root: Path, viz_type: str) -> list[Path]:
@@ -145,8 +146,8 @@ def main():
         if v:
             print(f"  {k}: {v}")
 
-    out = Path("/ex_disk2/mhpark/poc/visubench/research_memory/10-steps"
-               "/d14_mermaid_render_fix.md")
+    out = Path(RESULTS_DIR) / "fix-reports" / "d14_mermaid_render_fix.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
     content = ["# D14 mermaid render fix (2026-04-09)\n",
                "## Problem",
                "Many diagram/mindmap render failures were from our "

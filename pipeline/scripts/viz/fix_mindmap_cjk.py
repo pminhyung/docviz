@@ -35,6 +35,7 @@ from scripts.viz.reference_generator import (
     QUERIES_PATH,
 )
 from scripts.viz.context_builder import prepare_full_context
+from scripts.config import RESULTS_DIR
 
 
 MINDMAP_DIR = os.path.join(GOLD_DIR, "mindmap")
@@ -176,8 +177,8 @@ def main():
         f"- Next: rerun batch_extract_structures for mindmap viz_type to "
         f"refresh _structure.json files.\n"
     )
-    out = Path("/ex_disk2/mhpark/poc/visubench/research_memory/10-steps/"
-               "d13_mindmap_cjk_fix.md")
+    out = Path(RESULTS_DIR) / "fix-reports" / "d13_mindmap_cjk_fix.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(summary, encoding="utf-8")
     print(f"[wrote] {out}")
 

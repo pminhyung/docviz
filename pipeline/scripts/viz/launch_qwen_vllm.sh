@@ -12,7 +12,7 @@
 #
 # Examples:
 #   ./scripts/viz/launch_qwen_vllm.sh 9200 8,9,10,11 \
-#       /ex_disk2/mhpark/poc/chartvr/models/qwen3.6-27b Qwen3.6-27B 4096
+#       "$MODELS_ROOT/qwen3.6-27b" Qwen3.6-27B 4096
 
 set -euo pipefail
 
@@ -23,7 +23,7 @@ SERVED_NAME="${4:-$(basename "$MODEL")}"
 MAX_MODEL_LEN="${5:-4096}"
 
 GPU_UTIL="${GPU_UTIL:-0.90}"
-PY="${PY:-/ex_disk2/mhpark/poc/vllm_nightly_env/bin/python}"
+PY="${PY:-${VLLM_PYTHON:-/ex_disk2/mhpark/poc/vllm_nightly_env/bin/python}}"
 
 # TP = number of CUDA devices
 TP=$(echo "$CUDA_DEVICES" | awk -F',' '{print NF}')

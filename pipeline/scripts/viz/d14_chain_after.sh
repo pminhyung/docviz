@@ -2,10 +2,15 @@
 # D14 post-inference chain — waits for all 3 model_inference processes,
 # stops the vLLM servers, then runs D15 (step4) → D16 (step5) → D17 (step6).
 # Launched after the parallel D14 kickoff on 2026-04-09.
+#
+# NOTE (docviz): step4/5/6_*.py were NOT imported into docviz (eval-side, out
+# of scope for the generation pipeline). This script is left as a reference
+# template; rewire to docviz's eval pipeline before reusing.
 set -u
-cd /ex_disk2/mhpark/poc/visubench
-LOG=logs/d14_chain.log
-mkdir -p logs
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${DOCVIZ_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
+LOG="${DOCVIZ_LOGS_DIR:-logs}/d14_chain.log"
+mkdir -p "${DOCVIZ_LOGS_DIR:-logs}"
 echo "[$(date)] d14_chain started" >> "$LOG"
 
 # Wait for all 3 inference procs to exit (poll their pid files would be

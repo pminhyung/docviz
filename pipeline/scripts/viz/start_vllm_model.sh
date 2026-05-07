@@ -3,12 +3,15 @@
 # Usage: start_vllm_model.sh <model_path> <gpu_id> <port> [tp_size] [extra_args]
 #
 # Examples:
-#   start_vllm_model.sh /ex_disk2/mhpark/poc/chartvr/models/qwen3.5-9b 10 8100 1
-#   start_vllm_model.sh /ex_disk2/mhpark/poc/chartvr/models/gpt-oss-20b 11 8101 1
+#   start_vllm_model.sh "$MODELS_ROOT/qwen3.5-9b" 10 8100 1
+#   start_vllm_model.sh "$MODELS_ROOT/gpt-oss-20b" 11 8101 1
 #
-# Logs to logs/vllm_$(basename model)_$port.log.  PID file written to
-# logs/vllm_$(basename model)_$port.pid.  Waits until /v1/models is reachable
-# or exits non-zero after 10 minutes.
+# Env: DOCVIZ_LOGS_DIR (default: <repo>/logs), VLLM_PYTHON (default:
+# /ex_disk2/mhpark/poc/vllm_nightly_env/bin/python).
+#
+# Logs to $DOCVIZ_LOGS_DIR/vllm_$(basename model)_$port.log. PID file written
+# to $DOCVIZ_LOGS_DIR/vllm_$(basename model)_$port.pid. Waits until /v1/models
+# is reachable or exits non-zero after 10 minutes.
 
 set -e
 MODEL_PATH="$1"
@@ -24,13 +27,17 @@ if [ -z "$MODEL_PATH" ] || [ -z "$GPU_ID" ] || [ -z "$PORT" ]; then
 fi
 
 NAME=$(basename "$MODEL_PATH")
-LOG=/ex_disk2/mhpark/poc/visubench/logs/vllm_${NAME}_${PORT}.log
-PIDF=/ex_disk2/mhpark/poc/visubench/logs/vllm_${NAME}_${PORT}.pid
-mkdir -p /ex_disk2/mhpark/poc/visubench/logs
+# Resolve repo root: this script lives at <repo>/pipeline/scripts/viz/.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCVIZ_ROOT="${DOCVIZ_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
+LOGS_DIR="${DOCVIZ_LOGS_DIR:-$DOCVIZ_ROOT/logs}"
+LOG="$LOGS_DIR/vllm_${NAME}_${PORT}.log"
+PIDF="$LOGS_DIR/vllm_${NAME}_${PORT}.pid"
+mkdir -p "$LOGS_DIR"
 
 # Use the vLLM nightly env python that has vllm installed. The system
 # `python` resolves to /opt/conda/bin/python which does NOT have vllm.
-VLLM_PY=/ex_disk2/mhpark/poc/vllm_nightly_env/bin/python
+VLLM_PY="${VLLM_PYTHON:-/ex_disk2/mhpark/poc/vllm_nightly_env/bin/python}"
 if [ ! -x "$VLLM_PY" ]; then
   echo "[start_vllm] FATAL: $VLLM_PY not found"
   exit 3

@@ -32,10 +32,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from scripts.viz.prompts import SUBTYPE_ASSIGNMENT_PROMPT
 from scripts.viz.context_builder import prepare_doc_excerpt
 from scripts.utils.llm_clients import call_model
-from scripts.config import CHART_SUBTYPES, DIAGRAM_SUBTYPES
+from scripts.config import CHART_SUBTYPES, DIAGRAM_SUBTYPES, DATA_DIR
 
-CORPUS_PATH = "/ex_disk2/mhpark/poc/visubench/data/documents/corpus.jsonl"
-VIZ_DIR = "/ex_disk2/mhpark/poc/visubench/data/viz"
+CORPUS_PATH = os.path.join(DATA_DIR, "documents/corpus.jsonl")
+VIZ_DIR = os.path.join(DATA_DIR, "viz")
 SUBTYPE_CACHE = os.path.join(VIZ_DIR, "_subtype_cache.jsonl")
 CHART_SPEC_CACHE = os.path.join(VIZ_DIR, "_chart_spec_cache.jsonl")
 

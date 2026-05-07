@@ -17,9 +17,13 @@
 # Each step logs to logs/d24_<step>.log. Aborts on first failure.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+# NOTE (docviz): step4/5/6_*.py and scripts.audit.* are NOT included
+# in docviz (eval-side, out of scope). Generation steps (01-06) work;
+# 07-10 will fail until the eval pipeline is rewired.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT="${DOCVIZ_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 cd "$ROOT"
-LOG_DIR="$ROOT/logs"
+LOG_DIR="${DOCVIZ_LOGS_DIR:-$ROOT/logs}"
 mkdir -p "$LOG_DIR"
 
 run() {
@@ -47,7 +51,7 @@ run 04_gold_chart      python -m scripts.step2_generate_gold --viz-type chart
 # Free GPU 8-15 (Qwen3.6 ranker host) before launching llama4_scout
 # which needs TP=8 on the same GPUs.
 echo "[d24] === stopping Qwen3.6-27B vLLM (frees GPU 8-15 for llama4_scout) ==="
-bash "$ROOT/scripts/viz/stop_qwen_vllm.sh" 9200 9201 || true
+bash "$SCRIPT_DIR/stop_qwen_vllm.sh" 9200 9201 || true
 run 05_model_chart     python -m scripts.step3_generate_models --all-local --viz-type chart
 run 06_sonnet_chart    python -m scripts.step3_generate_claude_sonnet --viz chart --max-docs 0 --workers 8
 run 07_step4           python -m scripts.step4_structural_metrics

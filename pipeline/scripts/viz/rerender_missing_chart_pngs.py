@@ -28,11 +28,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, ROOT)
 
 from examples.diagram.diagram_tools import _extract_chart_dsl
+from scripts.config import DATA_DIR, SIDECAR_MERMAID_URL
 
-CORPUS = os.path.join(ROOT, "data", "documents", "corpus.jsonl")
-GOLD_CHART = os.path.join(ROOT, "data", "gold", "chart")
-SIDECAR = "http://localhost:3005"
-CHROMIUM = "/usr/bin/google-chrome"
+CORPUS = os.path.join(DATA_DIR, "documents", "corpus.jsonl")
+GOLD_CHART = os.path.join(DATA_DIR, "gold", "chart")
+SIDECAR = SIDECAR_MERMAID_URL
+CHROMIUM = os.environ.get("CHROMIUM_BIN", "/usr/bin/google-chrome")
 
 
 def render_one(doc_id: str, subtype: str) -> tuple[str, bool, str]:
