@@ -130,7 +130,27 @@ class AgentClient:
             f"- Use temperature={PAPER_DEFAULT_TEMPERATURE} and "
             f"seed={PAPER_DEFAULT_SEED} for any internal LLM call."
         )
-        rules = [web_search_off_rule, deterministic_rule]
+        # The downstream parser (viz_output_mapper._extract_dsl_block) keys on
+        # exactly this JSON shape; matching it eliminates fenced-block heuristics
+        # and the prose-fallback that was producing un-renderable viz_dsl.
+        dsl_output_rule = (
+            "- Your final_answer must be EXACTLY one JSON object and nothing "
+            "else (no prose before or after, no markdown fences). The object "
+            "has two keys: \"viz_type\" and \"viz_dsl\".\n"
+            "  - viz_type ∈ {\"mermaid_flowchart\", \"mermaid_timeline\", "
+            "\"mermaid_mindmap\", \"chartjs_bar\", \"chartjs_grouped_bar\", "
+            "\"chartjs_line\"}.\n"
+            "  - viz_dsl is a single string holding the raw DSL: Mermaid "
+            "markdown for the mermaid_* types, or a Chart.js JSON spec "
+            "(serialized as a string) for the chartjs_* types.\n"
+            "- Pick the viz_type that best fits the user's query type "
+            "(temporal → timeline, hierarchical → mindmap, relational/process "
+            "→ flowchart, quantitative → chartjs_*).\n"
+            "- Use only facts present in the supplied document; do not "
+            "fabricate. If the document is insufficient, return a minimal but "
+            "valid DSL covering what is present, not prose."
+        )
+        rules = [web_search_off_rule, deterministic_rule, dsl_output_rule]
         if custom_rules:
             rules.append(custom_rules.strip())
         merged_rules = "\n".join(rules)
