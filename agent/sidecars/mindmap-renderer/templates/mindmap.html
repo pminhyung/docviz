@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body { font-family: 'Inter', 'Noto Sans KR', -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+/* ===== Themes — clean, monochromatic ===== */
+:root {
+  --bg: #FAFBFC; --fg: #1A1A2E; --muted: #6B7280; --subtle: #D1D5DB;
+  --accent: #4F46E5; --accent-light: #EEF2FF; --accent-muted: #A5B4FC;
+  --surface: #FFFFFF; --surface-border: #E5E7EB;
+  --node-root: #1A1A2E; --node-root-fg: #FFFFFF;
+  --edge: #9CA3AF; --edge-cross: #4F46E5;
+}
+[data-theme="academic"] { --accent: #7C3AED; --accent-light: #F5F3FF; --accent-muted: #C4B5FD; --node-root: #3B0764; --bg: #FDFCFB; }
+[data-theme="creative"] { --accent: #EA580C; --accent-light: #FFF7ED; --accent-muted: #FDBA74; --node-root: #7C2D12; }
+[data-theme="dark"] {
+  --bg: #111827; --fg: #F3F4F6; --muted: #9CA3AF; --subtle: #374151;
+  --accent: #818CF8; --accent-light: #1E1B4B; --accent-muted: #4338CA;
+  --surface: #1F2937; --surface-border: #374151;
+  --node-root: #818CF8; --node-root-fg: #111827;
+  --edge: #4B5563; --edge-cross: #818CF8;
+}
+[data-theme="minimal"] { --accent: #18181B; --accent-light: #F4F4F5; --accent-muted: #A1A1AA; --node-root: #18181B; }
+[data-theme="nature"] { --accent: #059669; --accent-light: #ECFDF5; --accent-muted: #6EE7B7; --node-root: #064E3B; --bg: #F9FEFB; }
+
+body { background: var(--bg); color: var(--fg); }
+
+/* ===== SVG ===== */
+#mindmap-container { width: 100%; height: 100%; position: relative; }
+svg { width: 100%; height: 100%; }
+
+/* ===== Nodes — clean pill shapes ===== */
+.node { cursor: pointer; }
+.node text { font-family: 'Inter','Noto Sans KR',sans-serif; pointer-events: none; }
+.expand-badge { cursor: pointer; }
+
+/* ===== Hover ===== */
+.node.highlighted rect { stroke: var(--accent); stroke-width: 2.5; }
+.node.dimmed { opacity: 0.12; }
+.link.dimmed, .cross-link.dimmed { opacity: 0.04; }
+
+/* ===== Toolbar ===== */
+.toolbar {
+  position: absolute; top: 12px; right: 12px; z-index: 100;
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--surface); border: 1px solid var(--surface-border);
+  border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  min-width: 240px; font-size: 14px;
+}
+.toolbar-row { display: flex; align-items: center; gap: 6px; }
+.toolbar-row label { color: var(--muted); font-size: 12px; min-width: 44px; font-weight: 500; }
+.toolbar input[type="text"] {
+  flex: 1; padding: 5px 10px; border: 1px solid var(--surface-border);
+  border-radius: 6px; font-size: 14px; background: var(--bg); color: var(--fg);
+  outline: none; font-family: inherit;
+}
+.toolbar input[type="text"]:focus { border-color: var(--accent); }
+.toolbar select {
+  flex: 1; padding: 4px 6px; border: 1px solid var(--surface-border);
+  border-radius: 6px; font-size: 13px; background: var(--surface); color: var(--fg);
+  cursor: pointer; font-family: inherit;
+}
+.toolbar-toggle { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 13px; color: var(--fg); font-weight: 500; }
+.toolbar-toggle input { accent-color: var(--accent); width: 14px; height: 14px; }
+.toolbar-btn {
+  padding: 7px 14px; border: 1px solid var(--surface-border); border-radius: 6px;
+  background: var(--surface); color: var(--fg); font-size: 13px; cursor: pointer;
+  font-family: inherit; font-weight: 500;
+}
+.toolbar-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+.toolbar-divider { border-top: 1px solid var(--surface-border); margin: 2px 0; }
+
+/* ===== Title Bar ===== */
+.title-bar {
+  position: absolute; top: 12px; left: 12px; z-index: 100;
+  background: var(--surface); border: 1px solid var(--surface-border);
+  border-radius: 10px; padding: 10px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  max-width: 360px;
+}
+.title-bar h1 { font-size: 18px; font-weight: 700; color: var(--fg); line-height: 1.3; }
+.title-bar .subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* ===== Tooltip ===== */
+.tooltip {
+  position: absolute; z-index: 200; pointer-events: none;
+  background: var(--surface); border: 1px solid var(--surface-border);
+  border-radius: 10px; padding: 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  max-width: 300px; font-size: 12px; line-height: 1.5; opacity: 0; transition: opacity 0.15s;
+}
+.tooltip.visible { opacity: 1; }
+.tooltip .tt-label { font-weight: 700; font-size: 13px; color: var(--fg); margin-bottom: 4px; }
+.tooltip .tt-desc { color: var(--muted); margin-bottom: 6px; }
+.tooltip .tt-citation {
+  font-size: 10px; color: var(--accent); background: var(--accent-light);
+  padding: 2px 8px; border-radius: 4px; display: inline-block; font-weight: 500;
+}
+.tooltip .tt-type { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+
+/* ===== Minimap ===== */
+.minimap {
+  position: absolute; bottom: 12px; right: 12px; z-index: 100;
+  width: 140px; height: 100px;
+  background: var(--surface); border: 1px solid var(--surface-border);
+  border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.minimap svg { width: 100%; height: 100%; }
+.minimap-viewport { fill: var(--accent); opacity: 0.08; stroke: var(--accent); stroke-width: 1.5; rx: 2; }
+
+/* ===== Legend ===== */
+.legend {
+  position: absolute; bottom: 12px; left: 12px; z-index: 100;
+  background: var(--surface); border: 1px solid var(--surface-border);
+  border-radius: 8px; padding: 10px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; max-width: 400px; font-weight: 500;
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-swatch { width: 18px; height: 12px; border-radius: 4px; }
+.legend-line { width: 24px; height: 0; border-top: 2px solid; }
+.legend-line.dashed { border-top-style: dashed; }
+</style>
+</head>
+<body data-theme="{{THEME}}">
+
+<div id="mindmap-container">
+  <svg id="mindmap-svg">
+    <defs>
+      <marker id="arrowhead" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+        <polygon points="0 0, 10 3.5, 0 7" fill="var(--edge-cross)"/>
+      </marker>
+      <filter id="nodeShadow" x="-10%" y="-10%" width="120%" height="130%">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="title-bar">
+    <h1 id="title-text">{{TITLE}}</h1>
+    <div class="subtitle" id="subtitle-text">{{SUBTITLE}}</div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <label>Search</label>
+      <input type="text" id="search-input" placeholder="Filter..." />
+    </div>
+    <div class="toolbar-row">
+      <label>Theme</label>
+      <select id="theme-select">
+        <option value="corporate">Corporate</option>
+        <option value="academic">Academic</option>
+        <option value="creative">Creative</option>
+        <option value="dark">Dark</option>
+        <option value="minimal">Minimal</option>
+        <option value="nature">Nature</option>
+      </select>
+    </div>
+    <div class="toolbar-row">
+      <label>Layout</label>
+      <select id="layout-select">
+        <option value="radial">Radial</option>
+        <option value="tree_lr">Tree (LR)</option>
+        <option value="tree_td">Tree (TD)</option>
+      </select>
+    </div>
+    <div class="toolbar-row">
+      <label>Depth</label>
+      <input type="range" id="depth-slider" min="1" max="4" value="4" style="flex:1;accent-color:var(--accent)" />
+      <span id="depth-value" style="font-size:12px;min-width:16px;text-align:center">4</span>
+    </div>
+    <div class="toolbar-divider"></div>
+    <label class="toolbar-toggle"><input type="checkbox" id="toggle-crosslinks" checked /> Cross-links</label>
+    <label class="toolbar-toggle"><input type="checkbox" id="toggle-focus-mode" /> Focus Relations</label>
+    <label class="toolbar-toggle"><input type="checkbox" id="toggle-citations" checked /> Citations</label>
+    <div class="toolbar-divider"></div>
+    <div class="toolbar-row">
+      <button class="toolbar-btn" id="btn-expand-all">Expand All</button>
+      <button class="toolbar-btn" id="btn-collapse-all">Collapse</button>
+    </div>
+    <div class="toolbar-row">
+      <button class="toolbar-btn" id="btn-fit">Fit View</button>
+      <button class="toolbar-btn" id="btn-export-png">PNG</button>
+      <button class="toolbar-btn" id="btn-export-svg">SVG</button>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+  <div class="minimap" id="minimap"><svg id="minimap-svg"></svg></div>
+  <div class="legend" id="legend"></div>
+</div>
+
+<script>
+// ===== D3.js v7 =====
+// We use a bundled D3 from the server side: {{D3_SCRIPT}}
+</script>
+<script>
+const MINDMAP_DATA = {{DATA_JSON}};
+
+(function() {
+  "use strict";
+  const isEmbed = new URLSearchParams(window.location.search).has('embed');
+  if (isEmbed) {
+    document.querySelectorAll('.title-bar,.toolbar,.legend,.minimap').forEach(el => el.style.display='none');
+  }
+
+  const data = MINDMAP_DATA;
+  const opts = data.options || {};
+  let currentLayout = data.layout || "radial";
+  let showCrossLinks = opts.show_cross_links !== false;
+  let showCitations = opts.show_citations !== false;
+  let focusMode = false;
+  let isolatedBranch = null;
+
+  // Animation duration
+  const DURATION = 450;
+
+  // Smart collapse
+  const totalNodes = data.nodes.length;
+  const vpSmall = (window.innerWidth < 1000 || window.innerHeight < 700);
+  const defaultDepth = vpSmall ? 1 : totalNodes > 20 ? 1 : totalNodes > 10 ? 2 : 3;
+  const collapseDepth = opts.collapse_depth ?? defaultDepth;
+
+  // Build Tree
+  const nodeMap = {};
+  data.nodes.forEach(n => { nodeMap[n.id] = { ...n, _children: null, _collapsed: false }; });
+
+  function buildTree(rid) {
+    const nd = nodeMap[rid];
+    if (!nd) return null;
+    const node = { ...nd, children: [] };
+    (nd.children || []).forEach(cid => { const c = buildTree(cid); if (c) node.children.push(c); });
+    return node;
+  }
+
+  const rootId = (data.nodes.find(n => n.type === "root") || data.nodes[0] || {}).id;
+  let treeData = buildTree(rootId);
+
+  function assignDepth(node, d) {
+    node._depth = d;
+    if (nodeMap[node.id]) nodeMap[node.id]._depth = d;
+    (node.children || []).forEach(c => assignDepth(c, d + 1));
+  }
+  // Assign depth to ALL nodes in nodeMap (including collapsed descendants)
+  function assignDepthFull(nid, d) {
+    const nd = nodeMap[nid]; if (!nd) return;
+    nd._depth = d;
+    (nd.children || nd._children || []).forEach(cid => assignDepthFull(cid, d + 1));
+  }
+  if (treeData) assignDepth(treeData, 0);
+  if (rootId) assignDepthFull(rootId, 0);
+
+  function autoCollapse(node) {
+    if (!node.children) return;
+    if (node._depth >= collapseDepth && node.children.length > 0) {
+      node._children = node.children; node.children = []; node._collapsed = true;
+      const nm = nodeMap[node.id];
+      if (nm) { nm._children = nm.children; nm.children = []; nm._collapsed = true; }
+    }
+    (node.children || []).forEach(autoCollapse);
+  }
+  if (treeData) autoCollapse(treeData);
+
+  // SVG Setup
+  const container = document.getElementById("mindmap-container");
+  const svgEl = document.getElementById("mindmap-svg");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  const svg = d3.select(svgEl);
+  const g = svg.append("g").attr("class", "canvas");
+
+  // Persistent sub-groups for layered rendering (enter/update/exit pattern)
+  const linkGroup = g.append("g").attr("class", "links-layer");
+  const crossLinkGroup = g.append("g").attr("class", "crosslinks-layer");
+  const nodeGroup = g.append("g").attr("class", "nodes-layer");
+
+  const zoom = d3.zoom().scaleExtent([0.08, 5]).on("zoom", (e) => {
+    g.attr("transform", e.transform); updateMinimap(e.transform);
+  });
+  svg.call(zoom);
+
+  // Resolve styles
+  const cs = getComputedStyle(document.body);
+  const rv = v => cs.getPropertyValue(v).trim();
+  let accentColor, edgeColor, rootBg, rootFg, bgColor;
+  function resolveColors() {
+    const cs2 = getComputedStyle(document.body);
+    const r = v => cs2.getPropertyValue(v).trim();
+    accentColor = r('--accent') || '#4F46E5';
+    edgeColor = r('--edge') || '#9CA3AF';
+    rootBg = r('--node-root') || '#1A1A2E';
+    rootFg = r('--node-root-fg') || '#FFFFFF';
+    bgColor = r('--bg') || '#FAFBFC';
+  }
+  resolveColors();
+
+  // ===== Theme-specific branch color palettes — solid fills, white text =====
+  const THEME_PALETTES = {
+    corporate: [
+      { fill: '#4F46E5', edge: '#818CF8', badge: '#3730A3' },
+      { fill: '#0891B2', edge: '#22D3EE', badge: '#0E7490' },
+      { fill: '#6366F1', edge: '#A5B4FC', badge: '#4F46E5' },
+      { fill: '#0D9488', edge: '#2DD4BF', badge: '#0F766E' },
+      { fill: '#7C3AED', edge: '#A78BFA', badge: '#6D28D9' },
+      { fill: '#2563EB', edge: '#60A5FA', badge: '#1D4ED8' },
+      { fill: '#4338CA', edge: '#818CF8', badge: '#3730A3' },
+      { fill: '#0E7490', edge: '#22D3EE', badge: '#155E75' },
+    ],
+    academic: [
+      { fill: '#7C3AED', edge: '#A78BFA', badge: '#6D28D9' },
+      { fill: '#BE185D', edge: '#F472B6', badge: '#9D174D' },
+      { fill: '#0369A1', edge: '#38BDF8', badge: '#075985' },
+      { fill: '#9333EA', edge: '#C084FC', badge: '#7E22CE' },
+      { fill: '#B91C1C', edge: '#F87171', badge: '#991B1B' },
+      { fill: '#1D4ED8', edge: '#60A5FA', badge: '#1E40AF' },
+      { fill: '#6D28D9', edge: '#A78BFA', badge: '#5B21B6' },
+      { fill: '#0F766E', edge: '#2DD4BF', badge: '#115E59' },
+    ],
+    creative: [
+      { fill: '#EA580C', edge: '#FB923C', badge: '#C2410C' },
+      { fill: '#D946EF', edge: '#E879F9', badge: '#C026D3' },
+      { fill: '#0891B2', edge: '#22D3EE', badge: '#0E7490' },
+      { fill: '#E11D48', edge: '#FB7185', badge: '#BE123C' },
+      { fill: '#CA8A04', edge: '#FACC15', badge: '#A16207' },
+      { fill: '#7C3AED', edge: '#A78BFA', badge: '#6D28D9' },
+      { fill: '#059669', edge: '#34D399', badge: '#047857' },
+      { fill: '#DB2777', edge: '#F472B6', badge: '#BE185D' },
+    ],
+    dark: [
+      { fill: '#818CF8', edge: '#A5B4FC', badge: '#6366F1' },
+      { fill: '#F472B6', edge: '#F9A8D4', badge: '#EC4899' },
+      { fill: '#34D399', edge: '#6EE7B7', badge: '#10B981' },
+      { fill: '#FBBF24', edge: '#FDE68A', badge: '#F59E0B' },
+      { fill: '#38BDF8', edge: '#7DD3FC', badge: '#0EA5E9' },
+      { fill: '#C084FC', edge: '#D8B4FE', badge: '#A855F7' },
+      { fill: '#FB923C', edge: '#FDBA74', badge: '#F97316' },
+      { fill: '#2DD4BF', edge: '#5EEAD4', badge: '#14B8A6' },
+    ],
+    minimal: [
+      { fill: '#57534E', edge: '#A8A29E', badge: '#44403C' },
+      { fill: '#78716C', edge: '#D6D3D1', badge: '#57534E' },
+      { fill: '#44403C', edge: '#A8A29E', badge: '#292524' },
+      { fill: '#6B7280', edge: '#D1D5DB', badge: '#4B5563' },
+      { fill: '#525252', edge: '#A3A3A3', badge: '#404040' },
+      { fill: '#71717A', edge: '#D4D4D8', badge: '#52525B' },
+      { fill: '#64748B', edge: '#CBD5E1', badge: '#475569' },
+      { fill: '#737373', edge: '#D4D4D4', badge: '#525252' },
+    ],
+    nature: [
+      { fill: '#059669', edge: '#34D399', badge: '#047857' },
+      { fill: '#B45309', edge: '#FBBF24', badge: '#92400E' },
+      { fill: '#0D9488', edge: '#2DD4BF', badge: '#0F766E' },
+      { fill: '#65A30D', edge: '#A3E635', badge: '#4D7C0F' },
+      { fill: '#9A3412', edge: '#FB923C', badge: '#7C2D12' },
+      { fill: '#047857', edge: '#34D399', badge: '#065F46' },
+      { fill: '#A16207', edge: '#FBBF24', badge: '#854D0E' },
+      { fill: '#15803D', edge: '#4ADE80', badge: '#166534' },
+    ],
+  };
+
+  function getBranchPalette(themeIndex) {
+    const themeName = document.body.getAttribute('data-theme') || 'corporate';
+    const palettes = THEME_PALETTES[themeName] || THEME_PALETTES.corporate;
+    return palettes[themeIndex % palettes.length];
+  }
+
+  // Map node id → branch index (which theme it belongs to)
+  function buildBranchMap() {
+    const map = {};
+    const rootNd = nodeMap[rootId];
+    if (!rootNd) return map;
+    const themeIds = rootNd.children || rootNd._children || [];
+    themeIds.forEach((tid, idx) => {
+      map[tid] = idx;
+      // Recursively mark all descendants
+      function mark(nid) {
+        map[nid] = idx;
+        const nd = nodeMap[nid];
+        if (!nd) return;
+        (nd.children || nd._children || []).forEach(mark);
+      }
+      mark(tid);
+    });
+    return map;
+  }
+  let branchMap = buildBranchMap();
+
+  // Node sizing
+  const PAD_X = 24;
+  function measureText(label, type) {
+    const cjk = (label.match(/[\u3000-\u9fff\uac00-\ud7af]/g) || []).length;
+    const lat = label.length - cjk;
+    const fs = type === "root" ? 16 : type === "theme" ? 14 : type === "topic" ? 12.5 : 11.5;
+    return (cjk * fs * 0.95 + lat * fs * 0.58);
+  }
+  // Truncation limits (must match the label rendering below)
+  const TRUNC = { root: 28, theme: 24, topic: 22, leaf: 20 };
+  function truncLabel(label, type) {
+    const mx = TRUNC[type] || 20;
+    return label.length > mx ? label.slice(0, mx - 1) + "\u2026" : label;
+  }
+  function nwData(d) {
+    const type = d.type || (d.data && d.data.type);
+    const label = d.label || (d.data && d.data.label) || "";
+    const tl = truncLabel(label, type);
+    const w = measureText(tl, type);
+    return Math.max(type === "root" ? 160 : type === "theme" ? 130 : 100, w + PAD_X * 2);
+  }
+  function nhData(d) {
+    const type = d.type || (d.data && d.data.type);
+    return type === "root" ? 48 : type === "theme" ? 40 : type === "topic" ? 34 : 30;
+  }
+  function nw(d) { return nwData(d.data || d); }
+  function nh(d) { return nhData(d.data || d); }
+
+  // Layout helpers
+  function countLeaves(n) { return (!n.children || !n.children.length) ? 1 : n.children.reduce((s,c)=>s+countLeaves(c),0); }
+  function countVisible(n) { let c = 1; (n.children || []).forEach(ch => { c += countVisible(ch); }); return c; }
+  function maxDepth(n) { if (!n.children || !n.children.length) return 0; return 1 + Math.max(...n.children.map(maxDepth)); }
+
+  // Track max ring radii across toggles — never shrink rings to prevent collapse-overlap
+  let maxR1 = 0, maxR2 = 0, maxR3 = 0, maxR4 = 0;
+
+  function computeLayout(root) {
+    const h = d3.hierarchy(root);
+    const lc = countLeaves(root);
+    const vc = countVisible(root);
+    const vMin = Math.min(width, height);
+
+    if (currentLayout === "radial") {
+      // === Sector-based radial layout ===
+      // Each theme gets a FIXED angular sector — expanding one never moves others.
+      const themes = h.children || [];
+      const nThemes = themes.length || 1;
+      const sectorAngle = (2 * Math.PI) / nThemes;
+
+      // === Compute ring radii based on ACTUAL node widths ===
+      // For each ring: R * sectorAngle * usableFrac / count >= maxNodeWidth + pad
+      const ringPad = 30;  // gap between adjacent nodes on same ring
+      const ringGap = 80;  // min gap between concentric rings
+
+      // Scan FULL nodeMap to get max node width and count per ring per sector
+      let maxThemeW = 0, maxTopicW = 0, maxLeafW = 0, maxDeepW = 0;
+      let maxTopics = 0, maxLeaves = 0, maxDeep = 0;
+      const rootNd = nodeMap[rootId];
+      const allThemeIds = (rootNd ? (rootNd.children || rootNd._children || []) : []);
+      allThemeIds.forEach(tid => {
+        const tNd = nodeMap[tid]; if (!tNd) return;
+        maxThemeW = Math.max(maxThemeW, nwData(tNd));
+        const topicIds = tNd.children || tNd._children || [];
+        maxTopics = Math.max(maxTopics, topicIds.length);
+        let sLeaves = 0, sDeep = 0;
+        topicIds.forEach(cid => {
+          const cNd = nodeMap[cid]; if (!cNd) return;
+          maxTopicW = Math.max(maxTopicW, nwData(cNd));
+          const leafIds = cNd.children || cNd._children || [];
+          sLeaves += leafIds.length;
+          leafIds.forEach(lid => {
+            const lNd = nodeMap[lid]; if (!lNd) return;
+            maxLeafW = Math.max(maxLeafW, nwData(lNd));
+            sDeep += (lNd.children || lNd._children || []).length;
+            (lNd.children || lNd._children || []).forEach(did => {
+              const dNd = nodeMap[did]; if (dNd) maxDeepW = Math.max(maxDeepW, nwData(dNd));
+            });
+          });
+        });
+        maxLeaves = Math.max(maxLeaves, sLeaves);
+        maxDeep = Math.max(maxDeep, sDeep);
+      });
+
+      const usableFrac = 0.82;
+      // R such that arc-per-node >= nodeWidth + pad
+      function ringR(count, maxW, prevR) {
+        if (count === 0) return prevR + ringGap;
+        const minArc = maxW + ringPad;
+        return Math.max((minArc * count) / (sectorAngle * usableFrac), prevR + ringGap);
+      }
+      let R1 = Math.max(ringR(1, maxThemeW, 0), maxThemeW * 0.8);
+      let R2 = ringR(maxTopics, maxTopicW, R1);
+      let R3 = ringR(maxLeaves, maxLeafW, R2);
+      let R4 = ringR(maxDeep, maxDeepW, R3);
+      // Never shrink rings
+      R1 = maxR1 = Math.max(R1, maxR1);
+      R2 = maxR2 = Math.max(R2, maxR2);
+      R3 = maxR3 = Math.max(R3, maxR3);
+      R4 = maxR4 = Math.max(R4, maxR4);
+
+      h.x = 0; h.y = 0;
+
+      themes.forEach((theme, ti) => {
+        const sc = ti * sectorAngle - Math.PI / 2;
+        theme.x = R1 * Math.cos(sc);
+        theme.y = R1 * Math.sin(sc);
+
+        const topics = theme.children || [];
+        if (!topics.length) return;
+
+        const usable = sectorAngle * usableFrac;
+        // Give each topic a sub-sector proportional to its descendant count
+        const weights = topics.map(t => Math.max(countVisible(t), 1));
+        const totalW = weights.reduce((a, b) => a + b, 0);
+
+        let angleOffset = sc - usable / 2;
+        topics.forEach((topic, ci) => {
+          const subAngle = usable * weights[ci] / totalW;
+          const a = angleOffset + subAngle / 2;
+          angleOffset += subAngle;
+
+          topic.x = R2 * Math.cos(a);
+          topic.y = R2 * Math.sin(a);
+
+          const leaves = topic.children || [];
+          if (!leaves.length) return;
+
+          // Distribute leaves evenly within this topic's sub-sector
+          const leafWeights = leaves.map(l => Math.max((l.children || []).length, 1));
+          const leafTotalW = leafWeights.reduce((s, w) => s + w, 0);
+          let leafOffset = a - subAngle * 0.45; // 90% of sub-sector for leaves
+          const leafUsable = subAngle * 0.9;
+          leaves.forEach((leaf, li) => {
+            const leafSub = leafUsable * leafWeights[li] / leafTotalW;
+            const la = leafOffset + leafSub / 2;
+            leafOffset += leafSub;
+            leaf.x = R3 * Math.cos(la);
+            leaf.y = R3 * Math.sin(la);
+
+            const deep = leaf.children || [];
+            if (!deep.length) return;
+            deep.forEach((d, di) => {
+              const da = la - leafSub * 0.4 + leafSub * 0.8 * (di + 0.5) / deep.length;
+              d.x = R4 * Math.cos(da);
+              d.y = R4 * Math.sin(da);
+            });
+          });
+        });
+      });
+
+      return h;
+    } else if (currentLayout === "tree_lr") {
+      // tree_lr: nodeSize[0] = vertical gap (between siblings), nodeSize[1] = horizontal gap (depth)
+      // Compute max node height across all nodes for vertical spacing
+      let maxNH = 48;
+      Object.values(nodeMap).forEach(n => { maxNH = Math.max(maxNH, nhData(n)); });
+      const vg = maxNH + 20;
+      // Horizontal gap: max node width + padding
+      let maxNW = 160;
+      Object.values(nodeMap).forEach(n => { maxNW = Math.max(maxNW, nwData(n)); });
+      const hg = maxNW + 40;
+      d3.tree().nodeSize([vg, hg]).separation((a, b) => a.parent === b.parent ? 1 : 1.4)(h);
+      h.each(d => { const tmp = d.x; d.x = d.y; d.y = tmp; });
+    } else {
+      // tree_td: nodeSize[0] = horizontal gap (between siblings), nodeSize[1] = vertical gap (depth)
+      // Must use actual max node width so siblings never overlap
+      let maxNW = 160;
+      Object.values(nodeMap).forEach(n => { maxNW = Math.max(maxNW, nwData(n)); });
+      const hg = maxNW + 20; // horizontal spacing = widest node + gap
+      let maxNH = 48;
+      Object.values(nodeMap).forEach(n => { maxNH = Math.max(maxNH, nhData(n)); });
+      const vg = maxNH + 60; // vertical spacing between depth levels
+      d3.tree().nodeSize([hg, vg]).separation((a, b) => a.parent === b.parent ? 1 : 1.4)(h);
+
+      // Stabilize theme positions
+      if (Object.keys(prevPositions).length > 0) {
+        h.each(d => {
+          const old = prevPositions[d.data.id];
+          if (old && d.depth === 1) {
+            d.x = old.x * 0.6 + d.x * 0.4;
+          }
+        });
+      }
+    }
+    return h;
+  }
+
+  // Store previous positions for animation
+  let prevPositions = {};
+
+  function savePrevPositions(hierarchy) {
+    if (!hierarchy) return;
+    hierarchy.descendants().forEach(d => {
+      prevPositions[d.data.id] = { x: d.x, y: d.y };
+    });
+  }
+
+  // Generate link path
+  function linkPath(sx, sy, tx, ty, sData, tData) {
+    if (currentLayout === "tree_td") {
+      const sh = nhData(sData) / 2, th = nhData(tData) / 2;
+      return "M" + sx + "," + (sy + sh) + " C" + sx + "," + ((sy + ty) / 2) + " " + tx + "," + ((sy + ty) / 2) + " " + tx + "," + (ty - th);
+    }
+    if (currentLayout === "tree_lr") {
+      const sw = nwData(sData) / 2, tw = nwData(tData) / 2;
+      return "M" + (sx + sw) + "," + sy + " C" + ((sx + tx) / 2 + sw / 2) + "," + sy + " " + ((sx + tx) / 2 - tw / 2) + "," + ty + " " + (tx - tw) + "," + ty;
+    }
+    return "M" + sx + "," + sy + " C" + ((sx + tx) / 2) + "," + sy + " " + ((sx + tx) / 2) + "," + ty + " " + tx + "," + ty;
+  }
+
+  function linkPathFromD(d) {
+    return linkPath(d.source.x, d.source.y, d.target.x, d.target.y, d.source.data, d.target.data);
+  }
+
+  // Render state
+  let curH = null;
+  let isFirstRender = true;
+
+  function update(sourceId) {
+    if (!treeData) return;
+    resolveColors();
+
+    // Save old positions before recomputing
+    if (curH) savePrevPositions(curH);
+
+    curH = computeLayout(treeData);
+    const nodes = curH.descendants();
+    const links = curH.links();
+
+    // Source position for enter/exit animations
+    const sp = sourceId && prevPositions[sourceId]
+      ? prevPositions[sourceId]
+      : (nodes[0] ? { x: nodes[0].x, y: nodes[0].y } : { x: 0, y: 0 });
+
+    const dur = isFirstRender ? 0 : DURATION;
+    const t = d3.transition().duration(dur).ease(d3.easeCubicOut);
+
+    // ========== LINKS ==========
+    const linkData = links.map(d => {
+      d._key = d.source.data.id + "->" + d.target.data.id;
+      return d;
+    });
+
+    const linkSel = linkGroup.selectAll(".link").data(linkData, d => d._key);
+
+    // EXIT — collapse to source
+    linkSel.exit()
+      .transition(t)
+      .style("opacity", 0)
+      .attr("d", function() { return linkPath(sp.x, sp.y, sp.x, sp.y, {type:"topic"}, {type:"topic"}); })
+      .remove();
+
+    // ENTER — start from source
+    const linkEnter = linkSel.enter().append("path")
+      .attr("class", "link")
+      .style("fill", "none")
+      .style("stroke", edgeColor)
+      .style("stroke-linecap", "round")
+      .style("opacity", 0)
+      .attr("d", d => {
+        const p = prevPositions[d.source.data.id] || sp;
+        return linkPath(p.x, p.y, p.x, p.y, d.source.data, d.target.data);
+      });
+
+    // MERGE — branch-colored links
+    linkEnter.merge(linkSel)
+      .transition(t)
+      .attr("d", d => linkPathFromD(d))
+      .style("stroke", d => {
+        const bi = branchMap[d.target.data.id];
+        if (bi !== undefined) return getBranchPalette(bi).edge;
+        return edgeColor;
+      })
+      .style("stroke-width", d => Math.max(1.2, 2.8 - d.source.depth * 0.5))
+      .style("opacity", d => Math.max(0.4, 0.8 - d.source.depth * 0.1));
+
+    // ========== CROSS-LINKS (relationship-typed) ==========
+    crossLinkGroup.selectAll("*").remove();
+    if (showCrossLinks && data.edges && data.edges.length) {
+      const pos = {};
+      nodes.forEach(n => { pos[n.data.id] = { x: n.x, y: n.y }; });
+
+      // Relationship type → visual style
+      const REL_STYLES = {
+        causes:        { color: '#2563EB', dash: 'none',  width: 1.8, arrow: true,  label: 'Causes' },
+        leads_to:      { color: '#2563EB', dash: 'none',  width: 1.8, arrow: true,  label: 'Leads to' },
+        contrasts_with:{ color: '#DC2626', dash: '8,4',   width: 1.6, arrow: false, label: 'Contrasts' },
+        supports:      { color: '#059669', dash: 'none',  width: 1.6, arrow: false, label: 'Supports' },
+        related_to:    { color: '#8B5CF6', dash: '5,5',   width: 1.2, arrow: false, label: 'Related' },
+      };
+
+      data.edges.forEach(e => {
+        const s = pos[e.source], tg = pos[e.target];
+        if (!s || !tg) return;
+        const mx = (s.x + tg.x) / 2, my = (s.y + tg.y) / 2;
+        const ox = (tg.y - s.y) * 0.18, oy = -(tg.x - s.x) * 0.18;
+        const rel = e.relationship || "related_to";
+        const st = REL_STYLES[rel] || REL_STYLES.related_to;
+
+        crossLinkGroup.append("path")
+          .attr("class", "cross-edge cross-" + rel)
+          .attr("d", "M" + s.x + "," + s.y + " Q" + (mx + ox) + "," + (my + oy) + " " + tg.x + "," + tg.y)
+          .style("fill", "none").style("stroke", st.color).style("stroke-width", st.width)
+          .style("stroke-dasharray", st.dash)
+          .attr("marker-end", st.arrow ? "url(#arrowhead)" : null)
+          .style("opacity", isFirstRender ? 0.65 : 0)
+          .transition(t).style("opacity", 0.65);
+
+        if (e.label) crossLinkGroup.append("text")
+          .attr("x", mx + ox * 0.5).attr("y", my + oy * 0.5 - 6).attr("text-anchor", "middle")
+          .attr("fill", st.color).attr("font-size", "11px").attr("font-weight", "600")
+          .attr("font-family", "Inter, Noto Sans KR, sans-serif")
+          .style("opacity", isFirstRender ? 0.85 : 0).transition(t).style("opacity", 0.85)
+          .text(e.label);
+      });
+    }
+
+    // ========== NODES ==========
+    const nodeSel = nodeGroup.selectAll(".node").data(nodes, d => d.data.id);
+
+    // EXIT — shrink to source
+    nodeSel.exit()
+      .transition(t)
+      .attr("transform", "translate(" + sp.x + "," + sp.y + ")")
+      .style("opacity", 0)
+      .remove();
+
+    // ENTER — start at parent/source position
+    const nodeEnter = nodeSel.enter().append("g")
+      .attr("class", d => "node node-" + (d.data.type || "topic"))
+      .style("opacity", 0)
+      .style("cursor", "pointer")
+      .attr("transform", d => {
+        const p = prevPositions[d.parent ? d.parent.data.id : rootId] || sp;
+        return "translate(" + p.x + "," + p.y + ")";
+      })
+      .on("click", (ev, d) => { toggleNode(d); ev.stopPropagation(); })
+      .on("dblclick", (ev, d) => {
+        ev.stopPropagation();
+        if (d.data.type === "theme" || d.depth === 1) {
+          const bi = branchMap[d.data.id];
+          if (bi === undefined) return;
+          isolatedBranch = (isolatedBranch === bi) ? null : bi;
+          applyBranchIsolation();
+        }
+      })
+      .on("mouseenter", (ev, d) => showTooltip(ev, d))
+      .on("mouseleave", hideTooltip);
+
+    // Node background rect
+    nodeEnter.append("rect").attr("class", "node-bg");
+
+    // (accent line removed — clean flat design)
+
+    // Label text
+    nodeEnter.append("text").attr("class", "label").attr("text-anchor", "middle").attr("dy", "0.35em")
+      .attr("font-family", "Inter, Noto Sans KR, -apple-system, system-ui, sans-serif");
+
+    // MERGE — transition all nodes
+    const nodeMerge = nodeEnter.merge(nodeSel);
+
+    nodeMerge.transition(t)
+      .attr("transform", d => "translate(" + d.x + "," + d.y + ")")
+      .style("opacity", 1);
+
+    // Update bg rects — solid colored fills, no borders
+    branchMap = buildBranchMap();
+    nodeMerge.select(".node-bg")
+      .attr("x", d => -nw(d) / 2).attr("y", d => -nh(d) / 2)
+      .attr("width", d => nw(d)).attr("height", d => nh(d))
+      .attr("rx", d => d.data.type === "root" ? 14 : 10)
+      .attr("fill", d => {
+        if (d.data.type === "root") return rootBg;
+        const bi = branchMap[d.data.id];
+        if (bi === undefined) return accentColor;
+        return getBranchPalette(bi).fill;
+      })
+      .attr("stroke", "none")
+      .attr("filter", d => d.data.type === "root" ? "url(#nodeShadow)" : null);
+
+    // Remove accent lines (no longer used)
+    nodeMerge.select(".node-accent-line").attr("width", 0).attr("height", 0);
+
+    // Update labels — all white text
+    nodeMerge.select(".label")
+      .attr("fill", "#FFFFFF")
+      .attr("font-size", d => d.data.type === "root" ? "15px" : d.data.type === "theme" ? "13px" : d.data.type === "topic" ? "11.5px" : "10.5px")
+      .attr("font-weight", d => d.data.type === "root" ? "700" : d.data.type === "theme" ? "600" : "500")
+      .text(d => {
+        const l = d.data.label || "";
+        const mx = d.data.type === "root" ? 28 : d.data.type === "theme" ? 24 : d.data.type === "topic" ? 22 : 20;
+        return l.length > mx ? l.slice(0, mx - 1) + "\u2026" : l;
+      });
+
+    // ========== EXPAND BADGES ==========
+    nodeMerge.selectAll(".expand-badge").remove();
+    nodeMerge.filter(d => {
+      const nd = nodeMap[d.data.id];
+      return nd && nd._collapsed && nd._children && nd._children.length > 0;
+    }).append("g").attr("class", "expand-badge")
+      .attr("transform", d => {
+        if (currentLayout === "tree_lr") return "translate(" + (nw(d) / 2 + 10) + ",0)";
+        if (currentLayout === "tree_td") return "translate(0," + (nh(d) / 2 + 10) + ")";
+        return "translate(" + (nw(d) / 2 + 10) + ",0)";
+      })
+      .each(function(d) {
+        const bg = d3.select(this);
+        const bi = branchMap[d.data.id];
+        const badgeColor = bi !== undefined ? getBranchPalette(bi).badge : accentColor;
+        bg.append("circle").attr("r", 9)
+          .attr("fill", badgeColor)
+          .attr("stroke", "none")
+          .attr("opacity", 0.9);
+        const cnt = (nodeMap[d.data.id]._children || []).length;
+        bg.append("text").attr("text-anchor", "middle").attr("dy", "0.35em")
+          .attr("fill", "#FFFFFF").attr("font-size", "10px").attr("font-weight", "700")
+          .attr("font-family", "Inter,sans-serif")
+          .text(cnt > 9 ? "+" : cnt);
+      });
+
+    // ========== FOCUS MODE + ISOLATION ==========
+    applyFocusMode();
+    if (isolatedBranch !== null && !focusMode) applyBranchIsolation();
+
+    // ========== POST-RENDER ==========
+    if (isFirstRender) {
+      fitView(false);
+      isFirstRender = false;
+    } else if (sourceId) {
+      // After toggle: gently adjust viewport if expanded nodes are outside view
+      requestAnimationFrame(() => {
+        setTimeout(() => gentleFit(sourceId), dur + 50);
+      });
+    }
+
+    updateMinimap(d3.zoomTransform(svgEl));
+    buildLegend();
+  }
+
+  // Gentle fit — only adjusts if the toggled subtree goes outside the viewport
+  function gentleFit(focusId) {
+    if (!curH) return;
+    const ns = curH.descendants();
+    const tf = d3.zoomTransform(svgEl);
+
+    const focusNode = ns.find(d => d.data.id === focusId);
+    if (!focusNode) return;
+
+    // Collect subtree
+    const sub = [];
+    (function collect(n) { sub.push(n); (n.children || []).forEach(collect); })(focusNode);
+
+    // Subtree bbox in screen coords
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    sub.forEach(n => {
+      const hw = nw(n) / 2 + 15, hh = nh(n) / 2 + 15;
+      x0 = Math.min(x0, n.x - hw); x1 = Math.max(x1, n.x + hw);
+      y0 = Math.min(y0, n.y - hh); y1 = Math.max(y1, n.y + hh);
+    });
+    const sx0 = x0 * tf.k + tf.x, sx1 = x1 * tf.k + tf.x;
+    const sy0 = y0 * tf.k + tf.y, sy1 = y1 * tf.k + tf.y;
+
+    const margin = 60;
+    const outOfView = (sx0 < margin || sx1 > width - margin || sy0 < margin || sy1 > height - margin);
+    if (!outOfView) return;
+
+    // Pan/zoom to show parent context + expanded subtree
+    const ctx = focusNode.parent ? focusNode.parent.descendants() : sub;
+    let cx0 = Infinity, cx1 = -Infinity, cy0 = Infinity, cy1 = -Infinity;
+    ctx.forEach(n => {
+      const hw = nw(n) / 2 + 20, hh = nh(n) / 2 + 20;
+      cx0 = Math.min(cx0, n.x - hw); cx1 = Math.max(cx1, n.x + hw);
+      cy0 = Math.min(cy0, n.y - hh); cy1 = Math.max(cy1, n.y + hh);
+    });
+    const bw = cx1 - cx0 || 1, bh = cy1 - cy0 || 1;
+    let newSc = Math.min(Math.max(Math.min(width * 0.7 / bw, height * 0.7 / bh), 0.15), 2.5);
+    // Limit zoom change to avoid jarring jumps
+    newSc = Math.max(newSc, tf.k * 0.5);
+    newSc = Math.min(newSc, tf.k * 2.0);
+    const cx = cx0 + bw / 2, cy = cy0 + bh / 2;
+    const tx = width / 2 - cx * newSc, ty = height / 2 - cy * newSc;
+    svg.transition().duration(400).ease(d3.easeCubicInOut)
+      .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(newSc));
+  }
+
+  // Toggle — animated expand/collapse
+  function toggleNode(d) {
+    const nd = nodeMap[d.data.id];
+    if (!nd) return;
+    if (nd._collapsed && nd._children) {
+      nd.children = nd._children; nd._children = null; nd._collapsed = false;
+    } else if (nd.children && nd.children.length) {
+      nd._children = nd.children; nd.children = []; nd._collapsed = true;
+    } else return;
+    treeData = buildTree(rootId);
+    assignDepth(treeData, 0);
+    syncCollapse(treeData);
+    update(d.data.id);
+  }
+
+  function syncCollapse(n) {
+    const nd = nodeMap[n.id];
+    if (nd && nd._collapsed && n.children && n.children.length) {
+      n._children = n.children; n.children = []; n._collapsed = true;
+    }
+    (n.children || []).forEach(syncCollapse);
+  }
+
+  // Tooltip
+  const tip = document.getElementById("tooltip");
+  function showTooltip(ev, d) {
+    const nd = d.data;
+    let h = '<div class="tt-label">' + (nd.label || "") + '</div>';
+    if (nd.description) h += '<div class="tt-desc">' + nd.description + '</div>';
+    if (nd.node_style) h += '<span class="tt-type">' + nd.node_style.replace("_", " ") + '</span> ';
+    if (nd.citation && showCitations) {
+      const c = nd.citation;
+      h += '<span class="tt-citation">p.' + c.page + (c.paragraph ? ", \u00b6" + c.paragraph : "") + '</span>';
+    }
+    tip.innerHTML = h; tip.classList.add("visible");
+    const r = container.getBoundingClientRect();
+    let l = ev.clientX - r.left + 12, tt = ev.clientY - r.top - 8;
+    if (l + 300 > r.width) l -= 320; if (tt + 140 > r.height) tt -= 120;
+    tip.style.left = l + "px"; tip.style.top = tt + "px";
+  }
+  function hideTooltip() { tip.classList.remove("visible"); }
+
+  // Fit View
+  function fitView(anim) {
+    if (!curH) return;
+    const ns = curH.descendants();
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    ns.forEach(n => {
+      const hw = nw(n) / 2 + 15, hh = nh(n) / 2 + 15;
+      x0 = Math.min(x0, n.x - hw); x1 = Math.max(x1, n.x + hw);
+      y0 = Math.min(y0, n.y - hh); y1 = Math.max(y1, n.y + hh);
+    });
+    const bw = x1 - x0 || 1, bh = y1 - y0 || 1;
+    const factor = isEmbed ? 0.92 : 0.65;
+    const sc = Math.min(Math.max(Math.min(width * factor / bw, height * factor / bh), 0.15), 2.5);
+    const cx = x0 + bw / 2, cy = y0 + bh / 2;
+    const tx = width / 2 - cx * sc, ty = height / 2 - cy * sc;
+    const tf = d3.zoomIdentity.translate(tx, ty).scale(sc);
+    (anim ? svg.transition().duration(400) : svg).call(zoom.transform, tf);
+  }
+
+  // Minimap
+  const mmSvg = d3.select("#minimap-svg"), mmG = mmSvg.append("g"), mmVP = mmSvg.append("rect").attr("class", "minimap-viewport");
+  function updateMinimap(tf) {
+    if (!curH) return;
+    const ns = curH.descendants(), W = 140, H = 100;
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    ns.forEach(n => { x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x); y0 = Math.min(y0, n.y); y1 = Math.max(y1, n.y); });
+    const p = 40; x0 -= p; y0 -= p; x1 += p; y1 += p;
+    const bw = x1 - x0 || 1, bh = y1 - y0 || 1, sc = Math.min(W / bw, H / bh) * 0.85;
+    const ox = (W - bw * sc) / 2, oy = (H - bh * sc) / 2;
+    mmG.selectAll("*").remove();
+    ns.forEach(n => mmG.append("circle").attr("cx", (n.x - x0) * sc + ox).attr("cy", (n.y - y0) * sc + oy)
+      .attr("r", n.data.type === "root" ? 3 : 1.5)
+      .attr("fill", accentColor).attr("opacity", n.data.type === "root" ? 0.7 : 0.3));
+    const vw = width / tf.k, vh = height / tf.k, vx = -tf.x / tf.k, vy = -tf.y / tf.k;
+    mmVP.attr("x", (vx - x0) * sc + ox).attr("y", (vy - y0) * sc + oy).attr("width", vw * sc).attr("height", vh * sc);
+  }
+
+  // Search
+  const si = document.getElementById("search-input");
+  si.addEventListener("input", () => {
+    const q = si.value.toLowerCase().trim();
+    if (!q) { g.selectAll(".node").classed("highlighted", false).classed("dimmed", false); g.selectAll(".link,.cross-link").classed("dimmed", false); return; }
+    g.selectAll(".node").each(function(d) {
+      const m = (d.data.label || "").toLowerCase().includes(q) || (d.data.description || "").toLowerCase().includes(q);
+      d3.select(this).classed("highlighted", m).classed("dimmed", !m);
+    });
+    g.selectAll(".link,.cross-link").classed("dimmed", true);
+  });
+
+  // Controls
+  document.getElementById("theme-select").value = data.theme || "corporate";
+  document.getElementById("layout-select").value = currentLayout;
+  document.getElementById("theme-select").addEventListener("change", e => {
+    document.body.setAttribute("data-theme", e.target.value);
+    isFirstRender = true; prevPositions = {}; maxR1=maxR2=maxR3=maxR4=0; update(null);
+  });
+  document.getElementById("layout-select").addEventListener("change", e => {
+    currentLayout = e.target.value;
+    isFirstRender = true; prevPositions = {}; maxR1=maxR2=maxR3=maxR4=0; update(null);
+  });
+  document.getElementById("toggle-crosslinks").addEventListener("change", e => { showCrossLinks = e.target.checked; update(null); });
+  document.getElementById("toggle-citations").addEventListener("change", e => { showCitations = e.target.checked; update(null); });
+
+  document.getElementById("btn-expand-all").addEventListener("click", () => {
+    Object.values(nodeMap).forEach(n => { if (n._children) { n.children = n._children; n._children = null; n._collapsed = false; } });
+    treeData = buildTree(rootId); assignDepth(treeData, 0);
+    isFirstRender = true; prevPositions = {}; maxR1=maxR2=maxR3=maxR4=0; update(null);
+  });
+  document.getElementById("btn-collapse-all").addEventListener("click", () => {
+    Object.values(nodeMap).forEach(n => {
+      if (n.type !== "root" && n.children && n.children.length) { n._children = n.children; n.children = []; n._collapsed = true; }
+    });
+    treeData = buildTree(rootId); assignDepth(treeData, 0);
+    isFirstRender = true; prevPositions = {}; maxR1=maxR2=maxR3=maxR4=0; update(null);
+  });
+  document.getElementById("btn-fit").addEventListener("click", () => fitView(true));
+
+  // Export
+  document.getElementById("btn-export-png").addEventListener("click", () => {
+    const c = document.createElement("canvas"); c.width = width * 2; c.height = height * 2;
+    const ctx = c.getContext("2d");
+    const clone = svgEl.cloneNode(true);
+    const st = document.createElement("style"); st.textContent = document.querySelector("style").textContent;
+    clone.insertBefore(st, clone.firstChild);
+    clone.setAttribute("width", width * 2); clone.setAttribute("height", height * 2);
+    const str = new XMLSerializer().serializeToString(clone);
+    const img = new Image(); img.onload = () => {
+      ctx.fillStyle = bgColor; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0);
+      const a = document.createElement("a"); a.download = "mindmap.png"; a.href = c.toDataURL("image/png"); a.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(str)));
+  });
+  document.getElementById("btn-export-svg").addEventListener("click", () => {
+    const clone = svgEl.cloneNode(true);
+    const st = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    st.textContent = document.querySelector("style").textContent;
+    clone.insertBefore(st, clone.firstChild);
+    const blob = new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml" });
+    const a = document.createElement("a"); a.download = "mindmap.svg"; a.href = URL.createObjectURL(blob); a.click();
+  });
+
+  // Keyboard
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && document.activeElement !== si) { e.preventDefault(); si.focus(); }
+    if (e.key === "Escape") { si.value = ""; si.dispatchEvent(new Event("input")); si.blur(); }
+    if (e.key === "=" || e.key === "+") svg.transition().call(zoom.scaleBy, 1.3);
+    if (e.key === "-") svg.transition().call(zoom.scaleBy, 0.7);
+    if (e.key === "0") fitView(true);
+  });
+
+  // ===== Focus Mode — force-directed relationship view =====
+  let savedPositions = {}; // positions before focus mode
+
+  function applyFocusMode() {
+    if (!curH) return;
+    const edgeNodeIds = new Set();
+    if (data.edges) data.edges.forEach(e => { edgeNodeIds.add(e.source); edgeNodeIds.add(e.target); });
+
+    if (focusMode) {
+      // Save current positions so we can restore later
+      if (Object.keys(savedPositions).length === 0) {
+        curH.descendants().forEach(d => { savedPositions[d.data.id] = { x: d.x, y: d.y }; });
+      }
+
+      // Dim tree links and non-edge nodes
+      linkGroup.selectAll(".link").transition().duration(400).style("opacity", 0.04);
+      nodeGroup.selectAll(".node").each(function(d) {
+        const inEdge = edgeNodeIds.has(d.data.id) || d.data.type === "root";
+        d3.select(this).transition().duration(400).style("opacity", inEdge ? 1 : 0.08);
+      });
+
+      // Make cross-links prominent
+      crossLinkGroup.selectAll(".cross-edge").transition().duration(400)
+        .style("stroke-width", 3).style("opacity", 1);
+      crossLinkGroup.selectAll("text").transition().duration(400).style("opacity", 1);
+
+      // Force-directed repositioning of cross-referenced nodes
+      if (data.edges && data.edges.length && edgeNodeIds.size >= 2) {
+        const focusNodes = [];
+        const nodeById = {};
+        curH.descendants().forEach(d => {
+          if (edgeNodeIds.has(d.data.id)) {
+            focusNodes.push({ id: d.data.id, x: d.x, y: d.y, _d: d });
+            nodeById[d.data.id] = focusNodes[focusNodes.length - 1];
+          }
+        });
+        // Add root as anchor
+        const rootD = curH.descendants().find(d => d.data.type === "root");
+        if (rootD && !nodeById[rootD.data.id]) {
+          focusNodes.push({ id: rootD.data.id, x: rootD.x, y: rootD.y, _d: rootD, fx: rootD.x, fy: rootD.y });
+        }
+
+        const focusLinks = data.edges.filter(e => nodeById[e.source] && nodeById[e.target])
+          .map(e => ({ source: nodeById[e.source], target: nodeById[e.target] }));
+
+        // Run a quick force simulation
+        const sim = d3.forceSimulation(focusNodes)
+          .force("link", d3.forceLink(focusLinks).id(d => d.id).distance(200).strength(0.8))
+          .force("charge", d3.forceManyBody().strength(-400))
+          .force("center", d3.forceCenter(rootD ? rootD.x : 0, rootD ? rootD.y : 0))
+          .force("collide", d3.forceCollide(80))
+          .stop();
+
+        // Run 80 ticks synchronously
+        for (let i = 0; i < 80; i++) sim.tick();
+
+        // Animate nodes to force positions
+        focusNodes.forEach(fn => {
+          nodeGroup.selectAll(".node").filter(d => d.data.id === fn.id)
+            .transition().duration(600).ease(d3.easeCubicOut)
+            .attr("transform", "translate(" + fn.x + "," + fn.y + ")");
+        });
+
+        // Re-render cross-links at new positions after delay
+        setTimeout(() => {
+          const newPos = {};
+          focusNodes.forEach(fn => { newPos[fn.id] = { x: fn.x, y: fn.y }; });
+          crossLinkGroup.selectAll("*").remove();
+          const REL_STYLES = {
+            causes:        { color: '#2563EB', dash: 'none',  width: 3, arrow: true },
+            leads_to:      { color: '#2563EB', dash: 'none',  width: 3, arrow: true },
+            contrasts_with:{ color: '#DC2626', dash: '8,4',   width: 2.5, arrow: false },
+            supports:      { color: '#059669', dash: 'none',  width: 2.5, arrow: false },
+            related_to:    { color: '#8B5CF6', dash: '5,5',   width: 2, arrow: false },
+          };
+          data.edges.forEach(e => {
+            const s = newPos[e.source], tg = newPos[e.target];
+            if (!s || !tg) return;
+            const mx = (s.x + tg.x) / 2, my = (s.y + tg.y) / 2;
+            const ox = (tg.y - s.y) * 0.2, oy = -(tg.x - s.x) * 0.2;
+            const rel = e.relationship || "related_to";
+            const st = REL_STYLES[rel] || REL_STYLES.related_to;
+            crossLinkGroup.append("path").attr("class", "cross-edge")
+              .attr("d", "M" + s.x + "," + s.y + " Q" + (mx+ox) + "," + (my+oy) + " " + tg.x + "," + tg.y)
+              .style("fill","none").style("stroke",st.color).style("stroke-width",st.width)
+              .style("stroke-dasharray",st.dash)
+              .attr("marker-end", st.arrow ? "url(#arrowhead)" : null)
+              .style("opacity", 1);
+            if (e.label) crossLinkGroup.append("text")
+              .attr("x",mx+ox*0.5).attr("y",my+oy*0.5-8).attr("text-anchor","middle")
+              .attr("fill",st.color).attr("font-size","12px").attr("font-weight","700")
+              .attr("font-family","Inter,Noto Sans KR,sans-serif").text(e.label);
+          });
+        }, 650);
+      }
+    } else {
+      // Restore original positions
+      if (Object.keys(savedPositions).length > 0) {
+        nodeGroup.selectAll(".node").each(function(d) {
+          const sp = savedPositions[d.data.id];
+          if (sp) d3.select(this).transition().duration(400).attr("transform", "translate(" + sp.x + "," + sp.y + ")");
+        });
+        savedPositions = {};
+        // Re-render cross-links at original positions after restore
+        setTimeout(() => { update(null); }, 450);
+      }
+      linkGroup.selectAll(".link").transition().duration(300).style("opacity", null);
+      nodeGroup.selectAll(".node").transition().duration(300).style("opacity", null);
+      g.selectAll(".node .node-bg").style("filter", null);
+      crossLinkGroup.selectAll(".cross-edge").style("stroke-width", null).style("opacity", null);
+      if (isolatedBranch !== null) applyBranchIsolation();
+    }
+  }
+
+  document.getElementById("toggle-focus-mode").addEventListener("change", e => { focusMode = e.target.checked; applyFocusMode(); });
+
+  // ===== Branch Isolation (double-click) =====
+  function applyBranchIsolation() {
+    if (isolatedBranch === null) {
+      g.selectAll(".node").style("opacity", null);
+      g.selectAll(".link").style("opacity", null);
+      return;
+    }
+    g.selectAll(".node").each(function(d) {
+      const bi = branchMap[d.data.id];
+      const isRoot = d.data.type === "root";
+      const inBranch = isRoot || bi === isolatedBranch;
+      d3.select(this).style("opacity", inBranch ? 1 : 0.1);
+    });
+    g.selectAll(".link").each(function(d) {
+      const bi = branchMap[d.target.data.id];
+      d3.select(this).style("opacity", bi === isolatedBranch ? null : 0.05);
+    });
+  }
+
+  svg.on("dblclick.isolation", () => {
+    if (isolatedBranch !== null) { isolatedBranch = null; applyBranchIsolation(); }
+  });
+
+  // ===== Depth Slider =====
+  const depthSlider = document.getElementById("depth-slider");
+  const depthValue = document.getElementById("depth-value");
+  depthSlider.addEventListener("input", () => {
+    const maxD = parseInt(depthSlider.value, 10);
+    depthValue.textContent = maxD;
+    Object.values(nodeMap).forEach(n => {
+      const d = n._depth !== undefined ? n._depth : 0;
+      if (d >= maxD) {
+        // collapse
+        if (n.children && n.children.length > 0) {
+          n._children = n.children; n.children = []; n._collapsed = true;
+        }
+      } else {
+        // expand
+        if (n._collapsed && n._children) {
+          n.children = n._children; n._children = null; n._collapsed = false;
+        }
+      }
+    });
+    treeData = buildTree(rootId);
+    assignDepth(treeData, 0);
+    syncCollapse(treeData);
+    isFirstRender = true; prevPositions = {}; maxR1=maxR2=maxR3=maxR4=0;
+    update(null);
+  });
+
+  // Legend
+  function buildLegend() {
+    const el = document.getElementById("legend");
+    let html = '<div class="legend-item"><div class="legend-swatch" style="background:' + rootBg + '"></div>Central</div>';
+
+    // Show branch colors from first few themes
+    const themes = curH ? curH.children || [] : [];
+    themes.slice(0, 4).forEach((th, i) => {
+      const p = getBranchPalette(i);
+      html += '<div class="legend-item"><div class="legend-swatch" style="background:' + p.fill + ';border-radius:4px"></div>' + (th.data.label || '').slice(0, 12) + '</div>';
+    });
+
+    // Show cross-link relationship types if edges exist
+    if (showCrossLinks && data.edges && data.edges.length) {
+      const relTypes = new Set(data.edges.map(e => e.relationship || "related_to"));
+      const REL_LEGEND = {
+        causes:        { color: '#2563EB', style: 'solid',  label: 'Causes' },
+        leads_to:      { color: '#2563EB', style: 'solid',  label: 'Leads to' },
+        contrasts_with:{ color: '#DC2626', style: 'dashed', label: 'Contrasts' },
+        supports:      { color: '#059669', style: 'solid',  label: 'Supports' },
+        related_to:    { color: '#8B5CF6', style: 'dashed', label: 'Related' },
+      };
+      relTypes.forEach(rel => {
+        const r = REL_LEGEND[rel] || REL_LEGEND.related_to;
+        html += '<div class="legend-item"><div class="legend-line ' + (r.style === 'dashed' ? 'dashed' : '') + '" style="border-color:' + r.color + '"></div>' + r.label + '</div>';
+      });
+    }
+    el.innerHTML = html;
+  }
+
+  update(null);
+  window.__RENDER_COMPLETE__ = true;
+})();
+</script>
+</body>
+</html>

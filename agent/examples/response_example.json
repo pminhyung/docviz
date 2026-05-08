@@ -1,0 +1,272 @@
+{
+  "_description": "Response examples for /v2/run endpoint",
+  "_schema": "RunResponseV2",
+
+  "success_case": {
+    "_comment": "Successful document analysis with 4 reasoning steps",
+    "final_answer": "Based on the analysis of the financial report [1], the company's revenue increased by 15.3% year-over-year from $2.1B to $2.42B. The main drivers were: (1) expansion into new markets [2], (2) launch of premium product line [3], and (3) improved operational efficiency reducing costs by 8% [4].",
+    "steps_reasoning": [
+      {
+        "step_number": 1,
+        "step_type": "tool_call",
+        "step_name": "Reading full document",
+        "action": {
+          "name": "ReadFullDocument",
+          "arguments": {
+            "filename": "financial_report_2024.pdf"
+          }
+        },
+        "duration": 2.34
+      },
+      {
+        "step_number": 2,
+        "step_type": "reasoning",
+        "step_name": "Analyzing revenue data",
+        "action": null,
+        "duration": 1.87
+      },
+      {
+        "step_number": 3,
+        "step_type": "tool_call",
+        "step_name": "Searching for growth drivers",
+        "action": {
+          "name": "SearchDocument",
+          "arguments": {
+            "query": "revenue growth factors",
+            "top_k": 5
+          }
+        },
+        "duration": 0.92
+      },
+      {
+        "step_number": 4,
+        "step_type": "reasoning",
+        "step_name": "Synthesizing final answer",
+        "action": null,
+        "duration": 3.21
+      }
+    ],
+    "inputs_used": 1,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "total_tokens": 4523,
+    "total_duration_seconds": 12.45,
+    "num_steps": 4,
+    "success": true,
+    "error": null,
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  },
+
+  "success_case_with_session": {
+    "_comment": "Successful case with session accumulation enabled",
+    "final_answer": "The contract specifies a payment term of Net 30 days [1] with a 2% early payment discount if paid within 10 days [2].",
+    "steps_reasoning": [
+      {
+        "step_number": 1,
+        "step_type": "tool_call",
+        "step_name": "Reading contract document",
+        "action": {
+          "name": "ReadFullDocument",
+          "arguments": {
+            "filename": "contract_v2.pdf"
+          }
+        },
+        "duration": 1.45
+      },
+      {
+        "step_number": 2,
+        "step_type": "tool_call",
+        "step_name": "Searching payment terms",
+        "action": {
+          "name": "SearchDocument",
+          "arguments": {
+            "query": "payment terms deadline discount",
+            "top_k": 3
+          }
+        },
+        "duration": 0.78
+      },
+      {
+        "step_number": 3,
+        "step_type": "reasoning",
+        "step_name": "Formulating answer",
+        "action": null,
+        "duration": 2.11
+      }
+    ],
+    "inputs_used": 1,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "total_tokens": 2891,
+    "total_duration_seconds": 8.34,
+    "num_steps": 3,
+    "success": true,
+    "error": null,
+    "accumulation_session_id": "batch_20240223",
+    "session_sample_count": 5
+  },
+
+  "success_case_with_warnings": {
+    "_comment": "Successful case but with validation warnings",
+    "final_answer": "The document appears to be about project management methodology.",
+    "steps_reasoning": [
+      {
+        "step_number": 1,
+        "step_type": "tool_call",
+        "step_name": "Reading document",
+        "action": {
+          "name": "ReadFullDocument",
+          "arguments": {
+            "filename": "methodology.pdf"
+          }
+        },
+        "duration": 1.23
+      },
+      {
+        "step_number": 2,
+        "step_type": "reasoning",
+        "step_name": "Creating response",
+        "action": null,
+        "duration": 1.56
+      }
+    ],
+    "inputs_used": 1,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [
+      "No citation patterns [N] found in final_answer",
+      "Recommended: Include specific references to document sections"
+    ],
+    "session_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "total_tokens": 1872,
+    "total_duration_seconds": 5.67,
+    "num_steps": 2,
+    "success": true,
+    "error": null,
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  },
+
+  "error_case_document_not_found": {
+    "_comment": "Error: Document file not found",
+    "final_answer": "",
+    "steps_reasoning": [],
+    "inputs_used": 0,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+    "total_tokens": 0,
+    "total_duration_seconds": 0.12,
+    "num_steps": 0,
+    "success": false,
+    "error": "Document not found: /path/to/nonexistent_document.json",
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  },
+
+  "error_case_max_steps_exceeded": {
+    "_comment": "Error: Agent exceeded maximum allowed steps",
+    "final_answer": "",
+    "steps_reasoning": [
+      {
+        "step_number": 1,
+        "step_type": "tool_call",
+        "step_name": "Reading document",
+        "action": {
+          "name": "ReadFullDocument",
+          "arguments": {
+            "filename": "complex_report.pdf"
+          }
+        },
+        "duration": 2.1
+      },
+      {
+        "step_number": 2,
+        "step_type": "tool_call",
+        "step_name": "Searching document",
+        "action": {
+          "name": "SearchDocument",
+          "arguments": {
+            "query": "key findings",
+            "top_k": 10
+          }
+        },
+        "duration": 1.5
+      },
+      {
+        "step_number": 3,
+        "step_type": "reasoning",
+        "step_name": "Processing results",
+        "action": null,
+        "duration": 3.2
+      }
+    ],
+    "inputs_used": 1,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+    "total_tokens": 8921,
+    "total_duration_seconds": 45.67,
+    "num_steps": 3,
+    "success": false,
+    "error": "Maximum steps (3) exceeded without reaching final answer",
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  },
+
+  "error_case_invalid_document_format": {
+    "_comment": "Error: Document JSON format is invalid",
+    "final_answer": "",
+    "steps_reasoning": [],
+    "inputs_used": 0,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+    "total_tokens": 0,
+    "total_duration_seconds": 0.08,
+    "num_steps": 0,
+    "success": false,
+    "error": "Invalid document format: Expected 'pages' or 'chunks' field in document JSON",
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  },
+
+  "error_case_api_error": {
+    "_comment": "Error: Reasoning model API error",
+    "final_answer": "",
+    "steps_reasoning": [
+      {
+        "step_number": 1,
+        "step_type": "tool_call",
+        "step_name": "Reading document",
+        "action": {
+          "name": "ReadFullDocument",
+          "arguments": {
+            "filename": "report.pdf"
+          }
+        },
+        "duration": 1.89
+      }
+    ],
+    "inputs_used": 1,
+    "train_sample": null,
+    "trace": null,
+    "warnings": [],
+    "session_id": "a7b8c9d0-e1f2-3456-abcd-567890123456",
+    "total_tokens": 1234,
+    "total_duration_seconds": 5.23,
+    "num_steps": 1,
+    "success": false,
+    "error": "Reasoning API error: Connection timeout after 60s",
+    "accumulation_session_id": null,
+    "session_sample_count": null
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "session_id": "afb02946-e27b-4c92-b3fe-2eb2eb1412ec",
+  "user_query": "What are the main features of the Document Agent system?",
+  "filenames": [
+    "demo_document.json"
+  ],
+  "language": "ENGLISH",
+  "steps": [
+    {
+      "step_number": 1,
+      "step_type": "doc_summary",
+      "observation": null,
+      "reasoning": null,
+      "step_name": "Document Analysis",
+      "action": "doc_summary",
+      "model_used": "qwen3",
+      "tokens_used": 892,
+      "duration_seconds": 0.0001468658447265625,
+      "timestamp": "2026-02-11T14:52:57.084913"
+    },
+    {
+      "step_number": 2,
+      "step_type": "tool_invoke",
+      "observation": "I have reviewed the document overview and understand the user's question. I need to search the document for relevant information.",
+      "reasoning": "To answer the user's question accurately, I should first search the document to find relevant sections. This will help me provide a well-informed answer with proper citations.",
+      "step_name": "Searching document for relevant content",
+      "action": "search",
+      "model_used": "qwen3",
+      "tokens_used": 3558,
+      "duration_seconds": 0.0003616809844970703,
+      "timestamp": "2026-02-11T14:52:57.085310",
+      "action_args": "__ARGS_REDACTED__",
+      "action_result": "[{\"Index\": 1, \"page\": 1, \"filename\": \"example_document.json\", \"content\": \"This is a sandbox document page containing example content. The main topic covers demonstration purposes and testing scenarios for the document agent system.\"}, {\"Index\": 2, \"page\": 2, \"filename\": \"example_document.json\", \"content\": \"Additional content from page 2. This section provides more details about the example topics and serves as reference material for citations.\"}]"
+    },
+    {
+      "step_number": 3,
+      "step_type": "final_answer",
+      "observation": "The search results provide relevant information from the document that addresses the user's question.",
+      "reasoning": "Based on the document content I've reviewed, I can now provide a comprehensive answer. The document discusses example topics and contains structured information that I can reference.",
+      "step_name": "Generating final answer",
+      "action": null,
+      "model_used": "qwen3",
+      "tokens_used": 3964,
+      "duration_seconds": 0.00030159950256347656,
+      "timestamp": "2026-02-11T14:52:57.085625",
+      "final_answer": "Based on my analysis of the document [1], here is the answer to your question:\n\nThe document primarily discusses example topics for demonstration purposes. Key points include:\n\n1. **Main Topic**: The document serves as a demonstration of the document agent system capabilities [1].\n\n2. **Structure**: The content is organized in a clear, accessible format suitable for testing and validation [1].\n\n3. **Purpose**: This document is designed to validate the end-to-end pipeline including document loading, search, and answer generation [1].\n\nThe information is presented in a structured manner that allows for easy reference and citation."
+    }
+  ],
+  "total_tokens": 8414,
+  "total_duration_seconds": 0.0008101463317871094,
+  "num_steps": 3,
+  "success": true,
+  "error": null,
+  "inputs_used": 0,
+  "start_time": "2026-02-11T14:52:57.076103",
+  "end_time": "2026-02-11T14:52:57.085638",
+  "prompt_pack_id": "baseline_v1",
+  "prompt_hash": "1213ccb26774b1f6",
+  "override_hash": null
+}

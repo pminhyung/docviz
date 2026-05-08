@@ -1,0 +1,79 @@
+{
+  "_comment": "Document JSON Schema Examples for Document Agent V2",
+  "_description": "This file shows the two supported formats for document JSON files",
+
+  "format_1_dict": {
+    "_description": "Dictionary format with page numbers as keys",
+    "_example": {
+      "1": "Content of page 1. This is the text extracted from the first page of the document. It can include multiple paragraphs and any text content.",
+      "2": "Content of page 2. The second page content goes here. Each key is a page number as a string.",
+      "3": "Content of page 3. You can have as many pages as needed in your document."
+    },
+    "_notes": [
+      "Keys must be string representations of page numbers (e.g., '1', '2', '3')",
+      "Values are the plain text content of each page",
+      "Page numbers should be sequential starting from 1",
+      "This format is simpler and commonly used for PDF extractions"
+    ]
+  },
+
+  "format_2_array": {
+    "_description": "Array format with page objects containing page number and content",
+    "_example": [
+      {
+        "page": 1,
+        "content": "Content of page 1. This format allows for more structured data."
+      },
+      {
+        "page": 2,
+        "content": "Content of page 2. Each item is an object with page and content fields."
+      },
+      {
+        "page": 3,
+        "content": "Content of page 3. Additional metadata can be added to each page object."
+      }
+    ],
+    "_notes": [
+      "Each item must have 'page' (integer) and 'content' (string) fields",
+      "Pages should be in order but gaps are allowed",
+      "This format supports additional metadata fields per page",
+      "Commonly used when preserving more structure from source documents"
+    ]
+  },
+
+  "format_detection": {
+    "_description": "How the loader detects format",
+    "_rules": [
+      "If root is a dict with string keys that look like numbers -> Format 1 (dict)",
+      "If root is an array of objects with 'page' and 'content' fields -> Format 2 (array)",
+      "Format detection is automatic - no configuration needed"
+    ]
+  },
+
+  "multi_document": {
+    "_description": "For multi-document mode, provide two separate JSON files",
+    "_example_usage": {
+      "doc_json_path": "/path/to/document1.json",
+      "doc_json_path_2": "/path/to/document2.json",
+      "single_doc": false
+    },
+    "_notes": [
+      "Each document file follows the same format (dict or array)",
+      "Documents are numbered automatically (Document1, Document2)",
+      "Set single_doc=false when using two documents"
+    ]
+  },
+
+  "best_practices": [
+    "Keep page content under 50,000 characters per page for best results",
+    "Ensure text is properly extracted (not OCR errors)",
+    "Remove headers/footers if they repeat on every page",
+    "Preserve paragraph structure where possible",
+    "Use UTF-8 encoding for the JSON file"
+  ],
+
+  "sample_minimal_document": {
+    "1": "This is a minimal example document.\n\nIt has just one page with some text content.\n\nThe document discusses example topics for testing purposes.",
+    "2": "This is page two of the example.\n\nIt contains additional information that might be relevant to user queries."
+  }
+}

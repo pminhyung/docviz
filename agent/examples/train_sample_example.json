@@ -1,0 +1,115 @@
+{
+  "_description": "Single training sample structure for JSONL export (v2 format)",
+  "_note": "Each line in train.jsonl contains one sample in this format",
+
+  "sample": {
+    "_comment_original_fields": "Original v1 fields (backward compatible)",
+
+    "df_idx": 0,
+    "user_query": "What are the key financial metrics mentioned in this report?",
+    "filenames": ["financial_report_2024.pdf"],
+
+    "reasoning": [
+      [
+        {
+          "role": "system",
+          "content": "[SYSTEM_PROMPT]",
+          "loss_masking": true
+        },
+        {
+          "role": "user",
+          "content": "What are the key financial metrics mentioned in this report?",
+          "loss_masking": true
+        },
+        {
+          "role": "assistant",
+          "content": "<reasoning>\nI need to analyze the financial report to identify key metrics.\nFirst, I'll read the full document to understand its structure.\n</reasoning>\n\n<action>\nReadFullDocument(filename=\"financial_report_2024.pdf\")\n</action>",
+          "loss_masking": false
+        }
+      ],
+      [
+        {
+          "role": "system",
+          "content": "[SYSTEM_PROMPT]",
+          "loss_masking": true
+        },
+        {
+          "role": "user",
+          "content": "[Document Content]\n\n# Financial Report 2024\n\n## Executive Summary\nRevenue: $2.42B (up 15.3% YoY)\nNet Income: $320M\nEBITDA Margin: 18.5%\n\n## Details\n...",
+          "loss_masking": true
+        },
+        {
+          "role": "assistant",
+          "content": "<reasoning>\nI found the key financial metrics in the executive summary:\n- Revenue: $2.42B with 15.3% year-over-year growth\n- Net Income: $320M\n- EBITDA Margin: 18.5%\n\nI have sufficient information to provide a comprehensive answer.\n</reasoning>\n\n<final_answer>\nThe report highlights the following key financial metrics [1]:\n\n1. **Revenue**: $2.42 billion, representing a 15.3% increase year-over-year\n2. **Net Income**: $320 million\n3. **EBITDA Margin**: 18.5%\n\nThese metrics indicate strong financial performance with significant revenue growth compared to the previous year.\n</final_answer>",
+          "loss_masking": false
+        }
+      ]
+    ],
+
+    "readfulldocument": [
+      [
+        {
+          "name": "ReadFullDocument",
+          "arguments": {"filename": "financial_report_2024.pdf"},
+          "result": "# Financial Report 2024\n\n## Executive Summary\nRevenue: $2.42B (up 15.3% YoY)\nNet Income: $320M\nEBITDA Margin: 18.5%\n\n## Details\n..."
+        }
+      ]
+    ],
+
+    "readfulltext": [],
+
+    "doc_step": [
+      {
+        "step": 1,
+        "action": "ReadFullDocument",
+        "arguments": {"filename": "financial_report_2024.pdf"},
+        "success": true
+      }
+    ],
+
+    "_comment_v2_fields": "New v2 fields (additive)",
+
+    "version": "2.0",
+    "train_system_prompt": "[SYSTEM_PROMPT]",
+    "runtime_prompt_hash": "a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890",
+    "override_hash": null,
+    "session_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "language": "ENGLISH",
+
+    "trace_summary": {
+      "num_steps": 2,
+      "total_tokens": 2891,
+      "total_duration_seconds": 8.34,
+      "success": true,
+      "actions_used": ["ReadFullDocument"]
+    },
+
+    "timestamp": "2024-02-23T14:32:15.123456",
+
+    "metadata": {
+      "source": "api_request",
+      "client_version": "1.0.0"
+    }
+  },
+
+  "_field_descriptions": {
+    "df_idx": "Sample index within dataset (integer)",
+    "user_query": "Original user question/query",
+    "filenames": "List of document filenames processed",
+    "reasoning": "Multi-turn conversation: list of turns, each turn is list of {role, content, loss_masking}",
+    "readfulldocument": "ReadFullDocument tool invocations and results",
+    "readfulltext": "ReadFullText tool invocations and results (deprecated)",
+    "doc_step": "Summary of document interaction steps",
+    "version": "Schema version (2.0 for v2 format)",
+    "train_system_prompt": "System prompt used (redacted for training)",
+    "runtime_prompt_hash": "SHA256 hash of runtime prompt for reproducibility",
+    "override_hash": "SHA256 hash of YAML patch if used (null if none)",
+    "session_id": "Unique session identifier",
+    "language": "Output language: ENGLISH or KOREAN",
+    "trace_summary": "Summary statistics from trace (not full trace)",
+    "timestamp": "ISO format timestamp when sample was created",
+    "metadata": "Arbitrary key-value metadata"
+  },
+
+  "_loss_masking_note": "loss_masking=true means this turn is masked during training (not learned). loss_masking=false means this is the target output the model should learn to generate."
+}
