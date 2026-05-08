@@ -1,0 +1,242 @@
+[
+  {
+    "bundle_id": "hotpot_00",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_00_5",
+        "title": "Dwarka",
+        "content": "Dwarka () is a small city and a municipality of Devbhoomi Dwarka district in the state of Gujarat in northwestern India.  It is located on the western shore of the Okhamandal Peninsula on the right bank of the Gomti River.  In 2011 it had a population of 38,873.  Dwarka is one of the foremost Chardhams, four sacred Hindu pilgrimage sites, and is one of the Sapta Puri, the seven most ancient religious cities in the country.  Dwarka is often identified with the Dwarka Kingdom, the ancient kingdom of Krishna, and is believed to have been the first capital of Gujarat.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_00_9",
+        "title": "Iqbal F. Qadir",
+        "content": "Vice-Admiral Iqbal Fazl Quadir (Urdu:اقبال فضل قادر) , is a retired three-star rank admiral in the Pakistan Navy, former diplomat, and a defence analyst.  He is renown for his participation in second war with India when he was part of the flotilla that attacked the radar station in Dwarka, India.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What was Iqbal F. Qadir on when he participated in an attack on a radar station located on western shore of the Okhamandal Peninsula?",
+      "original_answer": "flotilla",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_01",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_01_1",
+        "title": "Wilmslow High School",
+        "content": "Wilmslow High School is a mixed-sex 11–18 comprehensive secondary school in Wilmslow, Cheshire, and a designated Centre of Excellence.  The school began in 1960 as a grammar school and gradually became a comprehensive school, becoming Wilmslow High School in 1991.  Dr. James Pullé is the head teacher.  The school is designated \"good\" by Ofsted. <ref name=\"11/13 Ofsted Report\">Ofsted report</ref>",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_01_3",
+        "title": "Wilmslow Show",
+        "content": "Wilmslow Show is held at Wilmslow High School, Wilmslow, Cheshire, England, as a one-day event on a Sunday – usually the second Sunday in July.  Sections include Horticulture, Dogs, Classic Cars, etc.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "The school in which the Wilmslow Show is held is designated as what?",
+      "original_answer": "Centre of Excellence",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_02",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_02_0",
+        "title": "On Chesil Beach (film)",
+        "content": "On Chesil Beach is an upcoming British drama film directed by Dominic Cooke in his motion picture directorial debut.  Ian McEwan self-adapted his own 2007 Booker Prize-nominated novella of the same name.  It stars Saoirse Ronan and Billy Howle.  The film had its world premiere in the Special Presentations section at the Toronto International Film Festival on September 7, 2017.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_02_5",
+        "title": "Billy Howle",
+        "content": "Billy Howle (born November 9, 1989) is an actor, known for his work as James Warwick on the E4 television series, \"Glue\".  He has since co-starred in the film, \"The Sense of an Ending\" (as the younger version of Jim Broadbent's lead character) and the miniseries \"The Witness for the Prosecution\" in the pivotal role of defendant, Leonard Vole.  He also appeared in \"Dunkirk\".  Howle will next be seen opposite Saoirse Ronan in the drama, \"On Chesil Beach\", in the adaptation of Anton Chekhov's iconic play, \"The Seagull\", and in Netflix film \"Outlaw King\".",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Who will Billy Howle be seen opposite in the upcoming British drama film directed by Dominic Cooke?",
+      "original_answer": "Saoirse Ronan",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_03",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_03_5",
+        "title": "Kool Kojak",
+        "content": "Allan P. Grigg, better known by his stage name Kool Kojak and stylized as \"KoOoLkOjAk\", is an American musician, songwriter, record producer, film director, and artist notable for co-writing and co-producing Flo Rida's #1 Billboard hit single \"Right Round\", Nicki Minaj's hit single \"Va Va Voom\" , and Ke$ha's top 10 single \"Blow\".  Kool Kojak has written and produced for artists such as Sean Paul, Yelle, Waka Flocka Flame, Travis Barker, Dr. Seuss's The Lorax, Britney Spears, Jesse and Joy, Andy Milonakis, Icona Pop, N.A.S.A., Dirt Nasty, Lordz of Brooklyn, Ursula 1000, and Warren G.  Kool Kojak was a featured producer on the Simon Cowell TV program X Factor and has appeared as himself on the Nickelodeon show \"Victorious\".  He has won two ASCAP Pop Awards and one ASCAP Urban Award, a WormTown Sound Award, and has been awarded the Key to the City of Worcester, Massachusetts.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_03_6",
+        "title": "The Lorax (film)",
+        "content": "The Lorax (also known as Dr. Seuss' The Lorax) is a 2012 American 3D computer-animated musical fantasy–comedy film produced by Illumination Entertainment and based on Dr. Seuss's children's book of the same name.  The film was released by Universal Pictures on March 2, 2012, on the 108th birthday of Dr. Seuss.  The second film adaptation of the book (following the 1972 animated television special), the film builds on the book by expanding the story of Ted, the previously unnamed boy who visits the Once-ler.  The cast includes Danny DeVito as the Lorax, Ed Helms as the Once-ler, and Zac Efron as Ted.  New characters introduced in the film are Audrey (voiced by Taylor Swift), Aloysius O'Hare (Rob Riggle), Mrs. Wiggins, Ted's mother (Jenny Slate), and Grammy Norma (Betty White).",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What animated movie, starring Danny Devito, featured music written and produced by Kool Kojak?",
+      "original_answer": "The Lorax",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_04",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_04_1",
+        "title": "Universal Soldier (franchise)",
+        "content": "The Universal Soldier franchise is a series of science fiction action films.  The franchise began in 1992 with \"Universal Soldier\" and as of 2012 comprises six entries (some of which are now considered non-canon).  The films centered on the character of Luc Deveraux (played first by Jean-Claude Van Damme and then by Matt Battaglia) until \"\", which focuses on a new protagonist named John (played by Scott Adkins).",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_04_8",
+        "title": "Scott Adkins",
+        "content": "Scott Edward Adkins (born 17 June 1976) is an English actor and martial artist who is best known for playing Russian prison fighter Yuri Boyka in the 2006 film \"\" and its following two sequels: \"\" (2010) and \"\" (2016) and Casey Bowman in Ninja and its sequel .  He is also known for playing Bradley Hume in \"Holby City\", Lucian in \"Doctor Strange\", Kiley in \"The Bourne Ultimatum\" and John in \"Zero Dark Thirty\".  Adkins has also appeared in \"EastEnders\", \"Hollyoaks\", \"Doctors\" as well as starred in many direct-to-video films.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Out of the actors who have played the role of Luc Deveraux in the Universal Soldier franchise, which actor has also starred in the movies Holby City, Doctor Strange, the Bourne Ultimatum and Zero Dark Thirty?",
+      "original_answer": "Scott Adkins",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_05",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_05_0",
+        "title": "Tommy's Honour",
+        "content": "Tommy's Honour is a 2016 historical drama film depicting the lives and careers of, and the complex relationship between, the pioneering Scottish golfing champions Old Tom Morris and his son Young Tom Morris.  The film is directed by Jason Connery, and the father and son are portrayed by Peter Mullan and Jack Lowden.  The film won Best Feature Film at the 2016 British Academy Scotland Awards.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_05_6",
+        "title": "Jack Lowden",
+        "content": "Jack Andrew Lowden (born 2 June 1990) is a Scottish stage, television, and film actor.  Following a highly successful and award-winning four-year stage career, his first major international onscreen success was in the 2016 BBC miniseries \"War & Peace\", which led to starring roles in feature films.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Tommy's Honour was a drama film that included the actor who found success with what 2016 BBC miniseries?",
+      "original_answer": "War & Peace",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_06",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_06_5",
+        "title": "Switchfoot",
+        "content": "Switchfoot is an American alternative rock band from San Diego, California.  The band's members are Jon Foreman (lead vocals, guitar), Tim Foreman (bass guitar, backing vocals), Chad Butler (drums, percussion), Jerome Fontamillas (guitar, keyboards, backing vocals), and Drew Shirley (guitar, backing vocals).",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_06_8",
+        "title": "Midnight Oil",
+        "content": "Midnight Oil (also known informally as \"The Oils\" to fans) are an Australian rock band, who originally performed as Farm from 1972 with drummer Rob Hirst, bass guitarist Andrew James and keyboard player/lead guitarist Jim Moginie.  While vocalist Peter Garrett was studying at Australian National University in Canberra, he answered an advertisement for a spot in Farm, and by 1975 the band was touring the east coast of Australia.  By late 1976, Garrett moved to Sydney to complete his law degree, and Farm changed its name to Midnight Oil by drawing the name out of a hat.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which rock band chose its name by drawing it out of a hat, Switchfoot or Midnight Oil?",
+      "original_answer": "Midnight Oil",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_07",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_07_1",
+        "title": "Tunak Tunak Tun",
+        "content": "\"Tunak Tunak Tun\" (Punjabi: ਤੁਣਕ ਤੁਣਕ ਤੁਣ ) or simply \"Tunak\", is a bhangra/pop love song by Indian artist Daler Mehndi released in 1998.  At the time, critics complained that Mehndi's music was only popular due to his videos that featured beautiful women dancing.  Mehndi's response was to create a video that featured only himself.  The music video was the first made in India using greenscreen technology, which allowed the singer to superimpose his image over various computer-generated backgrounds such as desert and mountain landscapes and St. Basil's Cathedral.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_07_2",
+        "title": "Daler Mehndi",
+        "content": "Daler Singh, known by his stage name, \"Daler Mehndi\" (born 18 August 1967) is an Indian recording artist, musician, songwriter, author, record producer, performer and environmentalist.  He is credited with making Bhangra popular worldwide, and setting up a parallel non-film music industry to the pre-Daler era’s then existent Bollywood music.  He is best known for his energetic dance songs, his distinctive voice, turban and long flowing robes.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "\"Tunak\", is a bhangra/pop love song by an artist born in which year ?",
+      "original_answer": "1967",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_08",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_08_2",
+        "title": "Kieft's War",
+        "content": "Kieft's War, also known as the Wappinger War, was a conflict (1643–1645) between settlers of the nascent colony of New Netherland and the native Lenape population in what would later become the New York metropolitan area of the United States.  It is named for Director-General of New Netherland Willem Kieft, who had ordered an attack without approval of his advisory council and against the wishes of the colonists.  Dutch soldiers attacked Lenape camps and massacred the native inhabitants, which encouraged unification among the regional Algonquian tribes against the Dutch, and precipitated waves of attacks on both sides.  This was one of the earliest conflicts between Native Americans and European settlers.  Displeased with Kieft, the Dutch West India Company recalled him and he died while returning to the Netherlands.  Peter Stuyvesant succeeded him in New Netherland.  Because of the continuing threat by the Algonquians, numerous Dutch settlers returned to the Netherlands, and growth of the colony slowed.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_08_4",
+        "title": "Pound Ridge massacre",
+        "content": "The Pound Ridge massacre was a battle of Kieft's War that took place in March 1644 between the forces of New Netherland and members of the Wappinger Confederacy at a Wappinger Confederacy village in the present-day town of Pound Ridge, New York.  A mixed force of 130 Dutch and English soldiers led by Captain John Underhill launched a night attack on the village and destroyed it with fire.  500 to 700 members of the Wappinger Confederacy were killed while the New Netherland force lost one man killed and fifteen wounded.  More casualties were suffered in this attack than in any other single incident in the war.  Shortly after the battle several local Wappinger Confederacy sachems sued for peace.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which Captain launched the attack which led to more casualties than any other incident in the war fought between the settlers of the nascent colony of New Netherland and the native Lenape population?",
+      "original_answer": "Captain John Underhill",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_09",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_09_4",
+        "title": "Emilio Estevez",
+        "content": "Emilio Estevez ( ; born May 12, 1962) is an American actor, director, and writer.  He started his career as an actor and is well known for being a member of the acting Brat Pack of the 1980s, starring in \"The Breakfast Club\", \"St. Elmo's Fire\", and also acting in the 1983 hit movie \"The Outsiders\".  He is also known for \"Repo Man\", \"The Mighty Ducks\" and its sequels, \"Stakeout\", \"Maximum Overdrive\", \"Bobby\" (which he also wrote and directed), and his performances in Western films such as \"Young Guns\" and its sequel.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_09_5",
+        "title": "Nightmares (1983 film)",
+        "content": "Nightmares is a 1983 American horror anthology film directed by Joseph Sargent, and starring Emilio Estevez, Lance Henriksen, Cristina Raines, Veronica Cartwright, and Richard Masur.  The film is made up of four short films based on urban legends; the first concerns a woman who encounters a killer in the backseat of her car; the second concerns a video game-addicted teenager who is consumed by his game; the third focuses on a fallen priest who is stalked by a pickup truck from hell; and the last follows a suburban family battling a giant rat in their home.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "In which film did Emilio Estevez star in in the same year as Nightmares",
+      "original_answer": "The Outsiders",
+      "type_hint": "bridge"
+    }
+  }
+]
