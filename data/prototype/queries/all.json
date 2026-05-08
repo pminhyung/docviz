@@ -1,0 +1,1058 @@
+[
+  {
+    "query_id": "hotpot_00_relational",
+    "bundle_id": "hotpot_00",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Map the connection between Iqbal F. Qadir and Dwarka during the 1971 war.",
+    "word_count": 13,
+    "entity_hits": [
+      "dwarka",
+      "qadir",
+      "iqbal"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_00_comparative",
+    "bundle_id": "hotpot_00",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Dwarka's population and religious status with Vice-Admiral Iqbal F. Qadir's military role in a visual chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "dwarka",
+      "qadir",
+      "vice-admiral",
+      "iqbal"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_01_relational",
+    "bundle_id": "hotpot_01",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show the relationship between Wilmslow High School and the Wilmslow Show.",
+    "word_count": 11,
+    "entity_hits": [
+      "school",
+      "wilmslow",
+      "high",
+      "show"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_01_comparative",
+    "bundle_id": "hotpot_01",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Wilmslow High School's history and the Wilmslow Show's schedule in a timeline.",
+    "word_count": 13,
+    "entity_hits": [
+      "school",
+      "wilmslow",
+      "high",
+      "show"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_02_relational",
+    "bundle_id": "hotpot_02",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Map the connection between Billy Howle and On Chesil Beach.",
+    "word_count": 10,
+    "entity_hits": [
+      "billy",
+      "beach",
+      "chesil",
+      "howle"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_02_comparative",
+    "bundle_id": "hotpot_02",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Billy Howle's film roles in Dunkirk and On Chesil Beach with a timeline.",
+    "word_count": 14,
+    "entity_hits": [
+      "billy",
+      "film",
+      "beach",
+      "chesil",
+      "howle",
+      "dunkirk"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_03_relational",
+    "bundle_id": "hotpot_03",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Map the connection between Kool Kojak and The Lorax film.",
+    "word_count": 10,
+    "entity_hits": [
+      "kojak",
+      "lorax",
+      "kool",
+      "film"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_03_comparative",
+    "bundle_id": "hotpot_03",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Kool Kojak's production credits with the voice cast of The Lorax film.",
+    "word_count": 13,
+    "entity_hits": [
+      "kojak",
+      "lorax",
+      "kool",
+      "film"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_04_relational",
+    "bundle_id": "hotpot_04",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of Universal Soldier films highlighting the transition from Van Damme to Scott Adkins.",
+    "word_count": 16,
+    "entity_hits": [
+      "scott",
+      "damme",
+      "universal",
+      "adkins",
+      "soldier"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_04_comparative",
+    "bundle_id": "hotpot_04",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the film roles of Jean-Claude Van Damme and Scott Adkins in the Universal Soldier franchise.",
+    "word_count": 16,
+    "entity_hits": [
+      "scott",
+      "franchise",
+      "damme",
+      "universal",
+      "adkins",
+      "jean-claude",
+      "soldier"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_05_relational",
+    "bundle_id": "hotpot_05",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a relationship diagram connecting Jack Lowden, Tommy's Honour, and Old Tom Morris.",
+    "word_count": 13,
+    "entity_hits": [
+      "tommy's",
+      "morris",
+      "honour",
+      "jack",
+      "lowden"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_05_comparative",
+    "bundle_id": "hotpot_05",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the career milestones of Old Tom Morris and Jack Lowden in a timeline.",
+    "word_count": 14,
+    "entity_hits": [
+      "morris",
+      "jack",
+      "lowden"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_06_relational",
+    "bundle_id": "hotpot_06",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline comparing when Switchfoot formed versus when Farm became Midnight Oil.",
+    "word_count": 13,
+    "entity_hits": [
+      "midnight",
+      "farm",
+      "switchfoot"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_06_comparative",
+    "bundle_id": "hotpot_06",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the formation timelines of Switchfoot and Midnight Oil in a chart.",
+    "word_count": 12,
+    "entity_hits": [
+      "midnight",
+      "switchfoot"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_07_relational",
+    "bundle_id": "hotpot_07",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Map the relationship between Daler Mehndi, his 1998 hit, and the green screen technology used.",
+    "word_count": 15,
+    "entity_hits": [
+      "daler",
+      "mehndi"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_07_comparative",
+    "bundle_id": "hotpot_07",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Daler Mehndi's career milestones with the release and tech features of Tunak Tunak Tun.",
+    "word_count": 15,
+    "entity_hits": [
+      "daler",
+      "mehndi's",
+      "mehndi",
+      "tunak"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_08_relational",
+    "bundle_id": "hotpot_08",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline linking Kieft's War, the Pound Ridge massacre, and Willem Kieft's recall.",
+    "word_count": 14,
+    "entity_hits": [
+      "massacre",
+      "kieft",
+      "pound",
+      "willem",
+      "kieft's",
+      "ridge"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_08_comparative",
+    "bundle_id": "hotpot_08",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare casualties in the Pound Ridge massacre versus other Kieft's War incidents using a chart.",
+    "word_count": 15,
+    "entity_hits": [
+      "other",
+      "casualties",
+      "massacre",
+      "kieft",
+      "pound",
+      "kieft's",
+      "ridge"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_09_relational",
+    "bundle_id": "hotpot_09",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of Emilio Estevez's 1983 film roles, including Nightmares.",
+    "word_count": 11,
+    "entity_hits": [
+      "emilio",
+      "film",
+      "estevez",
+      "nightmares"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_09_comparative",
+    "bundle_id": "hotpot_09",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Emilio Estevez's roles in Nightmares and The Breakfast Club using a timeline.",
+    "word_count": 13,
+    "entity_hits": [
+      "emilio",
+      "breakfast",
+      "estevez",
+      "club",
+      "nightmares"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_00_temporal",
+    "bundle_id": "multinews_00",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of DEA cash seizures and DOJ oversight actions from 2007 to the March 29 report release.",
+    "word_count": 19,
+    "entity_hits": [
+      "from",
+      "cash",
+      "report",
+      "seizures",
+      "march"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_00_comparative",
+    "bundle_id": "multinews_00",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the DEA's cash seizure statistics with the total Asset Forfeiture Fund growth since 2007.",
+    "word_count": 15,
+    "entity_hits": [
+      "with",
+      "total",
+      "seizure",
+      "dea's",
+      "asset",
+      "forfeiture",
+      "cash",
+      "since"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_01_temporal",
+    "bundle_id": "multinews_01",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Timeline of major archaeological discoveries: Roman shipwreck, Ötzi, Nazca Lines, Rosetta Stone, Dead Sea Scrolls, and Jerusalem Aqueduct.",
+    "word_count": 18,
+    "entity_hits": [
+      "aqueduct",
+      "jerusalem",
+      "major",
+      "archaeological",
+      "roman"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_01_comparative",
+    "bundle_id": "multinews_01",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the discovery methods and dates of the Roman shipwreck, Ötzi, and the Nazca Lines in a timeline.",
+    "word_count": 18,
+    "entity_hits": [
+      "roman",
+      "discovery"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_02_temporal",
+    "bundle_id": "multinews_02",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the Turin Shroud's history, from its alleged origin to the 1980s radiocarbon dating and recent DNA study.",
+    "word_count": 21,
+    "entity_hits": [
+      "from",
+      "study",
+      "shroud'",
+      "shroud",
+      "origin",
+      "show",
+      "turin",
+      "alleged"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_02_comparative",
+    "bundle_id": "multinews_02",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the geographic origins of human DNA and pollen found on the Turin Shroud.",
+    "word_count": 14,
+    "entity_hits": [
+      "shroud",
+      "origins",
+      "turin",
+      "pollen"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_03_temporal",
+    "bundle_id": "multinews_03",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of the Costa Concordia incident, showing key events from Schettino's dinner to the ship grounding.",
+    "word_count": 18,
+    "entity_hits": [
+      "from",
+      "schettino",
+      "concordia",
+      "costa",
+      "ship"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_03_comparative",
+    "bundle_id": "multinews_03",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the timeline of Schettino's dinner with Cermotan versus the Costa Concordia collision and evacuation events.",
+    "word_count": 16,
+    "entity_hits": [
+      "with",
+      "schettino",
+      "concordia",
+      "costa",
+      "evacuation"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_04_temporal",
+    "bundle_id": "multinews_04",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of Gigi Hadid and Joe Jonas's relationship milestones from the GRAMMYs to Milan Fashion Week.",
+    "word_count": 18,
+    "entity_hits": [
+      "jonas",
+      "from",
+      "week",
+      "gigi",
+      "hadid",
+      "milan",
+      "fashion"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_04_comparative",
+    "bundle_id": "multinews_04",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare Gigi Hadid's body shaming response with Kris Jenner's support using a timeline.",
+    "word_count": 13,
+    "entity_hits": [
+      "body",
+      "with",
+      "hadid's",
+      "kris",
+      "gigi",
+      "hadid",
+      "jenner"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_05_temporal",
+    "bundle_id": "multinews_05",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Target CEO Gregg Steinhafel's apology and subsequent actions regarding the MN Forward donation controversy.",
+    "word_count": 18,
+    "entity_hits": [
+      "steinhafel",
+      "gregg",
+      "forward",
+      "target",
+      "donation"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_05_comparative",
+    "bundle_id": "multinews_05",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare Target CEO Steinhafel's stated intent for the MN Forward donation against the actual political impact described in the articles.",
+    "word_count": 20,
+    "entity_hits": [
+      "intent",
+      "steinhafel",
+      "forward",
+      "political",
+      "target",
+      "donation"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_06_temporal",
+    "bundle_id": "multinews_06",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Timeline of Supreme Court cases: Evenwel v. Abbott, same-sex marriage, and lethal injection decisions.",
+    "word_count": 14,
+    "entity_hits": [
+      "marriage",
+      "same-sex",
+      "cases",
+      "supreme",
+      "injection",
+      "lethal",
+      "court",
+      "decisions"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_06_comparative",
+    "bundle_id": "multinews_06",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the key legal questions and potential impacts of the Supreme Court cases on same-sex marriage, redistricting, and lethal injection.",
+    "word_count": 20,
+    "entity_hits": [
+      "marriage",
+      "redistricting",
+      "same-sex",
+      "cases",
+      "supreme",
+      "injection",
+      "lethal",
+      "court"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_07_temporal",
+    "bundle_id": "multinews_07",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of Chris Martin and Dakota Johnson's relationship milestones from 2017 to present.",
+    "word_count": 15,
+    "entity_hits": [
+      "dakota",
+      "chris",
+      "martin",
+      "relationship",
+      "johnson"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_07_comparative",
+    "bundle_id": "multinews_07",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare Chris Martin's relationships with Gwyneth Paltrow and Dakota Johnson in a timeline.",
+    "word_count": 13,
+    "entity_hits": [
+      "with",
+      "dakota",
+      "chris",
+      "martin",
+      "johnson"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_08_temporal",
+    "bundle_id": "multinews_08",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of Carlesha Freeland-Gaither's abduction, including the incident, ATM usage, and press conference dates.",
+    "word_count": 16,
+    "entity_hits": [
+      "carlesha",
+      "gaither",
+      "freeland-gaither's",
+      "freeland",
+      "freeland-gaither",
+      "press"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_08_comparative",
+    "bundle_id": "multinews_08",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the timeline of Carlesha Freeland-Gaither's abduction with the ATM usage in Maryland.",
+    "word_count": 13,
+    "entity_hits": [
+      "maryland",
+      "carlesha",
+      "with",
+      "gaither",
+      "freeland-gaither's",
+      "freeland",
+      "freeland-gaither"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_09_temporal",
+    "bundle_id": "multinews_09",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Chart Warren Buffett's annual Berkshire Hathaway donations to the Gates Foundation over the years.",
+    "word_count": 14,
+    "entity_hits": [
+      "donations",
+      "buffett",
+      "berkshire",
+      "warren",
+      "hathaway",
+      "gates",
+      "foundation",
+      "buffett's"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_09_comparative",
+    "bundle_id": "multinews_09",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare Warren Buffett's annual Berkshire Hathaway share donations to the Gates Foundation over the last three years.",
+    "word_count": 17,
+    "entity_hits": [
+      "donations",
+      "buffett",
+      "berkshire",
+      "warren",
+      "hathaway",
+      "last",
+      "gates",
+      "foundation"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_00_hierarchical",
+    "bundle_id": "arxiv_00",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Group In-Place TTT, TPO, and Churn Flow papers by their core methodological approach.",
+    "word_count": 13,
+    "entity_hits": [
+      "churn",
+      "in-place",
+      "flow"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_00_comparative",
+    "bundle_id": "arxiv_00",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the parameter update mechanisms of In-Place TTT and Target Policy Optimization.",
+    "word_count": 12,
+    "entity_hits": [
+      "optimization",
+      "in-place",
+      "policy",
+      "target"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_01_hierarchical",
+    "bundle_id": "arxiv_01",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Group the papers by their primary ML challenge: temporal imbalance, intersectional fairness, or genomic entropy.",
+    "word_count": 15,
+    "entity_hits": [
+      "entropy",
+      "intersectional",
+      "fairness"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_01_comparative",
+    "bundle_id": "arxiv_01",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare Transformer Hawkes, FairLogue, and Genomic Foundation Models: visualize their core architectures, data types, and primary challenges in a comparative diagram.",
+    "word_count": 21,
+    "entity_hits": [
+      "fairlogue",
+      "hawkes",
+      "models",
+      "transformer",
+      "foundation"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_02_hierarchical",
+    "bundle_id": "arxiv_02",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Group Action Images, HaloProbe, and DiffHDR by their core generative modeling approach.",
+    "word_count": 12,
+    "entity_hits": [
+      "diffhdr",
+      "haloprobe",
+      "images",
+      "action"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_02_comparative",
+    "bundle_id": "arxiv_02",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the core mechanisms of Action Images, HaloProbe, and DiffHDR in a mindmap.",
+    "word_count": 13,
+    "entity_hits": [
+      "diffhdr",
+      "haloprobe",
+      "images",
+      "action"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_03_hierarchical",
+    "bundle_id": "arxiv_03",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the agent roles in Paper Circle’s multi-agent framework to a hierarchical taxonomy.",
+    "word_count": 13,
+    "entity_hits": [
+      "paper",
+      "framework",
+      "agent",
+      "circle",
+      "multi-agent"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_03_comparative",
+    "bundle_id": "arxiv_03",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the multi-agent architectures of Paper Circle, Exclusive Unlearning, and the LLM collective study in a diagram.",
+    "word_count": 17,
+    "entity_hits": [
+      "paper",
+      "unlearning",
+      "agent",
+      "circle",
+      "multi-agent",
+      "exclusive"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_04_hierarchical",
+    "bundle_id": "arxiv_04",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical structure of Claw-Eval's 300 tasks across its three main groups and nine categories.",
+    "word_count": 16,
+    "entity_hits": [
+      "claw-eval",
+      "structure"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_04_comparative",
+    "bundle_id": "arxiv_04",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare Claw-Eval and ACE-Bench evaluation metrics and environment designs in a table.",
+    "word_count": 12,
+    "entity_hits": [
+      "evaluation",
+      "environment",
+      "claw-eval",
+      "ace-bench"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_00_quantitative",
+    "bundle_id": "10k_00",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Chart Apple's 2024 vs 2025 potential interest rate impacts on investment portfolio fair value and term debt expense.",
+    "word_count": 18,
+    "entity_hits": [
+      "investment",
+      "term",
+      "rate",
+      "interest",
+      "apple",
+      "potential"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_00_temporal",
+    "bundle_id": "10k_00",
+    "source": "10k",
+    "query_type": "temporal",
+    "query": "Timeline of Apple's 2025 product announcements by quarter.",
+    "word_count": 8,
+    "entity_hits": [
+      "product",
+      "apple",
+      "announcements",
+      "quarter"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_01_quantitative",
+    "bundle_id": "10k_01",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart of Microsoft's FY2025 revenue growth percentages for Cloud, M365, Azure, and LinkedIn.",
+    "word_count": 16,
+    "entity_hits": [
+      "microsoft"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_01_temporal",
+    "bundle_id": "10k_01",
+    "source": "10k",
+    "query_type": "temporal",
+    "query": "Show a timeline of Microsoft's fiscal year 2025 revenue growth highlights compared to 2024.",
+    "word_count": 14,
+    "entity_hits": [
+      "microsoft"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_02_quantitative",
+    "bundle_id": "10k_02",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Chart TSLA's 2024 vs 2025 foreign currency risk exposure in billions.",
+    "word_count": 11,
+    "entity_hits": [
+      "tsla",
+      "currency",
+      "risk",
+      "foreign"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_02_temporal",
+    "bundle_id": "10k_02",
+    "source": "10k",
+    "query_type": "temporal",
+    "query": "Show TSLA's 2024 vs 2025 net income and FX risk exposure in a timeline.",
+    "word_count": 14,
+    "entity_hits": [
+      "tsla",
+      "risk"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_03_quantitative",
+    "bundle_id": "10k_03",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Chart NVIDIA's FY26 vs FY25 FX risk impact on OCI and pre-tax income.",
+    "word_count": 13,
+    "entity_hits": [
+      "nvidia",
+      "risk"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_03_temporal",
+    "bundle_id": "10k_03",
+    "source": "10k",
+    "query_type": "temporal",
+    "query": "Timeline of NVIDIA's H20 export license developments and related financial impacts in fiscal 2026.",
+    "word_count": 14,
+    "entity_hits": [
+      "financial",
+      "nvidia",
+      "developments"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_04_quantitative",
+    "bundle_id": "10k_04",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Chart Meta's 2025 vs 2024 foreign currency transaction gains/losses and fixed-rate senior notes outstanding.",
+    "word_count": 14,
+    "entity_hits": [
+      "currency",
+      "meta",
+      "foreign"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_04_temporal",
+    "bundle_id": "10k_04",
+    "source": "10k",
+    "query_type": "temporal",
+    "query": "Plot META's total revenue and operating income growth from 2023 to 2025.",
+    "word_count": 12,
+    "entity_hits": [
+      "meta",
+      "revenue"
+    ],
+    "model": "Qwen3.6-27B",
+    "retries_used": 0,
+    "filter_passed": true
+  }
+]
