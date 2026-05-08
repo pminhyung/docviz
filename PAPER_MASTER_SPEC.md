@@ -146,7 +146,39 @@ The three pillars compose as follows: CIS produces source-tagged retrieval chunk
 - TMG requires building a query-type classifier (5-class). Use few-shot LLM classification with the 5-type taxonomy.
 - SAO requires augmenting the existing pipeline to emit source attribution metadata alongside the DSL output. This may require pipeline modification — preserve the original pipeline's behavior and add attribution as a side channel.
 - Multi-document input format: standardize to a flat list of dicts with fields {doc_id, page_id, content}. This aligns with standard multi-doc QA benchmarks (HotpotQA, MultiNews) and simplifies downstream tooling.
-- Web search tool is to be removed from the agent's toolset for the paper experiments. Keep doc-only retrieval to ensure fair comparison and reproducibility. Web search may be added back as an ablation if time permits.
+- **Web search tool: removed from the agent's toolset for all paper experiments.** Doc-only retrieval ensures fair comparison with B1-B5 baselines (none of which use web search) and reproducibility. The user's pipeline must expose a `web_search=False` flag or equivalent. Web augmentation as a deployment-time extension is mentioned in §8 Discussion.
+- **Deterministic execution**: temperature=0, top_p=1.0, seed=42 across all LLM API calls. Use the `seed` parameter where supported (OpenAI, Gemini). For key result cells, run 3 seeds (42, 43, 44) and report mean ± std. Cache (input_hash → output) on disk to avoid repeated cost for identical inputs.
+- **DSL-only output enforcement**: All baselines AND DocViz-Agent must emit output in declarative DSL format (Chart.js JSON or Mermaid markdown). SVG, PNG, base64 image, or free-text descriptions are excluded from paper experiments because deterministic DSL parsing is the foundation of Pillar 3 (SAO) and metric M3 (entity coverage). The user's pipeline must support a DSL-only mode. The scope is explicitly stated in §4.
+
+### 3.6 Common output schema (VizOutput dataclass)
+
+All baselines (B1-B5) and DocViz-Agent (B6) must emit the following standardized output for downstream evaluation:
+
+```python
+@dataclass
+class VizOutput:
+    # Required for all baselines
+    viz_dsl: str                    # DSL text — Chart.js JSON or Mermaid markdown
+    viz_type: str                   # enum: chartjs_bar | chartjs_line | chartjs_grouped_bar
+                                    #       | mermaid_flowchart | mermaid_timeline | mermaid_mindmap
+    rendered_image_path: str        # PNG file path produced by Mermaid CLI / Chart.js renderer
+    render_success: bool            # directly used as M1 metric
+    retrieved_chunks: List[Dict]    # [{doc_id, chunk_id, content}, ...] for grounding eval
+
+    # Agentic only (DocViz-Agent S4); empty list for B1-B5
+    sub_queries: List[str]          # ordered search queries used in agentic loop
+
+    # Pillar 3 SAO (DocViz-Agent only); empty dict for B1-B5
+    source_attribution: Dict        # {viz_element_id: {doc_id, chunk_id, evidence_span}}
+
+    # Metadata (required for all baselines)
+    tokens_in: int
+    tokens_out: int
+    cost_usd: float
+    errors: List[str]               # render errors / parsing errors / etc
+```
+
+This schema is shared with the entry points of external benchmark eval repositories (Text2Vis at vis-nlp/Text2Vis, MatPlotAgent at thunlp/MatPlotAgent, Plot2Code at TencentARC/Plot2Code). When wiring DocViz-Agent into those repositories, conform to their expected input/output keys via a thin adapter layer rather than reshaping the core schema above.
 
 ---
 
@@ -170,6 +202,10 @@ Given a user query Q (natural language) and a multi-document corpus D = {D_1, ..
 
 Each query is classified into exactly one type. Some queries naturally fit multiple types — assign the dominant one.
 
+### 4.3 Output scope (explicit limitation)
+
+We constrain V to declarative visualization DSLs — Chart.js JSON for charts and Mermaid markdown for flowcharts, timelines, and mindmaps. This scope is intentional: declarative DSLs (a) admit deterministic parsing, which is the foundation of our doc-grounded faithfulness evaluation (Pillar 3 SAO + metric M3), (b) support post-hoc editing and traceability needed for production deployment, and (c) are the formats integrated by mainstream document tools (Notion, GitBook, Slack canvas). Free-form raster (PNG) or vector (SVG) outputs are excluded from this paper's experiments and are noted as future work in §8.
+
 ---
 
 ## 5. DATA SETUP
@@ -182,6 +218,38 @@ Each query is classified into exactly one type. Some queries naturally fit multi
 - **EDGAR 10-K**: 80 bundles, each = 1 company's Item-7 (MD&A) + Item-7A (Risk Factors). Source: SEC EDGAR for top 80 SP500 companies. Query type focus: Quantitative, Temporal.
 
 Total: 350 bundles, average 3-4 docs per bundle, total tokens per bundle 15-50K.
+
+**Bundling principle: source-internal multi-doc only — no cross-source mixing.** Each bundle contains documents from a single source (e.g., a HotpotQA bundle never mixes Wikipedia with 10-K). This decision is intentional:
+- Each source already provides genuine multi-doc challenge (HotpotQA 2-3 docs, MultiNews 2-5 docs, arXiv 3-5 abstracts, 10-K 2 docs).
+- Cross-source mixing (e.g., Wikipedia + arXiv + 10-K in one bundle) is unnatural and reviewer-attackable as artificial.
+- Source diversity is preserved across the 4 source types (academic / news / encyclopedia / financial); §7 reports per-source breakdown to demonstrate cross-source generality.
+- License clarity is preserved per source.
+
+**Raw → standardized bundle conversion**: each source requires a small loader script that produces the canonical `Bundle` schema:
+
+```python
+@dataclass
+class Bundle:
+    bundle_id: str             # unique, source-prefixed
+    source: str                # one of: hotpotqa | multinews | arxiv | 10k
+    docs: List[Doc]            # 2+ entries
+    metadata: Dict             # original_question / cluster_id / ticker / topic_seed etc
+
+@dataclass
+class Doc:
+    doc_id: str                # f"{source}_{bundle_idx}_{doc_idx}"
+    page_id: Optional[str]     # for paginated sources (10-K)
+    title: str
+    content: str               # plain text, no HTML
+```
+
+Conversion logic per source:
+- **HotpotQA**: extract supporting facts only (drop distractors); each supporting Wikipedia paragraph becomes a Doc. Use `random.seed(42)` + filter on `type ∈ {comparison, bridge}`.
+- **MultiNews**: split cluster on `|||||` separator; each article becomes a Doc.
+- **arXiv**: query arXiv API for 5 NLP/ML topics × 16 papers each over the last 24 months; group every 3-5 papers in the same primary category into a Bundle; each paper's (abstract + first paragraph of intro) becomes a Doc.
+- **10-K**: extract Item 7 (MD&A) and Item 7A (Risk Factors) from EDGAR HTML using regex on section headers; truncate Item 7 to 15K chars and Item 7A to 5K chars; the two extracted sections become 2 Docs.
+
+Each loader is ≤100 LOC and is a Week 1 deliverable.
 
 ### 5.2 Query generation (700 queries total)
 
@@ -483,11 +551,18 @@ In every scenario, the paper is publishable. Worst case = Findings finding-paper
 ### Week 0 (Prototype, already specified separately)
 30-bundle prototype with B5 + B6 to validate (a) judge-human r ≥ 0.5, (b) effect direction. Decision gate: GO / REFRAME / JUDGE-FIX / PIVOT.
 
-### Week 1-2 (Benchmark construction)
+### Week 1-2 (Benchmark construction + external eval setup)
+- Clone external benchmark eval repos and extract entry-point signatures:
+  - Text2Vis: https://github.com/vis-nlp/Text2Vis
+  - MatPlotAgent / MatPlotBench: https://github.com/thunlp/MatPlotAgent
+  - Plot2Code: https://github.com/TencentARC/Plot2Code
+  - ViviBench: monitor for code release; otherwise reimplement 4-dim eval from paper §4
+- Build 4 source loaders (HotpotQA, MultiNews, arXiv, 10-K) producing `Bundle` schema (§5.1)
 - Scale doc corpus from 30 to 350 bundles
-- Generate 700 queries with 5-type taxonomy
+- Generate 700 queries with 5-type taxonomy (temperature=0, seed=42)
 - Run Prolific naturalness verification on 150 gold subset
 - Build deterministic metrics M1-M4 (render-check, numeric, entity-coverage, structural)
+- Verify VizOutput dataclass adapter wires correctly into all 4 external benchmark eval pipelines
 
 ### Week 3-4 (Baseline + DocViz-Agent implementation)
 - Implement adapted baselines B1-B5
@@ -596,19 +671,21 @@ DocViz-Agent occupies 1.50 page (19%) as main method. Setting-stratified results
 
 ### 18.1 Confirmed by user
 
-- User pipeline exists and produces (multi-doc, query) → viz output
-- Web search tool will be removed from agent toolset for paper experiments
-- Multi-doc input format will be standardized to flat list of dicts with {doc_id, page_id, content}
+- User pipeline exists and produces (multi-doc, query) → viz output.
+- **Web search tool removed** from agent toolset for all paper experiments. Doc-only retrieval. (Resolves former §18.2 Q2.)
+- **Multi-doc input format**: research agent will follow the input format expected by each external benchmark's eval repo (Text2Vis, MatPlotAgent, Plot2Code, ViviBench). Internally, the canonical `Bundle` / `Doc` schema in §5.1 is used. Pipeline's existing `list[list[dict]]` input is converted via thin adapter to the canonical schema.
+- **Pipeline return format**: `VizOutput` dataclass per §3.6, including `viz_dsl`, `rendered_image_path`, `retrieved_chunks`, `sub_queries`, `source_attribution`, and metadata.
+- **Deterministic mode**: temperature=0, seed=42. Key result cells run with 3 seeds (42, 43, 44) and reported as mean ± std. (Resolves former §18.2 Q3.)
+- **DSL-only output**: pipeline runs in DSL-only mode for paper experiments. No SVG / PNG / free-text output. (Resolves former §18.2 Q4.)
+- **Cross-source bundle mixing**: not used. Each bundle is source-internal; cross-source diversity is preserved across 4 source types and analyzed per-source in §7. (Resolves former §18.2 Q5.)
 - Workspace is connected to GitHub repo at https://github.com/pminhyung/docviz.git
-- Research agent works in separate environment, pushes to repo; advisor pulls and provides feedback
+- Research agent works in separate environment, pushes to repo; advisor pulls and provides feedback.
 
-### 18.2 Open questions for user (confirm before Week 1)
+### 18.2 Open questions for user (still open before Week 1)
 
-- User pipeline's exact entry point (function signature) — needed for B6 wiring
-- User pipeline's deterministic mode (fixed seed) — needed for reproducibility
-- User pipeline's expected output format compatibility with DSL-only output (Chart.js JSON or Mermaid markdown) — verify or add adapter
 - API budget cap per week — for monitoring spend
 - Submission deadline confirmation (EMNLP 2026 main cycle) — check ARR vs direct submit
+- ViviBench eval code release status — if not released by Week 1 start, plan to reimplement 4-dim eval from paper §4 (estimated ~1.5 days)
 
 ### 18.3 Research agent first-day checklist
 
@@ -633,6 +710,10 @@ These are the inviolable principles that preserve the paper's integrity:
 - **Latest model versions**: Verify model versions at runtime via web search. Use latest. No outdated models.
 - **External anchor honesty**: Text2Vis and ViviBench results reported even if unfavorable. These are reviewer-trusted external surfaces.
 - **Reproducibility**: All code, data, prompts released. Random seeds fixed. One-command rerun on QG-MDV.
+- **DSL-only experimental scope**: All paper experiments use DSL output (Chart.js JSON / Mermaid markdown). No SVG / PNG / free-text output to preserve deterministic parsing for SAO and metric M3. Free-form generation is future work.
+- **Source-internal bundle composition**: Each bundle contains documents from a single source (HotpotQA / MultiNews / arXiv / 10-K). Cross-source mixing is artificial and not used.
+- **Web search disabled in experiments**: All paper experiments run with `web_search=False` for fair comparison with B1-B5 baselines. Web augmentation is mentioned only in §8 Discussion as a deployment-time extension and future work.
+- **Three-seed reporting for key cells**: All Main Result Table cells, multi-doc scaling, and ablation rows are reported as mean ± std over seeds 42, 43, 44. Single-seed results are acceptable only for failure-mode taxonomy and exploratory plots.
 
 ---
 
