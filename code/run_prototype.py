@@ -39,6 +39,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from code.pipelines.base import Bundle, Pipeline, VizOutput
 from code.pipelines.s1_direct import S1Direct
 from code.pipelines.s4_agentic import S4Agentic
+from code.pipelines.s4_agentic_tmg import S4AgenticTMG
 from code.utils.bundle_io import read_bundles_json
 from code.utils.cost_tracker import CostTracker
 
@@ -152,7 +153,7 @@ def _run_one(
 ) -> Dict[str, Any]:
     t0 = time.time()
     try:
-        vo = pipeline.run(q["query"], bundle)
+        vo = pipeline.run(q["query"], bundle, query_type=q.get("query_type"))
     except Exception as e:
         # Build a degraded VizOutput so downstream code doesn't have to branch
         vo = VizOutput(
@@ -308,6 +309,17 @@ def main() -> int:
         if s4_pairs:
             new = _run_strategy_pool(
                 "S4_Agentic", lambda: S4Agentic(), s4_pairs,
+                workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "S4_TMG" in selected:
+        s4t_pairs = [(q, b) for (q, b) in pairs
+                     if (q["query_id"], "S4_AgenticTMG") not in existing]
+        if s4t_pairs:
+            new = _run_strategy_pool(
+                "S4_AgenticTMG", lambda: S4AgenticTMG(), s4t_pairs,
                 workers=args.s4_workers, raw_path=raw_path,
             )
             for r in new:

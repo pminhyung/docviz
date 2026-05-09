@@ -68,6 +68,18 @@ class Pipeline(ABC):
     name: str
 
     @abstractmethod
-    def run(self, query: str, bundle: Bundle) -> VizOutput:
-        """Execute the strategy on a (query, bundle) pair and return VizOutput."""
+    def run(
+        self,
+        query: str,
+        bundle: Bundle,
+        *,
+        query_type: Optional[str] = None,
+    ) -> VizOutput:
+        """Execute the strategy on a (query, bundle) pair and return VizOutput.
+
+        `query_type` is the 5-type taxonomy label (§4.2) — passed by the
+        runner so TMG-aware variants (DocViz-Agent Pillar 2, §3.2) can
+        route the prompt. Bare-bones baselines (B5 Direct-LLM, our S1)
+        accept and ignore it; that is the §11.4 "−TMG" ablation cell.
+        """
         raise NotImplementedError

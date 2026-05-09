@@ -75,7 +75,13 @@ class S1Direct(Pipeline):
             parts.append(f"[{d.title}]\n{body}")
         return "\n\n---\n\n".join(parts)
 
-    def run(self, query: str, bundle: Bundle) -> VizOutput:
+    def run(
+        self,
+        query: str,
+        bundle: Bundle,
+        *,
+        query_type: str | None = None,    # accepted for ABC parity, ignored
+    ) -> VizOutput:
         prompt = VIZ_GEN_PROMPT.format(query=query, docs_concat=self._docs_concat(bundle))
 
         resp: Dict[str, Any] = self._client.chat(

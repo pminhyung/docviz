@@ -1,15 +1,12 @@
-"""S4 Agentic pipeline (≡ §7 baseline B6: DocViz-Agent).
+"""S4 Agentic with Pillar 2 (TMG) enabled — full DocViz-Agent (B6) cell.
 
-Wraps the existing /v2/run agent loop with the Pipeline interface. The agent
-expects a docai-format JSON file as input, so we:
+Differs from `S4Agentic` only in that we inject a query-type-aware
+one-shot rule into the agent's `custom_rules`. Everything else (CIS loop
+inside the agent, SAO mapping in viz_output_mapper) is identical.
 
-  1. Serialize the Bundle to a temp `{1: page1, ...}` JSON via bundle_to_docai.
-  2. Call AgentClient.run_paper_default(...) (paper-locked defaults: en, no
-     web search, temperature=0, seed=42).
-  3. Map the trace + final_answer back into VizOutput via map_agent_response.
-
-The temp file is created under `tempfile.gettempdir()/docviz_s4` and reused
-per bundle on repeated runs (idempotent — bundle_to_docai overwrites).
+Comparing this against S4Agentic (which keeps query_type=None and so
+emits no TMG block) yields the §11.4 "Full DocViz-Agent" vs "−TMG"
+ablation pair on the same 60 (query, bundle) pairs.
 """
 from __future__ import annotations
 
@@ -22,12 +19,16 @@ from code.adapters.agent_client import AgentClient
 from code.adapters.bundle_to_docai import write_bundle_as_docai
 from code.adapters.viz_output_mapper import map_agent_response
 from code.pipelines.base import Bundle, Pipeline, VizOutput
+from code.pipelines.tmg import build_tmg_rule
 
 
-class S4Agentic(Pipeline):
-    """Doc-grounded agent loop. Multi-step search → reason → emit DSL."""
+class S4AgenticTMG(Pipeline):
+    """DocViz-Agent with TMG (Pillar 2) active. Only behavioural difference
+    from S4Agentic is the type-specific one-shot block injected into
+    custom_rules at run() time.
+    """
 
-    name = "S4_Agentic"
+    name = "S4_AgenticTMG"
 
     def __init__(
         self,
@@ -42,7 +43,7 @@ class S4Agentic(Pipeline):
         self._n_steps_max = n_steps_max
         self._reasoner_max_length = reasoner_max_length
         self._work_dir = Path(work_dir) if work_dir else (
-            Path(tempfile.gettempdir()) / "docviz_s4"
+            Path(tempfile.gettempdir()) / "docviz_s4_tmg"
         )
         self._work_dir.mkdir(parents=True, exist_ok=True)
 
@@ -51,13 +52,14 @@ class S4Agentic(Pipeline):
         query: str,
         bundle: Bundle,
         *,
-        query_type: str | None = None,   # accepted for ABC parity, ignored
+        query_type: str | None = None,
     ) -> VizOutput:
         doc_path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
-
-        # Stash the page→doc_id mapping on the Bundle so map_agent_response can
-        # resolve agent page citations back to canonical doc_ids for SAO.
         bundle.metadata.setdefault("page_to_doc_id", page_to_doc_id)
+
+        # TMG rule is appended via custom_rules; if query_type is unknown
+        # (or None) build_tmg_rule returns "" → reverts to −TMG behaviour.
+        tmg_rule = build_tmg_rule(query_type) if query_type else ""
 
         with AgentClient(base_url=self._base_url) as client:
             if not client.health():
@@ -72,7 +74,7 @@ class S4Agentic(Pipeline):
                     tokens_in=0,
                     tokens_out=0,
                     cost_usd=0.0,
-                    errors=[f"S4: agent /health unreachable at {self._base_url}"],
+                    errors=[f"S4_TMG: agent /health unreachable at {self._base_url}"],
                 )
 
             response = client.run_paper_default(
@@ -82,6 +84,7 @@ class S4Agentic(Pipeline):
                 return_trace=True,
                 return_train_sample=False,
                 reasoner_max_length=self._reasoner_max_length,
+                custom_rules=tmg_rule if tmg_rule else None,
             )
 
         return map_agent_response(response, bundle, concat_doc_path=doc_path)
