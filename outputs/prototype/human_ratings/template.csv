@@ -1,0 +1,1191 @@
+"rating_id","query_id","strategy_blind","query_type","query","viz_type","viz_dsl","source_brief","rater_id","faith_score","coverage_score","type_score","notes"
+"R00","hotpot_09_comparative","B","comparative","Compare Emilio Estevez's roles in Nightmares and The Breakfast Club using a timeline.","mermaid_timeline","timeline
+    title Emilio Estevez Roles: Nightmares vs The Breakfast Club
+    section 1983
+        Nightmares : Emilio Estevez stars as Mark, a video game-addicted teenager in the segment ""The Video Game"" of the horror anthology film.
+    section 1985
+        The Breakfast Club : Emilio Estevez stars as Andrew Clark, a ""criminal"" and motorcycle enthusiast, in the iconic Brat Pack drama.","[Emilio Estevez]
+Emilio Estevez ( ; born May 12, 1962) is an American actor, director, and writer.  He started his career as an actor and is well known for being a member of the acting Brat Pack of the 1980s, starring in ""The Breakfast Club"", ""St. Elmo's Fire"", and also acting in the 1983 hit movie ""The Outsiders"".  He is also known for ""Repo Man"", ""The Mighty Ducks"" and its sequels, ""Stakeout"", ""Maximum Overdrive"", ""Bobby"" (which he also wrote and directed), and his performances in Western films such as ""Young Guns"" and its sequel.
+
+---
+
+[Nightmares (1983 film)]
+Nightmares is a 1983 American horror anthology film directed by Joseph Sargent, and starring Emilio Estevez, Lance Henriksen, Cristina Raines, Veronica Cartwright, and Richard Masur.  The film is made up of four short films based on urban legends; the first concerns a woman who encounters a killer in the backseat of her car; the second concerns a video game-addicted teenager who is consumed by his game; the third focuses on a fallen priest who is stalked by a pickup truck from hell; and the last follows a suburban family battling a giant rat in their home.","","","","",""
+"R01","10k_04_quantitative","A","quantitative","Chart Meta's 2025 vs 2024 foreign currency transaction gains/losses and fixed-rate senior notes outstanding.","chartjs_grouped_bar","{""type"": ""bar"", ""data"": {""labels"": [""Foreign Currency Transaction Gains/Losses (Net)"", ""Fixed-Rate Senior Notes Outstanding""], ""datasets"": [{""label"": ""2024"", ""data"": [-690, 29000], ""backgroundColor"": ""rgba(54, 162, 235, 0.6)"", ""borderColor"": ""rgba(54, 162, 235, 1)"", ""borderWidth"": 1}, {""label"": ""2025"", ""data"": [352, 59000], ""backgroundColor"": ""rgba(255, 99, 132, 0.6)"", ""borderColor"": ""rgba(255, 99, 132, 1)"", ""borderWidth"": 1}]}, ""options"": {""indexAxis"": ""y"", ""responsive"": true, ""plugins"": {""title"": {""display"": true, ""text"": ""Meta Financial Metrics: 2024 vs 2025""}, ""legend"": {""position"": ""top""}, ""tooltip"": {""callbacks"": {""label"": ""function(context) { return context.dataset.label + ': $' + context.raw + ' million'; }""}}}, ""scales"": {""x"": {""title"": {""display"": true, ""text"": ""Amount (in millions USD)""}, ""beginAtZero"": false}, ""y"": {""title"": {""display"": true, ""text"": ""Metric""}}}}}","[META 10-K Item 7 (MD&A)]
+Item 7.
+Management's Discussion and Analysis of Financial Condition and Results of Operations
+You should read the following discussion of our financial condition and results of operations in conjunction with our consolidated financial statements and the related notes included in Part II, Item 8, ""Financial Statements and Supplementary Data"" of this Annual Report on Form 10-K. In addition to our historical consolidated financial information, the following discussion contains forward-looking statements that reflect our plans, estimates, and beliefs. Our actual results could differ materially from those discussed in the forward-looking statements. Factors that could cause or contribute to these differences include those discussed below and elsewhere in this Annual Report on Form 10-K, particu
+
+---
+
+[META 10-K Item 7A (Quantitative & Qualitative Risk)]
+Item 7A.
+Quantitative and Qualitative Disclosures About Market Risk
+We are exposed to market risks, including changes to foreign currency exchange rates, interest rates, and equity price risk.
+Foreign Currency Exchange Risk
+We have foreign currency risks related to our revenue and operating expenses denominated in currencies other than the U.S. dollar, the majority of which is in Euro. Accordingly, changes in exchange rates, and in particular a strengthening of the U.S. dollar, have in the past, and may in the future, negatively affect our revenue and other operating results as expressed in U.S. dollars. See Management's Discussion and Analysis of Financial Condition and Results of Operations — Foreign Exchange Impact on Revenue section included in Part II, Item 7 of this Annual Report on ","","","","",""
+"R02","arxiv_04_comparative","A","comparative","Compare Claw-Eval and ACE-Bench evaluation metrics and environment designs in a table.","chartjs_grouped_bar","{""type"": ""bar"", ""data"": {""labels"": [""Multimodal"", ""Multi-turn"", ""Auditable"", ""Safety"", ""Perturbation"", ""Sandboxed""], ""datasets"": [{""label"": ""Claw-Eval"", ""data"": [1, 1, 1, 1, 1, 1], ""backgroundColor"": ""rgba(54, 162, 235, 0.6)"", ""borderColor"": ""rgba(54, 162, 235, 1)"", ""borderWidth"": 1}, {""label"": ""ACE-Bench"", ""data"": [0, 1, 0, 0, 0, 0], ""backgroundColor"": ""rgba(255, 99, 132, 0.6)"", ""borderColor"": ""rgba(255, 99, 132, 1)"", ""borderWidth"": 1}]}, ""options"": {""scales"": {""y"": {""beginAtZero"": true, ""max"": 1.2, ""ticks"": {""stepSize"": 1, ""callback"": ""function(value) { return value === 1 ? 'Supported' : 'Not Supported'; }""}}}, ""plugins"": {""title"": {""display"": true, ""text"": ""Comparison of Claw-Eval and ACE-Bench Features""}, ""legend"": {""position"": ""top""}, ""tooltip"": {""callbacks"": {""label"": ""function(context) { return context.dataset.label + ': ' + (context.raw === 1 ? 'Supported' : 'Not Supported'); }""}}}}}","[Claw-Eval: Toward Trustworthy Evaluation of Autonomous Agents]
+Claw-Eval: Toward Trustworthy Evaluation of
+Autonomous Agents
+Bowen Ye1∗
+Rang Li1∗
+Qibin Yang1
+Yuanxin Liu1
+Linli Yao1
+Hanglong Lv1
+Zhihui Xie2
+Chenxin An2
+Lei Li2,†
+Lingpeng Kong2
+Qi Liu2
+Zhifang Sui1
+Tong Yang1
+1State Key Laboratory of Multimedia Information Processing,
+School of Computer Science, Peking University
+2The University of Hong Kong
+bwye@stu.pku.edu.cn, lirang410@gmail.com, nlp.lilei@gmail.com
+* Equal contribution
+† Project lead
+Project Page: https://claw-eval.github.io
+Abstract
+Large language models are increasingly deployed as autonomous agents executing
+multi-step workflows in real-world software environments. However, existing
+agent benchmarks suffer from three critical limitations: (1) trajectory-opaque
+grading that checks only final outputs, (2) underspecified safety and
+
+---
+
+[ACE-Bench: Agent Configurable Evaluation with Scalable Horizons and Controllable Difficulty under Lightweight Environments]
+Preprint. Under review.
+ACE-Bench: Agent Configurable Evaluation
+with Scalable Horizons and Controllable Difficulty
+under Lightweight Environments
+Wang Yang1, Chaoda Song1, Xinpeng Li1, Debargha Ganguly1, Chuang Ma2
+Shouren Wang1, Zhihao Dou1, Yuli Zhou3, Vipin Chaudhary1, Xiaotian Han1
+1Case Western Reserve University 2NII LLMC (Japan) 3University of Zurich
+Abstract
+Existing Agent benchmarks suffer from two critical limitations: high en-
+vironment interaction overhead (up to 41% of total evaluation time) and
+imbalanced task horizon and difficulty distributions that make aggregate
+scores unreliable. To address these issues, we propose ACE-Bench built
+around a unified grid-based planning task, where agents must fill hidden
+slots in a partially completed schedule subject to both local slot c
+
+---
+
+[Artificial Intelligence and the Structure of Mathematics]
+Artificial Intelligence and the
+Structure of Mathematics
+Maissam Barkeshli,1,2 Michael R. Douglas,3 and
+Michael H. Freedman3,4
+1Meta Superintelligence Labs, Fundamental AI Research
+2Department of Physics and Joint Quantum Institute,
+University of Maryland, College Park
+3Center for Mathematical Sciences and Applications,
+Harvard University
+4Logical Intelligence
+Abstract
+Recent progress in artificial intelligence (AI) is unlocking transformative capabili-
+ties for mathematics. There is great hope that AI will help solve major open problems
+and autonomously discover new mathematical concepts. In this essay, we further con-
+sider how AI may open a grand perspective on mathematics by forging a new route,
+complementary to mathematical logic, to understanding the global structure of for-
+mal proo","","","","",""
+"R03","arxiv_00_hierarchical","B","hierarchical","Group In-Place TTT, TPO, and Churn Flow papers by their core methodological approach.","mermaid_mindmap","mindmap
+  root((Methodological Approaches))
+    In-Place TTT
+      ::icon(fa fa-cogs)
+      Core Approach
+        Drop-in MLP Adaptation
+        Chunk-wise Updates
+        NTP-Aligned Objective
+      Key Feature
+        Repurposes W_down as fast weights
+        No architectural changes
+    Target Policy Optimization
+      ::icon(fa fa-balance-scale)
+      Core Approach
+        Reweight-then-Fit Strategy
+        Target Distribution Construction
+        Cross-Entropy Fitting
+      Key Feature
+        Decouples target creation from update
+        Handles sparse rewards effectively
+    Churn Flow
+      ::icon(fa fa-water)
+      Core Approach
+        Topological Characterization
+        Euler Characteristic Surfaces
+        Unsupervised Multiple Kernel Learning
+      Key Feature
+        Geometry-based regime definition
+        Corrects mechanistic models","[In-Place Test-Time Training]
+In-Place Test-Time Training
+Guhao Feng1,2,⋆, Shengjie Luo1,⋆, Kai Hua1, Ge Zhang1,
+Di He2,†, Wenhao Huang1,†, Tianle Cai1
+1ByteDance Seed, 2Peking University
+⋆Equal Contribution, †Corresponding authors
+Abstract
+The static “train then deploy"" paradigm fundamentally limits Large Language Models (LLMs)
+from dynamically adapting their weights in response to continuous streams of new information
+inherent in real-world tasks. Test-Time Training (TTT) offers a compelling alternative by updating
+a subset of model parameters (fast weights) at inference time, yet its potential in the current LLM
+ecosystem is hindered by critical barriers including architectural incompatibility, computational
+inefficiency and misaligned fast weight objectives for language modeling. In this work, we introduce
+In-Place
+
+---
+
+[Topological Characterization of Churn Flow and Unsupervised Correction to the Wu Flow-Regime Map in Small-Diameter Vertical Pipes]
+Topological Characterization of Churn Flow and Unsupervised
+Correction to the Wu Flow-Regime Map in Small-Diameter
+Vertical Pipes
+Brady Koenig3, Sushovan Majhi1, Atish Mitra2, Abigail Stein1, and Burt Todd3
+1Data Science, George Washington University, USA (s.majhi@gwu.edu; abigailstein@gwmail.gwu.edu)
+2Department of Mathematical Sciences, Montana Technological University, USA (amitra@mtech.edu)
+3Department of Petroleum Engineering, Montana Technological University, USA (bkoenig@mtech.edu,
+btodd@mtech.edu)
+Abstract
+Churn flow—the chaotic, oscillatory regime in vertical two-phase flow—has lacked a quanti-
+tative mathematical definition for over 40 years [1]. We introduce the first topology-based char-
+acterization using Euler Characteristic Surfaces (ECS). We formulate unsupervised regime di
+
+---
+
+[Target Policy Optimization]
+Target Policy Optimization
+Jean Kaddour
+0
+2000
+4000
+6000
+8000
+Step
+0.04
+0.06
+0.08
+0.10
+0.12
+0.14
+Classification error
+(a) MNIST contextual bandit
+0
+500
+1000
+1500
+Episode
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Exact-match error
+(b) Token reversal (sparse reward)
+TPO
+GRPO
+DG
+Figure 1: TPO matches baselines on easy tasks and outperforms them under sparse reward.
+(a) On an MNIST contextual bandit with dense reward, TPO converges slightly faster than GRPO
+and DG. (b) On a sparse-reward token-reversal task (reward only at end of sequence), GRPO and DG
+stall near random while TPO solves the task. Both panels show mean ± s.e. over 20 seeds.
+Abstract
+In RL, given a prompt, we sample a group of completions from a model and score
+them. Two questions follow: which completions should gain probability mass,
+and how sh","","","","",""
+"R04","multinews_01_comparative","B","comparative","Compare the discovery methods and dates of the Roman shipwreck, Ötzi, and the Nazca Lines in a timeline.","mermaid_timeline","timeline
+    title Discovery Timeline of Archaeological Finds
+    section 1930s
+      Nazca Lines : Discovered by airplane
+    section 1986
+      Roman Shipwreck : Discovered by divers off Grado, Italy
+    section 1991
+      Ötzi : Discovered by German tourists in the Ötztal Alps","[Article 1: In 1986, divers stumbled upon a nearly 2,000-year-old…]
+In 1986, divers stumbled upon a nearly 2,000-year-old Roman shipwreck some six miles off the coast of the town of Grado, Italy. Measuring 55 feet long and 16 feet wide, the small trade vessel was stocked with 600 amphorae, or vases, packed with sardines and other fish. Further study of the shipwreck revealed that the ancient Roman engineers also had built in a hydraulic system that allowed the ship to carry an aquarium with live fish. 
+ 
+ Over the years, metal detector enthusiasts, particularly those in the United Kingdom, have uncovered archaeological treasures buried beneath the Earth. In 2009, 30-year-old Nick Davies hauled in 10,000 ancient Roman coins that he had found inside a clay pot buried in Shropshire, U.K. That same year, a trove of 1,500 gold and silver pieces dating back to t
+
+---
+
+[Article 2: A section of Jerusalem’s Lower Aqueduct, which brought…]
+A section of Jerusalem’s Lower Aqueduct, which brought water to Jerusalem more than two millennia ago, was uncovered in the East Jerusalem neighborhood of Umm Tuba during the construction of a new sewer line, it was announced Thursday. 
+ 
+ The ancient aqueduct was discovered during digging last month by the Gihon Water Company, which was laying new pipes to modernize the sewer system in the Umm Tuba and Sur Baher neighborhoods in East Jerusalem. 
+ 
+ The Israel Antiquities Authority excavated the area after the aqueduct was found. 
+ 
+ “The Lower Aqueduct to Jerusalem, which the Hasmonean kings constructed more than 2,000 years ago in order to provide water to Jerusalem, operated intermittently until about one hundred years ago,” said Ya’akov Billig, the director of the excavation. 
+ 
+ Accor
+
+---
+
+[Article 3: Part of an ancient aqueduct built more than…]
+Part of an ancient aqueduct built more than 2,000 years ago to transport water into the city of Jerusalem was uncovered during a recent construction project, according to the Israel Antiquities Authority. 
+ 
+ A section of the so-called Lower Aqueduct was discovered in the modern-day neighborhood of Umm Tuba, in East Jerusalem, during efforts to construct a new sewer line. The Lower Aqueduct was originally built more than 2,000 years ago by kings in the Hasmonean dynasty, who ruled Judea and its surrounding regions from about 140 B.C. to 37 B.C., and preceded King Herod the Great. 
+ 
+ The sprawling, 13-mile-long (21 kilometers) aqueduct carried water to the capital, and ""operated intermittently until about 100 years ago,"" Ya'akov Billig, director of the aqueduct excavation with the Israel A","","","","",""
+"R05","multinews_07_temporal","A","temporal","Create a timeline of Chris Martin and Dakota Johnson's relationship milestones from 2017 to present.","mermaid_timeline","timeline
+    title Chris Martin and Dakota Johnson Relationship Timeline
+    section 2017
+        Mid-October : Spotted on sushi date in LA
+                      (Dating rumors begin)
+    section 2018
+        October 4 : Dakota Johnson's birthday
+                   celebrated at Chris Martin's home
+        Late 2018 : One year anniversary
+                   (Relationship confirmed serious)","[Article 1: Chris Martin could barely keep a straight face…]
+Chris Martin could barely keep a straight face while performing an acoustic version of Coldplay’s “Viva La Vida” at a cancer benefit, but it wasn’t entirely his fault. It was Will Ferrell’s. 
+ 
+ Martin and a slough of other stars were all performing at a one night charity event dubbed “Will Ferrell’s Best Night Of Your Life.” The show, produced by the comedy website and production company Funny Or Die, was a benefit for the charity organization, Cancer For College, which gives college scholarships to cancer survivors. The lineup for the 25th anniversary show featured some of the biggest names from music and comedy, including Jerry Seinfeld, Samantha Bee, Michelle Wolf, Pearl Jam’s Mike McCready, James Corden, Jimmy Kimmel, Guns N’ Roses’ Duff McKagan, Red Hot Chili Peppers drummer (and Wil
+
+---
+
+[Article 2: Dakota Johnson is setting the record straight after…]
+Dakota Johnson is setting the record straight after rumors of a pregnancy swirled. 
+ 
+ A rep for the 29-year-old actress tells PEOPLE Johnson is not pregnant after reports that pink and blue balloons were spotted above the home of her boyfriend, Coldplay frontman Chris Martin, on Sunday. 
+ 
+ Get push notifications with news, features and more. 
+ 
+ According to her rep, Johnson was celebrating her birthday (which occurred on Oct. 4) at the rocker’s house. Guests spotted at the event included Johnson’s divorced parents, Melanie Griffith and Don Johnson, as well as Julia Roberts and Sean Penn. 
+ 
+ The Bad Times at El Royale actress also recently celebrated her one year anniversary to Martin, 41. The two first sparked dating rumors after being spotted on a mid-October 2017 sushi date in Los An","","","","",""
+"R06","multinews_00_temporal","A","temporal","Show a timeline of DEA cash seizures and DOJ oversight actions from 2007 to the March 29 report release.","mermaid_timeline","timeline
+    title DEA Cash Seizures & DOJ Oversight Timeline
+    section 2007
+        Start of Period : DEA cash seizures begin<br>tracking period for IG report
+    section 2014
+        High Seizure Year : $5 billion in cash/property<br>seized by authorities
+    section 2015
+        Holder Order : Attorney General Eric Holder<br>issues order to tighten control<br>on asset forfeiture operations
+    section 2017
+        Public Health Emergency : Opioid epidemic declared<br>a public health emergency<br>(Oct 2017)
+    section 2017-2018
+        IG Investigation : DOJ Inspector General reviews<br>100 random DEA cash seizure cases
+    section 2018
+        Report Release : March 29: DOJ IG releases report<br>finding $3.2B seized from<br>unconvicted individuals since 2007","[Article 1: The vast majority of people who have had…]
+The vast majority of people who have had cash seized by the Drug Enforcement Agency weren't convicted of doing anything wrong. 
+ 
+ In a report released on March 29, the Department of Justice's Inspector General found that, since 2007, the DEA seized $3.2 billion in cash from people who weren't charged with any crime. With the total cash seized in that time totaling just over $4 billion, that means 81% of the money seized came from people with no charge at all. 
+ 
+ Civil asset forfeiture allows the DEA to seize cash, real estate, cars or even personal items from people suspected of dealing drugs or engaging in organized crime. 
+ 
+ But the DOJ report found that out of the 100 cases it looked at randomly, 56% of the time ""there was no discernible connection between the seizure and the advance
+
+---
+
+[Article 2: A selective collection of websites archived by the…]
+A selective collection of websites archived by the National Library of Medicine on the current opioid epidemic in the United States, declared a public health emergency in October 2017. Archived content includes websites and social media documenting a wide range of responses to and perspectives on the epidemic, including voices from of the medical and public health communities, the addiction research, policymakers and policy reformers, law enforcement, and the addicted and their families and communities. Archived websites are primarily in English. NLM will continue to develop, review, describe, and add content to the collection.
+
+---
+
+[Article 3: The entrance to the U.S. Drug Enforcement Administration…]
+The entrance to the U.S. Drug Enforcement Administration Museum in Arlington, Va. (Jonathan Ernst/Reuters) 
+ 
+ The Drug Enforcement Administration takes billions of dollars in cash from people who are never charged with criminal activity, according to a report issued today by the Justice Department's Inspector General. 
+ 
+ Since 2007, the report found, the DEA has seized more than $4 billion in cash from people suspected of involvement with the drug trade. But 81 percent of those seizures, totaling $3.2 billion, were conducted administratively, meaning no civil or criminal charges were brought against the owners of the cash and no judicial review of the seizures ever occurred. 
+ 
+ That total does not include the dollar value of other seized assets, like cars, homes, electronics and clothin
+
+---
+
+[Article 4: WASHINGTON (AP) — A government watchdog on Wednesday…]
+WASHINGTON (AP) — A government watchdog on Wednesday identified what it called weaknesses in the Justice Department's asset forfeiture program, including poor data collection and analysis, and inadequate training of local and state officers. 
+ 
+ The program, long criticized by advocacy groups and members of Congress concerned about oversight, permits law enforcement to take possession of cash and property seized during investigations. More than $6 billion in forfeited funds has been shared with state and local law enforcement since fiscal year 2000, and over $4 billion has been returned to crime victims during that same period, according to the report from the department's inspector general. 
+ 
+ The report said the department does not collect adequate data to determine whether law enforcem","","","","",""
+"R07","arxiv_02_comparative","A","comparative","Compare the core mechanisms of Action Images, HaloProbe, and DiffHDR in a mindmap.","mermaid_mindmap","mindmap
+  root((Core Mechanisms))
+    Action Images
+      Goal: Robot Policy Learning
+      Core Idea: Policy as Multiview Video Generation
+      Action Representation
+        Pixel-grounded Action Images
+        7-DoF actions to semantic 3D points
+        Rendered as RGB Gaussian heatmaps
+        Multi-view videos for 3D consistency
+      Architecture
+        Unified Video Backbone
+        No separate policy head
+        Zero-shot policy from backbone
+    HaloProbe
+      Goal: Hallucination Detection in LVLMs
+      Core Idea: Bayesian Framework
+      Problem Addressed
+        Simpson's Paradox in attention analysis
+        Confounders: Token position, Object repetition
+      Mechanism
+        Factorization of Signals
+          Internal Features: Attention, Logits
+          External Features: Caption statistics
+        Balanced Estimator
+          Isolates internal evidence
+        Prior Estimator
+          Learns prior over external features
+        Posterior Correction
+          Recovers true hallucination probability
+      Mitigation
+        Non-invasive Beam Search
+        Post-hoc processing
+    DiffHDR
+      Goal: LDR-to-HDR Video Conversion
+      Core Idea: Generative Radiance Inpainting
+      Color Space
+        Log-Gamma Mapping
+        Aligns HDR with LDR-trained VAE manifold
+        No VAE finetuning required
+      Architecture
+        Video Diffusion Model (DiT)
+        Main Branch & Context Branch
+      Control Mechanisms
+        Luminance-based Mask Detection
+        Context-Focused Prompting
+        Reference Image Guidance
+      Data Strategy
+        Synthetic HDR video from static HDRIs","[Action Images: End-to-End Policy Learning via Multiview Video Generation]
+Action Images: End-to-End Policy Learning
+via Multiview Video Generation
+Haoyu Zhen1∗, Zixian Gao2∗, Qiao Sun1†, Yilin Zhao3, Yuncong Yang1,
+Yilun Du4, Tsun-Hsuan Wang5, Yi-Ling Qiao5, and Chuang Gan1
+1UMass Amherst
+2UTokyo
+3NVIDIA
+4Harvard University
+5Genesis AI
+https://ActionImages.github.io
+Text prompt: place blue chip bag in grey bowl
+2. Pixel-grounded Action Images
+View 2
+View 1
+Robot Videos
+1. Observations from Any View
+4. Zero-shot 3D Policy
+3. Video-action Joint Generation
+Action Videos
+Fig. 1: Action Images turns policy learning as multiview video generation:
+7-DoF actions are translated into pixel-grounded action images that explicitly
+track robot-arm motion, enabling a zero-shot policy directly from a unified
+video backbone.
+Abstract. World action models (WAMs) have emerged as a
+
+---
+
+[HaloProbe: Bayesian Detection and Mitigation of Object Hallucinations in Vision-Language Models]
+HaloProbe: Bayesian Detection and Mitigation of Object Hallucinations
+in Vision-Language Models
+Reihaneh Zohrabi * 1 Hosein Hasani * 2 Akshita Gupta 1 Mahdieh Soleymani Baghshah 2
+Anna Rohrbach 1 Marcus Rohrbach 1
+Abstract
+Large vision-language models can produce object
+hallucinations in image descriptions, highlighting
+the need for effective detection and mitigation
+strategies. Prior work commonly relies on the
+model’s attention weights on visual tokens as a
+detection signal. We reveal that coarse-grained
+attention-based analysis is unreliable due to hid-
+den confounders, specifically token position and
+object repetition in a description. This leads to
+Simpson’s paradox: the attention trends reverse or
+disappear when statistics are aggregated. Based
+on this observation, we introduce HaloP
+
+---
+
+[DiffHDR: Re-Exposing LDR Videos with Video Diffusion Models]
+DiffHDR: Re-Exposing LDR Videos with Video
+Diffusion Models
+Zhengming Yu1,2, Li Ma2, Mingming He2, Leo Isikdogan3, Yuancheng Xu3,
+Dmitriy Smirnov3, Pablo Salamanca3, Dao Mi3, Pablo Delgado3,
+Ning Yu3, Julien Philip2, Xin Li1, Wenping Wang1, and Paul Debevec3
+1 Texas A&M University
+2 Eyeline Labs
+3 Netflix
+Abstract. Most digital videos are stored in 8-bit low dynamic range
+(LDR) formats, where much of the original high dynamic range (HDR)
+scene radiance is lost due to saturation and quantization. This loss of
+highlight and shadow detail precludes mapping accurate luminance to
+HDR displays and limits meaningful re-exposure in post-production work-
+flows. Although techniques have been proposed to convert LDR images
+to HDR through dynamic range expansion, they struggle to restore re-
+alistic d","","","","",""
+"R08","arxiv_00_comparative","A","comparative","Compare the parameter update mechanisms of In-Place TTT and Target Policy Optimization.","mermaid_flowchart","graph TD
+    subgraph InPlace_TTT [In-Place Test-Time Training]
+        direction TB
+        A1[Input: Streaming Tokens] --> B1[Chunk-wise Processing]
+        B1 --> C1[Identify Fast Weights]
+        C1 --> D1[Final Projection Matrix of MLP Blocks]
+        D1 --> E1[Update Mechanism]
+        E1 --> F1[Minimize NTP-Aligned Objective]
+        F1 --> G1[Gradient Descent on Fast Weights]
+        G1 --> H1[Output: Adapted Contextual State]
+    end
+
+    subgraph TPO [Target Policy Optimization]
+        direction TB
+        A2[Input: Prompt & Candidates] --> B2[Sample K Completions]
+        B2 --> C2[Score & Standardize]
+        C2 --> D2[Construct Target Distribution q]
+        D2 --> E2[Update Mechanism]
+        E2 --> F2[Minimize Cross-Entropy Loss]
+        F2 --> G2[Fit Policy to Target q]
+        G2 --> H2[Output: Updated Policy Parameters]
+    end
+
+    style InPlace_TTT fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style TPO fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style D1 fill:#bbdefb,stroke:#01579b
+    style D2 fill:#e1bee7,stroke:#4a148c
+    style F1 fill:#bbdefb,stroke:#01579b
+    style F2 fill:#e1bee7,stroke:#4a148c","[In-Place Test-Time Training]
+In-Place Test-Time Training
+Guhao Feng1,2,⋆, Shengjie Luo1,⋆, Kai Hua1, Ge Zhang1,
+Di He2,†, Wenhao Huang1,†, Tianle Cai1
+1ByteDance Seed, 2Peking University
+⋆Equal Contribution, †Corresponding authors
+Abstract
+The static “train then deploy"" paradigm fundamentally limits Large Language Models (LLMs)
+from dynamically adapting their weights in response to continuous streams of new information
+inherent in real-world tasks. Test-Time Training (TTT) offers a compelling alternative by updating
+a subset of model parameters (fast weights) at inference time, yet its potential in the current LLM
+ecosystem is hindered by critical barriers including architectural incompatibility, computational
+inefficiency and misaligned fast weight objectives for language modeling. In this work, we introduce
+In-Place
+
+---
+
+[Topological Characterization of Churn Flow and Unsupervised Correction to the Wu Flow-Regime Map in Small-Diameter Vertical Pipes]
+Topological Characterization of Churn Flow and Unsupervised
+Correction to the Wu Flow-Regime Map in Small-Diameter
+Vertical Pipes
+Brady Koenig3, Sushovan Majhi1, Atish Mitra2, Abigail Stein1, and Burt Todd3
+1Data Science, George Washington University, USA (s.majhi@gwu.edu; abigailstein@gwmail.gwu.edu)
+2Department of Mathematical Sciences, Montana Technological University, USA (amitra@mtech.edu)
+3Department of Petroleum Engineering, Montana Technological University, USA (bkoenig@mtech.edu,
+btodd@mtech.edu)
+Abstract
+Churn flow—the chaotic, oscillatory regime in vertical two-phase flow—has lacked a quanti-
+tative mathematical definition for over 40 years [1]. We introduce the first topology-based char-
+acterization using Euler Characteristic Surfaces (ECS). We formulate unsupervised regime di
+
+---
+
+[Target Policy Optimization]
+Target Policy Optimization
+Jean Kaddour
+0
+2000
+4000
+6000
+8000
+Step
+0.04
+0.06
+0.08
+0.10
+0.12
+0.14
+Classification error
+(a) MNIST contextual bandit
+0
+500
+1000
+1500
+Episode
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Exact-match error
+(b) Token reversal (sparse reward)
+TPO
+GRPO
+DG
+Figure 1: TPO matches baselines on easy tasks and outperforms them under sparse reward.
+(a) On an MNIST contextual bandit with dense reward, TPO converges slightly faster than GRPO
+and DG. (b) On a sparse-reward token-reversal task (reward only at end of sequence), GRPO and DG
+stall near random while TPO solves the task. Both panels show mean ± s.e. over 20 seeds.
+Abstract
+In RL, given a prompt, we sample a group of completions from a model and score
+them. Two questions follow: which completions should gain probability mass,
+and how sh","","","","",""
+"R09","hotpot_03_relational","B","relational","Map the connection between Kool Kojak and The Lorax film.","mermaid_flowchart","graph LR
+    A[Kool Kojak] -->|Songwriter / Producer| B[The Lorax Film]
+    B -->|2012 Animated Musical Fantasy| C[Dr. Seuss's The Lorax]","[Kool Kojak]
+Allan P. Grigg, better known by his stage name Kool Kojak and stylized as ""KoOoLkOjAk"", is an American musician, songwriter, record producer, film director, and artist notable for co-writing and co-producing Flo Rida's #1 Billboard hit single ""Right Round"", Nicki Minaj's hit single ""Va Va Voom"" , and Ke$ha's top 10 single ""Blow"".  Kool Kojak has written and produced for artists such as Sean Paul, Yelle, Waka Flocka Flame, Travis Barker, Dr. Seuss's The Lorax, Britney Spears, Jesse and Joy, Andy Milonakis, Icona Pop, N.A.S.A., Dirt Nasty, Lordz of Brooklyn, Ursula 1000, and Warren G.  Kool Kojak was a featured producer on the Simon Cowell TV program X Factor and has appeared as himself on the Nickelodeon show ""Victorious"".  He has won two ASCAP Pop Awards and one ASCAP Urban Award, a WormTo
+
+---
+
+[The Lorax (film)]
+The Lorax (also known as Dr. Seuss' The Lorax) is a 2012 American 3D computer-animated musical fantasy–comedy film produced by Illumination Entertainment and based on Dr. Seuss's children's book of the same name.  The film was released by Universal Pictures on March 2, 2012, on the 108th birthday of Dr. Seuss.  The second film adaptation of the book (following the 1972 animated television special), the film builds on the book by expanding the story of Ted, the previously unnamed boy who visits the Once-ler.  The cast includes Danny DeVito as the Lorax, Ed Helms as the Once-ler, and Zac Efron as Ted.  New characters introduced in the film are Audrey (voiced by Taylor Swift), Aloysius O'Hare (Rob Riggle), Mrs. Wiggins, Ted's mother (Jenny Slate), and Grammy Norma (Betty White).","","","","",""
+"R10","multinews_08_temporal","A","temporal","Create a timeline of Carlesha Freeland-Gaither's abduction, including the incident, ATM usage, and press conference dates.","mermaid_timeline","timeline
+    title Timeline of Carlesha Freeland-Gaither's Abduction
+    section Sunday, Nov 2, 2014
+        9:40 PM : Abduction in Germantown, Philadelphia
+    section Monday, Nov 3, 2014
+        6:00 AM : ATM card used in Aberdeen, MD
+        Daytime : Police release surveillance video
+    section Tuesday, Nov 4, 2014
+        Daytime : Family holds press conference in Philadelphia","[Article 1: Carlesha Freeland-Gaither was abducted Sunday night on her…]
+Carlesha Freeland-Gaither was abducted Sunday night on her way home and it was all caught on surveillance video. NBC10's Rosemary Connors spent the entire day with Freeland-Gaither's family. She has the latest. (Published Tuesday, Nov. 4, 2014) 
+ 
+ The cry for help barely escaped Keisha Gaither’s throat as she begged for her daughter’s safe return. 
+ 
+ “Please give me back my child. Please give me my baby,” she hoarsely uttered, as tears ran down her face, before a crush of local and national reporters on Tuesday. 
+ 
+ Her baby is Carlesha Freeland-Gaither. 
+ 
+ Carlesha Freeland-Gaither, 22, was abducted off a Germantown street on Nov. 2. 
+ 
+ Photo credit: Family Photo/Philadelphia Police 
+ 
+ The 22-year-old woman was abducted by an unidentified man while walking home from a visit to her go
+
+---
+
+[Article 2: As the search continues for the woman forcibly…]
+As the search continues for the woman forcibly abducted in Philadelphia's Germantown neighborhood, her family is talking about a former boyfriend who, they say, was ""obsessed"" with her.Carlesha Freeland-Gaither has been missing since being snatched off the street Sunday night.Surveillance video not only showed Carlesha's abduction, it also showed the vehicle involved.Police say that car had a front license tag which indicates it could be from Maryland.Carlesha was raised in Maryland and returned to Philadelphia two years ago.The family says a former boyfriend from Maryland was obsessed with her and tracked her down.""It scared her so she backed off from him, but he found her. When she came up here he found her,"" one family member said.Meanwhile, Carlesha's ATM card was used at an ATM just o
+
+---
+
+[Article 3: PHILADELPHIA (AP) — A bank card belonging to…]
+PHILADELPHIA (AP) — A bank card belonging to a woman abducted from a Philadelphia street was used the next morning in Maryland by a man whose grainy image was caught on bank cameras, police said Tuesday as relatives tearfully pleaded for her return. 
+ 
+ Family members surround Keisha Gaither, center, mother of kidnapping victim Carlesha Freeland-Gaither, during a news conference in Philadelphia on Tuesday Nov. 4, 2014. A bank card belonging to Carlesha... (Associated Press) 
+ 
+ Keisha Gaither, center, mother of kidnapping victim Carlesha Freeland-Gaither is overcome by emotion during a news conference in Philadelphia on Tuesday Nov. 4, 2014. The reward is up to $15,000 for... (Associated Press) 
+ 
+ Dereck Alston, center, grandfather of kidnapping victim Carlesha Freeland-Gaither is overcom","","","","",""
+"R11","arxiv_02_comparative","B","comparative","Compare the core mechanisms of Action Images, HaloProbe, and DiffHDR in a mindmap.","mermaid_mindmap","mindmap
+  root((Core Mechanisms))
+    Action Images
+      Policy Learning as Video Generation
+      Action Representation
+        7-DoF to Semantic 3D Points
+        Position Normal Up Points
+        Pixel-Grounded Action Images
+        2D Gaussian Heatmaps
+        Multi-View Rendering
+      Unified Video Backbone
+        Zero-Shot Policy
+        No Separate Action Module
+      Decoding
+        Ray Casting
+        Multi-View Geometric Reconstruction
+    HaloProbe
+      Bayesian Detection Framework
+      Addressing Simpson's Paradox
+        Hidden Confounders
+        Token Position
+        Object Repetition
+      Feature Factorization
+        Internal Features
+          Attention Values
+          Logit Statistics
+        External Features
+          Caption Statistics
+      Estimation
+        Balanced Estimator
+        Prior Estimator
+        Token-Level Hallucination Probability
+      Non-Invasive Mitigation
+        Beam Search Guidance
+        Post-Hoc Processing
+    DiffHDR
+      LDR-to-HDR Video Conversion
+      Generative Radiance Inpainting
+      Latent Video Diffusion Model
+      Log-Gamma Color Mapping
+        Compresses HDR to LDR Range
+        Compatible with Pretrained VAE
+      Exposure-Aware Control
+        Luminance-Based Mask Detection
+        Context-Focused Prompting
+        Context-Focused Cross-Attention
+      Data Strategy
+        Synthetic HDR Video from HDRIs","[Action Images: End-to-End Policy Learning via Multiview Video Generation]
+Action Images: End-to-End Policy Learning
+via Multiview Video Generation
+Haoyu Zhen1∗, Zixian Gao2∗, Qiao Sun1†, Yilin Zhao3, Yuncong Yang1,
+Yilun Du4, Tsun-Hsuan Wang5, Yi-Ling Qiao5, and Chuang Gan1
+1UMass Amherst
+2UTokyo
+3NVIDIA
+4Harvard University
+5Genesis AI
+https://ActionImages.github.io
+Text prompt: place blue chip bag in grey bowl
+2. Pixel-grounded Action Images
+View 2
+View 1
+Robot Videos
+1. Observations from Any View
+4. Zero-shot 3D Policy
+3. Video-action Joint Generation
+Action Videos
+Fig. 1: Action Images turns policy learning as multiview video generation:
+7-DoF actions are translated into pixel-grounded action images that explicitly
+track robot-arm motion, enabling a zero-shot policy directly from a unified
+video backbone.
+Abstract. World action models (WAMs) have emerged as a
+
+---
+
+[HaloProbe: Bayesian Detection and Mitigation of Object Hallucinations in Vision-Language Models]
+HaloProbe: Bayesian Detection and Mitigation of Object Hallucinations
+in Vision-Language Models
+Reihaneh Zohrabi * 1 Hosein Hasani * 2 Akshita Gupta 1 Mahdieh Soleymani Baghshah 2
+Anna Rohrbach 1 Marcus Rohrbach 1
+Abstract
+Large vision-language models can produce object
+hallucinations in image descriptions, highlighting
+the need for effective detection and mitigation
+strategies. Prior work commonly relies on the
+model’s attention weights on visual tokens as a
+detection signal. We reveal that coarse-grained
+attention-based analysis is unreliable due to hid-
+den confounders, specifically token position and
+object repetition in a description. This leads to
+Simpson’s paradox: the attention trends reverse or
+disappear when statistics are aggregated. Based
+on this observation, we introduce HaloP
+
+---
+
+[DiffHDR: Re-Exposing LDR Videos with Video Diffusion Models]
+DiffHDR: Re-Exposing LDR Videos with Video
+Diffusion Models
+Zhengming Yu1,2, Li Ma2, Mingming He2, Leo Isikdogan3, Yuancheng Xu3,
+Dmitriy Smirnov3, Pablo Salamanca3, Dao Mi3, Pablo Delgado3,
+Ning Yu3, Julien Philip2, Xin Li1, Wenping Wang1, and Paul Debevec3
+1 Texas A&M University
+2 Eyeline Labs
+3 Netflix
+Abstract. Most digital videos are stored in 8-bit low dynamic range
+(LDR) formats, where much of the original high dynamic range (HDR)
+scene radiance is lost due to saturation and quantization. This loss of
+highlight and shadow detail precludes mapping accurate luminance to
+HDR displays and limits meaningful re-exposure in post-production work-
+flows. Although techniques have been proposed to convert LDR images
+to HDR through dynamic range expansion, they struggle to restore re-
+alistic d","","","","",""
+"R12","10k_02_temporal","B","temporal","Show TSLA's 2024 vs 2025 net income and FX risk exposure in a timeline.","mermaid_timeline","timeline
+    title TSLA Financials & FX Risk Exposure
+    section 2024
+      Net Income : $7.09 Billion
+      FX Risk Exposure : $1.15 Billion
+    section 2025
+      Net Income : $3.79 Billion
+      FX Risk Exposure : $1.70 Billion","[TSLA 10-K Item 7 (MD&A)]
+ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF FINANCIAL CONDITION AND RESULTS OF OPERATIONS 
+The following discussion and analysis should be read in conjunction with the consolidated financial statements and the related notes included elsewhere in this Annual Report on Form 10-K. For further discussion of our products and services, technology and competitive strengths, refer to Item 1- Business. For discussion related to changes in financial condition and the results of operations for fiscal year 2024-related items, refer to Part II, Item 7. Management’s Discussion and Analysis of Financial Condition and Results of Operations in our Annual Report on Form 10-K for fiscal year 2024, which was filed with the SEC on January 30, 2025.
+Overview and 2025 Highlights
+We are focused on bringing ar
+
+---
+
+[TSLA 10-K Item 7A (Quantitative & Qualitative Risk)]
+ITEM 7A. QUANTITATIVE AND QUALITATIVE DISCLOSURES ABOUT MARKET RISK
+Foreign Currency Risk
+We transact business globally in multiple currencies and hence have foreign currency risks related to our revenue, costs of revenue and operating expenses denominated in currencies other than the U.S. dollar (primarily the Chinese yuan and euro in relation to our current year operations). In general, we are a net receiver of currencies other than the U.S. dollar for our foreign subsidiaries. Accordingly, changes in exchange rates affect our operating results as expressed in U.S. dollars as we do not typically hedge foreign currency risk.
+We have also experienced, and will continue to experience, fluctuations in our net income as a result of gains (losses) on the settlement and the re-measurement of mo","","","","",""
+"R13","multinews_00_temporal","B","temporal","Show a timeline of DEA cash seizures and DOJ oversight actions from 2007 to the March 29 report release.","mermaid_timeline","%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffdfd3', 'edgeLabelBackground':'#f9f7f7', 'tertiaryColor': '#dcd0ff'}}}%%
+timeline
+    title Timeline of DEA Cash Seizures & DOJ Oversight (2007-2019)
+    2007 : Data collection period begins
+              for DEA cash seizures
+    2014 : Authorities seize $5 billion
+              in cash and property
+    2015 : Attorney General Eric Holder
+              issues order to tighten
+              asset forfeiture controls
+    2019 : March 29 : DOJ Inspector General
+              releases report
+              : Finds $3.2B seized from
+              uncharged individuals
+              since 2007","[Article 1: The vast majority of people who have had…]
+The vast majority of people who have had cash seized by the Drug Enforcement Agency weren't convicted of doing anything wrong. 
+ 
+ In a report released on March 29, the Department of Justice's Inspector General found that, since 2007, the DEA seized $3.2 billion in cash from people who weren't charged with any crime. With the total cash seized in that time totaling just over $4 billion, that means 81% of the money seized came from people with no charge at all. 
+ 
+ Civil asset forfeiture allows the DEA to seize cash, real estate, cars or even personal items from people suspected of dealing drugs or engaging in organized crime. 
+ 
+ But the DOJ report found that out of the 100 cases it looked at randomly, 56% of the time ""there was no discernible connection between the seizure and the advance
+
+---
+
+[Article 2: A selective collection of websites archived by the…]
+A selective collection of websites archived by the National Library of Medicine on the current opioid epidemic in the United States, declared a public health emergency in October 2017. Archived content includes websites and social media documenting a wide range of responses to and perspectives on the epidemic, including voices from of the medical and public health communities, the addiction research, policymakers and policy reformers, law enforcement, and the addicted and their families and communities. Archived websites are primarily in English. NLM will continue to develop, review, describe, and add content to the collection.
+
+---
+
+[Article 3: The entrance to the U.S. Drug Enforcement Administration…]
+The entrance to the U.S. Drug Enforcement Administration Museum in Arlington, Va. (Jonathan Ernst/Reuters) 
+ 
+ The Drug Enforcement Administration takes billions of dollars in cash from people who are never charged with criminal activity, according to a report issued today by the Justice Department's Inspector General. 
+ 
+ Since 2007, the report found, the DEA has seized more than $4 billion in cash from people suspected of involvement with the drug trade. But 81 percent of those seizures, totaling $3.2 billion, were conducted administratively, meaning no civil or criminal charges were brought against the owners of the cash and no judicial review of the seizures ever occurred. 
+ 
+ That total does not include the dollar value of other seized assets, like cars, homes, electronics and clothin
+
+---
+
+[Article 4: WASHINGTON (AP) — A government watchdog on Wednesday…]
+WASHINGTON (AP) — A government watchdog on Wednesday identified what it called weaknesses in the Justice Department's asset forfeiture program, including poor data collection and analysis, and inadequate training of local and state officers. 
+ 
+ The program, long criticized by advocacy groups and members of Congress concerned about oversight, permits law enforcement to take possession of cash and property seized during investigations. More than $6 billion in forfeited funds has been shared with state and local law enforcement since fiscal year 2000, and over $4 billion has been returned to crime victims during that same period, according to the report from the department's inspector general. 
+ 
+ The report said the department does not collect adequate data to determine whether law enforcem","","","","",""
+"R14","hotpot_00_comparative","B","comparative","Compare Dwarka's population and religious status with Vice-Admiral Iqbal F. Qadir's military role in a visual chart.","mermaid_mindmap","mindmap
+  root((Comparison))
+    Dwarka
+      Population
+        38,873 in 2011
+      Religious Status
+        Sacred Hindu Chardham
+        One of Sapta Puri
+        Ancient Kingdom of Krishna
+    Vice-Admiral Iqbal F. Qadir
+      Military Role
+        Retired Pakistan Navy Admiral
+        Participated in 1971 War
+        Led flotilla attacking Dwarka radar station","[Dwarka]
+Dwarka () is a small city and a municipality of Devbhoomi Dwarka district in the state of Gujarat in northwestern India.  It is located on the western shore of the Okhamandal Peninsula on the right bank of the Gomti River.  In 2011 it had a population of 38,873.  Dwarka is one of the foremost Chardhams, four sacred Hindu pilgrimage sites, and is one of the Sapta Puri, the seven most ancient religious cities in the country.  Dwarka is often identified with the Dwarka Kingdom, the ancient kingdom of Krishna, and is believed to have been the first capital of Gujarat.
+
+---
+
+[Iqbal F. Qadir]
+Vice-Admiral Iqbal Fazl Quadir (Urdu:اقبال فضل قادر) , is a retired three-star rank admiral in the Pakistan Navy, former diplomat, and a defence analyst.  He is renown for his participation in second war with India when he was part of the flotilla that attacked the radar station in Dwarka, India.","","","","",""
+"R15","arxiv_04_comparative","B","comparative","Compare Claw-Eval and ACE-Bench evaluation metrics and environment designs in a table.","mermaid_flowchart","{
+  ""viz_type"": ""table"",
+  ""viz_dsl"": {
+    ""headers"": [""Feature"", ""Claw-Eval"", ""ACE-Bench""],
+    ""rows"": [
+      [
+        ""Primary Focus"",
+        ""Trustworthy evaluation of autonomous agents in real-world software environments."",
+        ""Agent configurable evaluation with scalable horizons and controllable difficulty.""
+      ],
+      [
+        ""Environment Design"",
+        ""Complex, isolated Docker containers with mock services (CRM, email, etc.) and system-layer tools. Supports multimodal inputs/outputs and multi-turn dialogues."",
+        ""Lightweight, static JSON-based environment. No running services or external dependencies. Tool calls resolved via static files.""
+      ],
+      [
+        ""Task Structure"",
+        ""300 human-verified tasks across 9 categories (General, Multimodal, Multi-turn Dialogue). Diverse real-world workflows."",
+        ""Unified grid-based planning task (filling hidden slots in a schedule). 6 domains (Course, Meal, PC Build, Shopping, Travel, Workforce).""
+      ],
+      [
+        ""Key Design Axes"",
+        ""Full-trajectory auditing (execution traces, audit logs, environment snapshots). Integrated multi-dimensional scoring."",
+        ""Scalable Horizons (controlled by number of hidden slots H). Controllable Difficulty (controlled by decoy budget B).""
+      ],
+      [
+        ""Evaluation Metrics"",
+        ""Completion, Safety, and Robustness scores. Reports Average Score, Pass@k, and Passk across multiple trials."",
+        ""Average Reward (%). Focuses on model discriminability and domain consistency across varying H and B.""
+      ],
+      [
+        ""Auditing/Grading"",
+        ""Trajectory-aware grading using 2,159 fine-grained rubric items. Distinguishes genuine capability from lucky outcomes via multiple trials."",
+        ""Deterministic constraint checking (local slot constraints and global constraints). No trajectory auditing mentioned; focuses on final solution correctness.""
+      ],
+      [
+        ""Resource Overhead"",
+        ""High (requires sandboxed execution, mock services, and multimodal processing)."",
+        ""Low (static JSON files, fast and reproducible, suitable for training-time validation).""
+      ]
+    ]
+  }
+}","[Claw-Eval: Toward Trustworthy Evaluation of Autonomous Agents]
+Claw-Eval: Toward Trustworthy Evaluation of
+Autonomous Agents
+Bowen Ye1∗
+Rang Li1∗
+Qibin Yang1
+Yuanxin Liu1
+Linli Yao1
+Hanglong Lv1
+Zhihui Xie2
+Chenxin An2
+Lei Li2,†
+Lingpeng Kong2
+Qi Liu2
+Zhifang Sui1
+Tong Yang1
+1State Key Laboratory of Multimedia Information Processing,
+School of Computer Science, Peking University
+2The University of Hong Kong
+bwye@stu.pku.edu.cn, lirang410@gmail.com, nlp.lilei@gmail.com
+* Equal contribution
+† Project lead
+Project Page: https://claw-eval.github.io
+Abstract
+Large language models are increasingly deployed as autonomous agents executing
+multi-step workflows in real-world software environments. However, existing
+agent benchmarks suffer from three critical limitations: (1) trajectory-opaque
+grading that checks only final outputs, (2) underspecified safety and
+
+---
+
+[ACE-Bench: Agent Configurable Evaluation with Scalable Horizons and Controllable Difficulty under Lightweight Environments]
+Preprint. Under review.
+ACE-Bench: Agent Configurable Evaluation
+with Scalable Horizons and Controllable Difficulty
+under Lightweight Environments
+Wang Yang1, Chaoda Song1, Xinpeng Li1, Debargha Ganguly1, Chuang Ma2
+Shouren Wang1, Zhihao Dou1, Yuli Zhou3, Vipin Chaudhary1, Xiaotian Han1
+1Case Western Reserve University 2NII LLMC (Japan) 3University of Zurich
+Abstract
+Existing Agent benchmarks suffer from two critical limitations: high en-
+vironment interaction overhead (up to 41% of total evaluation time) and
+imbalanced task horizon and difficulty distributions that make aggregate
+scores unreliable. To address these issues, we propose ACE-Bench built
+around a unified grid-based planning task, where agents must fill hidden
+slots in a partially completed schedule subject to both local slot c
+
+---
+
+[Artificial Intelligence and the Structure of Mathematics]
+Artificial Intelligence and the
+Structure of Mathematics
+Maissam Barkeshli,1,2 Michael R. Douglas,3 and
+Michael H. Freedman3,4
+1Meta Superintelligence Labs, Fundamental AI Research
+2Department of Physics and Joint Quantum Institute,
+University of Maryland, College Park
+3Center for Mathematical Sciences and Applications,
+Harvard University
+4Logical Intelligence
+Abstract
+Recent progress in artificial intelligence (AI) is unlocking transformative capabili-
+ties for mathematics. There is great hope that AI will help solve major open problems
+and autonomously discover new mathematical concepts. In this essay, we further con-
+sider how AI may open a grand perspective on mathematics by forging a new route,
+complementary to mathematical logic, to understanding the global structure of for-
+mal proo","","","","",""
+"R16","hotpot_02_comparative","A","comparative","Compare Billy Howle's film roles in Dunkirk and On Chesil Beach with a timeline.","mermaid_timeline","timeline
+    title Billy Howle's Film Roles: Dunkirk vs On Chesil Beach
+    section 2017
+        July 21 : Dunkirk released
+        September 7 : On Chesil Beach premiered at TIFF","[On Chesil Beach (film)]
+On Chesil Beach is an upcoming British drama film directed by Dominic Cooke in his motion picture directorial debut.  Ian McEwan self-adapted his own 2007 Booker Prize-nominated novella of the same name.  It stars Saoirse Ronan and Billy Howle.  The film had its world premiere in the Special Presentations section at the Toronto International Film Festival on September 7, 2017.
+
+---
+
+[Billy Howle]
+Billy Howle (born November 9, 1989) is an actor, known for his work as James Warwick on the E4 television series, ""Glue"".  He has since co-starred in the film, ""The Sense of an Ending"" (as the younger version of Jim Broadbent's lead character) and the miniseries ""The Witness for the Prosecution"" in the pivotal role of defendant, Leonard Vole.  He also appeared in ""Dunkirk"".  Howle will next be seen opposite Saoirse Ronan in the drama, ""On Chesil Beach"", in the adaptation of Anton Chekhov's iconic play, ""The Seagull"", and in Netflix film ""Outlaw King"".","","","","",""
+"R17","10k_01_temporal","A","temporal","Show a timeline of Microsoft's fiscal year 2025 revenue growth highlights compared to 2024.","chartjs_bar","{""type"": ""bar"", ""data"": {""labels"": [""Microsoft Cloud"", ""Server Products & Cloud (Azure)"", ""Search & News Advertising"", ""Dynamics Products & Cloud"", ""Xbox Content & Services"", ""Microsoft 365 Commercial"", ""Microsoft 365 Consumer"", ""LinkedIn"", ""Windows OEM & Devices""], ""datasets"": [{""label"": ""YoY Revenue Growth (%)"", ""data"": [23, 34, 20, 15, 16, 14, 11, 9, 3], ""backgroundColor"": ""#0078D4"", ""borderColor"": ""#004E8C"", ""borderWidth"": 1}]}, ""options"": {""indexAxis"": ""y"", ""responsive"": true, ""plugins"": {""title"": {""display"": true, ""text"": ""Microsoft FY2025 Revenue Growth Highlights vs FY2024"", ""font"": {""size"": 16}}, ""legend"": {""display"": false}, ""tooltip"": {""callbacks"": {""label"": ""function(context) { return context.parsed.x + '% growth'; }""}}}, ""scales"": {""x"": {""beginAtZero"": true, ""title"": {""display"": true, ""text"": ""Year-over-Year Growth (%)""}}, ""y"": {""title"": {""display"": true, ""text"": ""Business Segment""}}}}}","[MSFT 10-K Item 7 (MD&A)]
+ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF 
+FINANCIAL CONDITION AND RESULTS OF OPERATIONS
+The following Management’s Discussion and Analysis of Financial Condition and Results of Operations (“MD&A”) is intended to help the reader understand the results of operations and financial condition of Microsoft Corporation. MD&A is provided as a supplement to, and should be read in conjunction with, our consolidated financial statements and the accompanying Notes to Financial Statements (Part II, Item 8 of this Form 10-K). This section generally discusses the results of our operations for the year ended June 30, 2025 compared to the year ended June 30, 2024. For a discussion of the year ended June 30, 2024 compared to the year ended June 30, 2023, please refer to Part II, Item 7, “Management’s
+
+---
+
+[MSFT 10-K Item 7A (Quantitative & Qualitative Risk)]
+ITEM 7A. QUANTITATIVE AND QUALITAT
+IVE DISCLOSURES ABOUT MARKET RISK
+RISKS
+ 
+We are exposed to economic risk from foreign exchange rates, interest rates, credit risk, and equity prices. We use derivatives instruments to manage these risks, however, they may still impact our consolidated financial statements.
+ 
+Foreign Currencies
+ 
+Certain forecasted transactions, assets, and liabilities are exposed to foreign currency risk. We monitor our foreign currency exposures daily to maximize the economic effectiveness of our foreign currency positions, including hedges. Principal currency exposures include the Euro, Japanese yen, British pound, Canadian dollar, and Australian dollar.
+ 
+Interest Rate
+ 
+Securities held in our fixed-income portfolio are subject to different interest rate risks based o","","","","",""
+"R18","hotpot_01_comparative","B","comparative","Compare Wilmslow High School's history and the Wilmslow Show's schedule in a timeline.","mermaid_timeline","timeline
+    title Wilmslow High School History and Wilmslow Show Schedule
+    1960 : Wilmslow High School founded as a grammar school
+    1991 : Transitioned to comprehensive status as Wilmslow High School
+    Annual : Wilmslow Show held at the school (2nd Sunday in July)","[Wilmslow High School]
+Wilmslow High School is a mixed-sex 11–18 comprehensive secondary school in Wilmslow, Cheshire, and a designated Centre of Excellence.  The school began in 1960 as a grammar school and gradually became a comprehensive school, becoming Wilmslow High School in 1991.  Dr. James Pullé is the head teacher.  The school is designated ""good"" by Ofsted. <ref name=""11/13 Ofsted Report"">Ofsted report</ref>
+
+---
+
+[Wilmslow Show]
+Wilmslow Show is held at Wilmslow High School, Wilmslow, Cheshire, England, as a one-day event on a Sunday – usually the second Sunday in July.  Sections include Horticulture, Dogs, Classic Cars, etc.","","","","",""
+"R19","hotpot_04_comparative","A","comparative","Compare the film roles of Jean-Claude Van Damme and Scott Adkins in the Universal Soldier franchise.","mermaid_flowchart","graph TD
+    subgraph Universal_Soldier_Franchise [Universal Soldier Franchise]
+        direction TB
+        US1[""Universal Soldier (1992)""]
+        US2[""Subsequent Entries""]
+        US3[""Final Entry (New Protagonist)""]
+        
+        JCV[""Jean-Claude Van Damme""]
+        MB[""Matt Battaglia""]
+        SA[""Scott Adkins""]
+        
+        LD[""Character: Luc Deveraux""]
+        J[""Character: John""]
+        
+        JCV -->|Played| LD
+        MB -->|Played| LD
+        LD -->|Centered in| US1
+        LD -->|Centered in| US2
+        
+        SA -->|Played| J
+        J -->|Protagonist in| US3
+    end","[Universal Soldier (franchise)]
+The Universal Soldier franchise is a series of science fiction action films.  The franchise began in 1992 with ""Universal Soldier"" and as of 2012 comprises six entries (some of which are now considered non-canon).  The films centered on the character of Luc Deveraux (played first by Jean-Claude Van Damme and then by Matt Battaglia) until """", which focuses on a new protagonist named John (played by Scott Adkins).
+
+---
+
+[Scott Adkins]
+Scott Edward Adkins (born 17 June 1976) is an English actor and martial artist who is best known for playing Russian prison fighter Yuri Boyka in the 2006 film """" and its following two sequels: """" (2010) and """" (2016) and Casey Bowman in Ninja and its sequel .  He is also known for playing Bradley Hume in ""Holby City"", Lucian in ""Doctor Strange"", Kiley in ""The Bourne Ultimatum"" and John in ""Zero Dark Thirty"".  Adkins has also appeared in ""EastEnders"", ""Hollyoaks"", ""Doctors"" as well as starred in many direct-to-video films.","","","","",""
+"R20","hotpot_00_relational","B","relational","Map the connection between Iqbal F. Qadir and Dwarka during the 1971 war.","mermaid_flowchart","graph LR
+    A[Iqbal F. Qadir] -->|Retired Pakistan Navy Admiral| B(Pakistan Navy)
+    B -->|Participated in 1971 War| C[Flotilla Attack]
+    C -->|Target| D[Radar Station in Dwarka]
+    D -->|Located in| E[Dwarka, Gujarat, India]","[Dwarka]
+Dwarka () is a small city and a municipality of Devbhoomi Dwarka district in the state of Gujarat in northwestern India.  It is located on the western shore of the Okhamandal Peninsula on the right bank of the Gomti River.  In 2011 it had a population of 38,873.  Dwarka is one of the foremost Chardhams, four sacred Hindu pilgrimage sites, and is one of the Sapta Puri, the seven most ancient religious cities in the country.  Dwarka is often identified with the Dwarka Kingdom, the ancient kingdom of Krishna, and is believed to have been the first capital of Gujarat.
+
+---
+
+[Iqbal F. Qadir]
+Vice-Admiral Iqbal Fazl Quadir (Urdu:اقبال فضل قادر) , is a retired three-star rank admiral in the Pakistan Navy, former diplomat, and a defence analyst.  He is renown for his participation in second war with India when he was part of the flotilla that attacked the radar station in Dwarka, India.","","","","",""
+"R21","10k_01_temporal","B","temporal","Show a timeline of Microsoft's fiscal year 2025 revenue growth highlights compared to 2024.","mermaid_flowchart","answer here","[MSFT 10-K Item 7 (MD&A)]
+ITEM 7. MANAGEMENT’S DISCUSSION AND ANALYSIS OF 
+FINANCIAL CONDITION AND RESULTS OF OPERATIONS
+The following Management’s Discussion and Analysis of Financial Condition and Results of Operations (“MD&A”) is intended to help the reader understand the results of operations and financial condition of Microsoft Corporation. MD&A is provided as a supplement to, and should be read in conjunction with, our consolidated financial statements and the accompanying Notes to Financial Statements (Part II, Item 8 of this Form 10-K). This section generally discusses the results of our operations for the year ended June 30, 2025 compared to the year ended June 30, 2024. For a discussion of the year ended June 30, 2024 compared to the year ended June 30, 2023, please refer to Part II, Item 7, “Management’s
+
+---
+
+[MSFT 10-K Item 7A (Quantitative & Qualitative Risk)]
+ITEM 7A. QUANTITATIVE AND QUALITAT
+IVE DISCLOSURES ABOUT MARKET RISK
+RISKS
+ 
+We are exposed to economic risk from foreign exchange rates, interest rates, credit risk, and equity prices. We use derivatives instruments to manage these risks, however, they may still impact our consolidated financial statements.
+ 
+Foreign Currencies
+ 
+Certain forecasted transactions, assets, and liabilities are exposed to foreign currency risk. We monitor our foreign currency exposures daily to maximize the economic effectiveness of our foreign currency positions, including hedges. Principal currency exposures include the Euro, Japanese yen, British pound, Canadian dollar, and Australian dollar.
+ 
+Interest Rate
+ 
+Securities held in our fixed-income portfolio are subject to different interest rate risks based o","","","","",""
+"R22","hotpot_09_relational","A","relational","Show a timeline of Emilio Estevez's 1983 film roles, including Nightmares.","mermaid_timeline","timeline
+    title Emilio Estevez's 1983 Film Roles
+    section 1983
+        The Outsiders : 1983 : Hit movie
+        Nightmares : 1983 : Horror anthology film","[Emilio Estevez]
+Emilio Estevez ( ; born May 12, 1962) is an American actor, director, and writer.  He started his career as an actor and is well known for being a member of the acting Brat Pack of the 1980s, starring in ""The Breakfast Club"", ""St. Elmo's Fire"", and also acting in the 1983 hit movie ""The Outsiders"".  He is also known for ""Repo Man"", ""The Mighty Ducks"" and its sequels, ""Stakeout"", ""Maximum Overdrive"", ""Bobby"" (which he also wrote and directed), and his performances in Western films such as ""Young Guns"" and its sequel.
+
+---
+
+[Nightmares (1983 film)]
+Nightmares is a 1983 American horror anthology film directed by Joseph Sargent, and starring Emilio Estevez, Lance Henriksen, Cristina Raines, Veronica Cartwright, and Richard Masur.  The film is made up of four short films based on urban legends; the first concerns a woman who encounters a killer in the backseat of her car; the second concerns a video game-addicted teenager who is consumed by his game; the third focuses on a fallen priest who is stalked by a pickup truck from hell; and the last follows a suburban family battling a giant rat in their home.","","","","",""
+"R23","multinews_09_comparative","B","comparative","Compare Warren Buffett's annual Berkshire Hathaway share donations to the Gates Foundation over the last three years.","chartjs_grouped_bar","{""type"":""bar"",""data"":{""labels"":[""2012"",""2013"",""2014""],""datasets"":[{""label"":""Donation Value (Billions USD)"",""data"":[1.5,2.0,2.1],""backgroundColor"":""rgba(54, 162, 235, 0.5)"",""borderColor"":""rgba(54, 162, 235, 1)"",""borderWidth"":1,""yAxisID"":""y""},{""label"":""Shares Donated (Millions Class B)"",""data"":[18.4,17.5,16.6],""backgroundColor"":""rgba(255, 99, 132, 0.5)"",""borderColor"":""rgba(255, 99, 132, 1)"",""borderWidth"":1,""yAxisID"":""y1""}]},""options"":{""responsive"":true,""scales"":{""y"":{""type"":""linear"",""position"":""left"",""title"":{""display"":true,""text"":""Value (USD Billion)""}},""y1"":{""type"":""linear"",""position"":""right"",""title"":{""display"":true,""text"":""Shares (Millions)""},""grid"":{""drawOnChartArea"":false}}},""plugins"":{""title"":{""display"":true,""text"":""Warren Buffett's Donations to Gates Foundation (2012-2014)""},""legend"":{""display"":true,""position"":""top""}}}}","[Article 1: Warren Buffett's annual gift of Berkshire Hathaway stock…]
+Warren Buffett's annual gift of Berkshire Hathaway stock to the Bill and Melinda Gates Foundation is worth $2.1 billion this year, up from $2.0 billion last year. It's also more than any of Buffett's previous eight donations. 
+ 
+ Even though Buffett's gift schedule called for him to give the Gates Foundation 16.6 million Class B shares this year, down from 17.5 million shares last year, the value of each share gained 12.1 percent over the past 12 months, boosting the total value of the donation by more than $100 million above last year's level. 
+ 
+ It's the third-consecutive year the value of Buffett's gift has increased from the previous year, even though he donated fewer shares each time. 
+ 
+ In a 2006 letter to Microsoft's co-founder and his wife, Buffett outlined a long-term schedule t
+
+---
+
+[Article 2: Along with Microsoft Corp. co-founder Bill Gates, the…]
+Along with Microsoft Corp. co-founder Bill Gates, the world’s richest man, left, Warren Buffett has urged other ultra-wealthy people to give away their money. 
+ 
+ Along with Microsoft Corp. co-founder Bill Gates, the world’s richest man, left, Warren Buffett has urged other ultra-wealthy people to give away their money. Close 
+ 
+ Warren Buffett, the second-richest person in the U.S., made his largest single charitable contribution with a gift of $2.1 billion to the Bill and Melinda Gates Foundation as he seeks to encourage giving by the wealthy. 
+ 
+ The chairman and chief executive officer of Omaha, Nebraska-based Berkshire Hathaway Inc. (BRK/A) gave 16.6 million Class B shares yesterday in an annual gift to the foundation, where he is a trustee, according to a regulatory filing today. The","","","","",""
+"R24","multinews_06_temporal","A","temporal","Timeline of Supreme Court cases: Evenwel v. Abbott, same-sex marriage, and lethal injection decisions.","mermaid_timeline","timeline
+    title Timeline of Supreme Court Cases
+    section Background
+        1964 : Reynolds v. Sims establishes
+              one person, one vote principle
+    section Evenwel v. Abbott
+        2001 : Justice Thomas urges
+              settlement of population issue
+        Tuesday : Supreme Court agrees
+                  to hear Evenwel v. Abbott
+        Fall : Case argued in court
+    section End of Term Decisions
+        June : Court saves high drama
+               for end of term
+        Thursday : Two decisions announced
+        Friday : More decisions scheduled
+        Monday : More decisions scheduled
+        Pending : Same-sex marriage ruling
+        Pending : Lethal injection ruling","[Article 1: WASHINGTON (AP) — The Supreme Court agreed Tuesday…]
+WASHINGTON (AP) — The Supreme Court agreed Tuesday to hear an important case about whether states must count only those who are eligible to vote, rather than the total population, when drawing electoral districts for their legislatures. 
+ 
+ The case from Texas could be significant for states with large immigrant populations, including Latinos who are children or not citizens. The plaintiffs claim that redrawing electoral districts based on the population of citizens and non-citizens alike violates the constitutional requirement of one person, one vote. 
+ 
+ The challengers claim that taking account of total population can lead to vast differences in the number of voters in particular districts, along with corresponding differences in the power of those voters. 
+ 
+ The Project on Fair Repres
+
+---
+
+[Article 2: The high court is saving the high drama…]
+The high court is saving the high drama for the end of its term. 
+ 
+ As June dwindles, five cases are left for the Supreme Court to decide — including one that could legalize same-sex marriage across the country. 
+ 
+ After announcing two decisions on Thursday, the court is scheduled to announce more decisions Friday and Monday — and it could add days beyond that. There's no indication which decisions will be released on which days. 
+ 
+ Here's a rundown of what's left to settle: 
+ 
+ Same-sex marriage 
+ 
+ In a landmark decision, the court will confront two questions. The first is whether states can ban same-sex marriage. The second is whether states must recognize same-sex marriages performed legally in other states. 
+ 
+ All eyes are on Justice Anthony Kennedy, who wrote three of the court's","","","","",""
+"R25","multinews_01_temporal","A","temporal","Timeline of major archaeological discoveries: Roman shipwreck, Ötzi, Nazca Lines, Rosetta Stone, Dead Sea Scrolls, and Jerusalem Aqueduct.","mermaid_timeline","timeline
+    title Timeline of Major Archaeological Discoveries
+    section 18th Century
+        1799 : Rosetta Stone discovered
+    section 20th Century
+        1930s : Nazca Lines discovered
+        1940 : Lascaux Caves discovered
+        1947 : Dead Sea Scrolls discovered
+        1986 : Roman Shipwreck discovered
+        1991 : Ötzi discovered
+        2009 : Roman Coins & Staffordshire Hoard discovered
+    section 21st Century
+        Recent : Jerusalem Aqueduct section uncovered","[Article 1: In 1986, divers stumbled upon a nearly 2,000-year-old…]
+In 1986, divers stumbled upon a nearly 2,000-year-old Roman shipwreck some six miles off the coast of the town of Grado, Italy. Measuring 55 feet long and 16 feet wide, the small trade vessel was stocked with 600 amphorae, or vases, packed with sardines and other fish. Further study of the shipwreck revealed that the ancient Roman engineers also had built in a hydraulic system that allowed the ship to carry an aquarium with live fish. 
+ 
+ Over the years, metal detector enthusiasts, particularly those in the United Kingdom, have uncovered archaeological treasures buried beneath the Earth. In 2009, 30-year-old Nick Davies hauled in 10,000 ancient Roman coins that he had found inside a clay pot buried in Shropshire, U.K. That same year, a trove of 1,500 gold and silver pieces dating back to t
+
+---
+
+[Article 2: A section of Jerusalem’s Lower Aqueduct, which brought…]
+A section of Jerusalem’s Lower Aqueduct, which brought water to Jerusalem more than two millennia ago, was uncovered in the East Jerusalem neighborhood of Umm Tuba during the construction of a new sewer line, it was announced Thursday. 
+ 
+ The ancient aqueduct was discovered during digging last month by the Gihon Water Company, which was laying new pipes to modernize the sewer system in the Umm Tuba and Sur Baher neighborhoods in East Jerusalem. 
+ 
+ The Israel Antiquities Authority excavated the area after the aqueduct was found. 
+ 
+ “The Lower Aqueduct to Jerusalem, which the Hasmonean kings constructed more than 2,000 years ago in order to provide water to Jerusalem, operated intermittently until about one hundred years ago,” said Ya’akov Billig, the director of the excavation. 
+ 
+ Accor
+
+---
+
+[Article 3: Part of an ancient aqueduct built more than…]
+Part of an ancient aqueduct built more than 2,000 years ago to transport water into the city of Jerusalem was uncovered during a recent construction project, according to the Israel Antiquities Authority. 
+ 
+ A section of the so-called Lower Aqueduct was discovered in the modern-day neighborhood of Umm Tuba, in East Jerusalem, during efforts to construct a new sewer line. The Lower Aqueduct was originally built more than 2,000 years ago by kings in the Hasmonean dynasty, who ruled Judea and its surrounding regions from about 140 B.C. to 37 B.C., and preceded King Herod the Great. 
+ 
+ The sprawling, 13-mile-long (21 kilometers) aqueduct carried water to the capital, and ""operated intermittently until about 100 years ago,"" Ya'akov Billig, director of the aqueduct excavation with the Israel A","","","","",""
+"R26","multinews_01_temporal","B","temporal","Timeline of major archaeological discoveries: Roman shipwreck, Ötzi, Nazca Lines, Rosetta Stone, Dead Sea Scrolls, and Jerusalem Aqueduct.","mermaid_timeline","timeline
+    title Timeline of Major Archaeological Discoveries
+    1799 : Rosetta Stone discovered in Egypt
+    1930s : Nazca Lines discovered by airplane in Peru
+    1947 : Dead Sea Scrolls discovered in Qumran
+    1986 : Roman shipwreck discovered off Grado, Italy
+    1991 : Ötzi the Iceman discovered in the Alps
+    Recent : Jerusalem Lower Aqueduct section unearthed in Umm Tuba","[Article 1: In 1986, divers stumbled upon a nearly 2,000-year-old…]
+In 1986, divers stumbled upon a nearly 2,000-year-old Roman shipwreck some six miles off the coast of the town of Grado, Italy. Measuring 55 feet long and 16 feet wide, the small trade vessel was stocked with 600 amphorae, or vases, packed with sardines and other fish. Further study of the shipwreck revealed that the ancient Roman engineers also had built in a hydraulic system that allowed the ship to carry an aquarium with live fish. 
+ 
+ Over the years, metal detector enthusiasts, particularly those in the United Kingdom, have uncovered archaeological treasures buried beneath the Earth. In 2009, 30-year-old Nick Davies hauled in 10,000 ancient Roman coins that he had found inside a clay pot buried in Shropshire, U.K. That same year, a trove of 1,500 gold and silver pieces dating back to t
+
+---
+
+[Article 2: A section of Jerusalem’s Lower Aqueduct, which brought…]
+A section of Jerusalem’s Lower Aqueduct, which brought water to Jerusalem more than two millennia ago, was uncovered in the East Jerusalem neighborhood of Umm Tuba during the construction of a new sewer line, it was announced Thursday. 
+ 
+ The ancient aqueduct was discovered during digging last month by the Gihon Water Company, which was laying new pipes to modernize the sewer system in the Umm Tuba and Sur Baher neighborhoods in East Jerusalem. 
+ 
+ The Israel Antiquities Authority excavated the area after the aqueduct was found. 
+ 
+ “The Lower Aqueduct to Jerusalem, which the Hasmonean kings constructed more than 2,000 years ago in order to provide water to Jerusalem, operated intermittently until about one hundred years ago,” said Ya’akov Billig, the director of the excavation. 
+ 
+ Accor
+
+---
+
+[Article 3: Part of an ancient aqueduct built more than…]
+Part of an ancient aqueduct built more than 2,000 years ago to transport water into the city of Jerusalem was uncovered during a recent construction project, according to the Israel Antiquities Authority. 
+ 
+ A section of the so-called Lower Aqueduct was discovered in the modern-day neighborhood of Umm Tuba, in East Jerusalem, during efforts to construct a new sewer line. The Lower Aqueduct was originally built more than 2,000 years ago by kings in the Hasmonean dynasty, who ruled Judea and its surrounding regions from about 140 B.C. to 37 B.C., and preceded King Herod the Great. 
+ 
+ The sprawling, 13-mile-long (21 kilometers) aqueduct carried water to the capital, and ""operated intermittently until about 100 years ago,"" Ya'akov Billig, director of the aqueduct excavation with the Israel A","","","","",""
+"R27","hotpot_02_relational","A","relational","Map the connection between Billy Howle and On Chesil Beach.","mermaid_flowchart","graph LR
+  A[Billy Howle] -->|Stars in| B[On Chesil Beach]","[On Chesil Beach (film)]
+On Chesil Beach is an upcoming British drama film directed by Dominic Cooke in his motion picture directorial debut.  Ian McEwan self-adapted his own 2007 Booker Prize-nominated novella of the same name.  It stars Saoirse Ronan and Billy Howle.  The film had its world premiere in the Special Presentations section at the Toronto International Film Festival on September 7, 2017.
+
+---
+
+[Billy Howle]
+Billy Howle (born November 9, 1989) is an actor, known for his work as James Warwick on the E4 television series, ""Glue"".  He has since co-starred in the film, ""The Sense of an Ending"" (as the younger version of Jim Broadbent's lead character) and the miniseries ""The Witness for the Prosecution"" in the pivotal role of defendant, Leonard Vole.  He also appeared in ""Dunkirk"".  Howle will next be seen opposite Saoirse Ronan in the drama, ""On Chesil Beach"", in the adaptation of Anton Chekhov's iconic play, ""The Seagull"", and in Netflix film ""Outlaw King"".","","","","",""
+"R28","hotpot_05_comparative","A","comparative","Compare the career milestones of Old Tom Morris and Jack Lowden in a timeline.","mermaid_timeline","timeline
+    title Career Milestones: Old Tom Morris & Jack Lowden
+    section Old Tom Morris
+        Pioneering Scottish Golfing Champion : 19th Century
+    section Jack Lowden
+        Born : 2 June 1990
+        Successful Stage Career : 2012 - 2016
+        First Major International Onscreen Success : 2016 (War & Peace)
+        Portrays Young Tom Morris : 2016 (Tommy's Honour)
+        Film Wins Best Feature Film : 2016 (BA Scotland Awards)","[Tommy's Honour]
+Tommy's Honour is a 2016 historical drama film depicting the lives and careers of, and the complex relationship between, the pioneering Scottish golfing champions Old Tom Morris and his son Young Tom Morris.  The film is directed by Jason Connery, and the father and son are portrayed by Peter Mullan and Jack Lowden.  The film won Best Feature Film at the 2016 British Academy Scotland Awards.
+
+---
+
+[Jack Lowden]
+Jack Andrew Lowden (born 2 June 1990) is a Scottish stage, television, and film actor.  Following a highly successful and award-winning four-year stage career, his first major international onscreen success was in the 2016 BBC miniseries ""War & Peace"", which led to starring roles in feature films.","","","","",""
+"R29","multinews_06_comparative","B","comparative","Compare the key legal questions and potential impacts of the Supreme Court cases on same-sex marriage, redistricting, and lethal injection.","mermaid_mindmap","mindmap
+  root((Supreme Court Cases))
+    Same-Sex Marriage
+      Legal Questions
+        Can states ban same-sex marriage?
+        Must states recognize out-of-state same-sex marriages?
+      Potential Impacts
+        Nationwide legalization of same-sex marriage
+        Resolution of marriage definition conflicts
+    Redistricting
+      Legal Questions
+        Population Basis
+          Must states use voting-eligible population vs total population?
+          Does total population violate 'one person, one vote'?
+        Authority
+          Who controls district creation: Legislature or Independent Commission?
+          Does Article I require state legislatures to draw districts?
+      Potential Impacts
+        Power Shift
+          Shift power from urban to rural areas
+          Affects states with large immigrant populations (e.g., Texas)
+        Political Reform
+          Impact on gerrymandering prevention
+          Validity of independent redistricting commissions (e.g., Arizona)","[Article 1: WASHINGTON (AP) — The Supreme Court agreed Tuesday…]
+WASHINGTON (AP) — The Supreme Court agreed Tuesday to hear an important case about whether states must count only those who are eligible to vote, rather than the total population, when drawing electoral districts for their legislatures. 
+ 
+ The case from Texas could be significant for states with large immigrant populations, including Latinos who are children or not citizens. The plaintiffs claim that redrawing electoral districts based on the population of citizens and non-citizens alike violates the constitutional requirement of one person, one vote. 
+ 
+ The challengers claim that taking account of total population can lead to vast differences in the number of voters in particular districts, along with corresponding differences in the power of those voters. 
+ 
+ The Project on Fair Repres
+
+---
+
+[Article 2: The high court is saving the high drama…]
+The high court is saving the high drama for the end of its term. 
+ 
+ As June dwindles, five cases are left for the Supreme Court to decide — including one that could legalize same-sex marriage across the country. 
+ 
+ After announcing two decisions on Thursday, the court is scheduled to announce more decisions Friday and Monday — and it could add days beyond that. There's no indication which decisions will be released on which days. 
+ 
+ Here's a rundown of what's left to settle: 
+ 
+ Same-sex marriage 
+ 
+ In a landmark decision, the court will confront two questions. The first is whether states can ban same-sex marriage. The second is whether states must recognize same-sex marriages performed legally in other states. 
+ 
+ All eyes are on Justice Anthony Kennedy, who wrote three of the court's","","","","",""

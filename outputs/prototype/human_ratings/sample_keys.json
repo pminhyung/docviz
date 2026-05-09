@@ -1,0 +1,377 @@
+[
+  {
+    "rating_id": "R00",
+    "query_id": "hotpot_09_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R01",
+    "query_id": "10k_04_quantitative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R02",
+    "query_id": "arxiv_04_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.0,
+    "judge_axis_scores": {
+      "faithfulness": 0.0,
+      "coverage": 0.0,
+      "type_appropriateness": 0.0
+    }
+  },
+  {
+    "rating_id": "R03",
+    "query_id": "arxiv_00_hierarchical",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.9375,
+    "judge_axis_scores": {
+      "faithfulness": 0.75,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R04",
+    "query_id": "multinews_01_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.8333,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 0.3333
+    }
+  },
+  {
+    "rating_id": "R05",
+    "query_id": "multinews_07_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.8056,
+    "judge_axis_scores": {
+      "faithfulness": 0.75,
+      "coverage": 0.6667,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R06",
+    "query_id": "multinews_00_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.6111,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 0.3333,
+      "type_appropriateness": 0.5
+    }
+  },
+  {
+    "rating_id": "R07",
+    "query_id": "arxiv_02_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R08",
+    "query_id": "arxiv_00_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.8889,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 0.6667,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R09",
+    "query_id": "hotpot_03_relational",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.4791,
+    "judge_axis_scores": {
+      "faithfulness": 0.25,
+      "coverage": 0.3333,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 0.3333
+    }
+  },
+  {
+    "rating_id": "R10",
+    "query_id": "multinews_08_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R11",
+    "query_id": "arxiv_02_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.75,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 0.0
+    }
+  },
+  {
+    "rating_id": "R12",
+    "query_id": "10k_02_temporal",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R13",
+    "query_id": "multinews_00_temporal",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.7083,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 0.5,
+      "search_query_quality": 0.3333
+    }
+  },
+  {
+    "rating_id": "R14",
+    "query_id": "hotpot_00_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.7917,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 0.5,
+      "search_query_quality": 0.6667
+    }
+  },
+  {
+    "rating_id": "R15",
+    "query_id": "arxiv_04_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R16",
+    "query_id": "hotpot_02_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.7222,
+    "judge_axis_scores": {
+      "faithfulness": 0.5,
+      "coverage": 0.6667,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R17",
+    "query_id": "10k_01_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.5,
+    "judge_axis_scores": {
+      "faithfulness": 0.5,
+      "coverage": 1.0,
+      "type_appropriateness": 0.0
+    }
+  },
+  {
+    "rating_id": "R18",
+    "query_id": "hotpot_01_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R19",
+    "query_id": "hotpot_04_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.9167,
+    "judge_axis_scores": {
+      "faithfulness": 0.75,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R20",
+    "query_id": "hotpot_00_relational",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.9167,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 0.6667,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R21",
+    "query_id": "10k_01_temporal",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.2083,
+    "judge_axis_scores": {
+      "faithfulness": 0.0,
+      "coverage": 0.0,
+      "type_appropriateness": 0.0,
+      "search_query_quality": 0.8333
+    }
+  },
+  {
+    "rating_id": "R22",
+    "query_id": "hotpot_09_relational",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R23",
+    "query_id": "multinews_09_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 1.0
+    }
+  },
+  {
+    "rating_id": "R24",
+    "query_id": "multinews_06_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.9167,
+    "judge_axis_scores": {
+      "faithfulness": 0.75,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R25",
+    "query_id": "multinews_01_temporal",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R26",
+    "query_id": "multinews_01_temporal",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.9167,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0,
+      "search_query_quality": 0.6667
+    }
+  },
+  {
+    "rating_id": "R27",
+    "query_id": "hotpot_02_relational",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 0.4167,
+    "judge_axis_scores": {
+      "faithfulness": 0.25,
+      "coverage": 0.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R28",
+    "query_id": "hotpot_05_comparative",
+    "strategy": "S1_Direct",
+    "strategy_blind": "A",
+    "judge_overall": 1.0,
+    "judge_axis_scores": {
+      "faithfulness": 1.0,
+      "coverage": 1.0,
+      "type_appropriateness": 1.0
+    }
+  },
+  {
+    "rating_id": "R29",
+    "query_id": "multinews_06_comparative",
+    "strategy": "S4_Agentic",
+    "strategy_blind": "B",
+    "judge_overall": 0.2708,
+    "judge_axis_scores": {
+      "faithfulness": 0.25,
+      "coverage": 0.0,
+      "type_appropriateness": 0.5,
+      "search_query_quality": 0.3333
+    }
+  }
+]
