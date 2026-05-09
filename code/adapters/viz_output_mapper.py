@@ -190,6 +190,10 @@ def map_agent_response(
         response.steps_reasoning, bundle, fallback_concat_path=concat_doc_path
     )
     errors: List[str] = list(response.warnings)
+    if not viz_dsl:
+        # Agent returned empty final_answer (e.g., upstream LLM unreachable).
+        # Surface as an error so batch runners don't mistake silence for success.
+        errors.append("agent returned empty final_answer")
 
     return VizOutput(
         viz_dsl=viz_dsl,

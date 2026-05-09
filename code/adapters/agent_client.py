@@ -28,7 +28,12 @@ AGENT_BASE_URL = os.environ.get("DOCVIZ_AGENT_URL", "http://localhost:9024")
 QWEN_36_27B_BASE_URL = os.environ.get(
     "QWEN36_27B_BASE_URL", "http://localhost:9101/v1"
 )
-QWEN_36_27B_PORTS = [9101, 9102, 9103]   # 3-host pool
+# Env-overridable for partial-cluster recovery (e.g., when only 9101 is up).
+# Comma-separated, e.g. QWEN36_27B_PORTS=9101 or QWEN36_27B_PORTS=9101,9102.
+QWEN_36_27B_PORTS = [
+    int(p) for p in os.environ.get("QWEN36_27B_PORTS", "9101,9102,9103").split(",")
+    if p.strip()
+]
 QWEN_36_27B_MODEL = "Qwen3.6-27B"
 
 DEFAULT_REASONER_KEY = "EMPTY"   # vLLM ignores; set to non-empty to satisfy
