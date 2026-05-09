@@ -35,12 +35,35 @@ def _extract_dsl_block(text: str) -> Tuple[str, str]:
     final_answer. Returns ("", text) if no clear block is found.
 
     Heuristics, in order:
-      1. JSON object with keys {"viz_type", "viz_dsl"} (any case, anywhere)
-      2. Fenced block ```mermaid …``` → viz_type=mermaid_flowchart (caller may
-         downgrade to mermaid_mindmap/timeline by looking at the body)
-      3. Fenced block ```json … ``` → try to parse, look for chartjs spec
+      1a. Whole text is a JSON object with viz_type + viz_dsl (Qwen tends to
+          emit chartjs as a NESTED OBJECT under viz_dsl rather than a string;
+          re-serialize so downstream sees the same shape it would for Mermaid).
+      1b. Inline JSON object regex (legacy fast-path; only matches when
+          viz_dsl is a string — kept as a fallback for fenced/wrapped JSON).
+      2.  Fenced block ```mermaid …``` → viz_type=mermaid_flowchart (caller may
+          downgrade to mermaid_mindmap/timeline by looking at the body).
+      3.  Fenced block ```json … ``` → try to parse, look for chartjs spec.
     """
-    # Strategy 1 — JSON object with viz_type + viz_dsl
+    # Strategy 1a — JSON object at the head of the text (handles
+    # viz_dsl-as-nested-object AND "JSON + trailing prose" patterns).
+    stripped = text.lstrip()
+    if stripped.startswith("{"):
+        try:
+            obj, _ = json.JSONDecoder().raw_decode(stripped)
+        except json.JSONDecodeError:
+            obj = None
+        if isinstance(obj, dict):
+            viz_type = obj.get("viz_type", "")
+            viz_dsl = obj.get("viz_dsl", "")
+            if viz_type:
+                if isinstance(viz_dsl, str) and viz_dsl:
+                    return viz_type, viz_dsl
+                if isinstance(viz_dsl, (dict, list)):
+                    # Re-serialize nested object → string. Caller's syntax
+                    # check (chartjs JSON parse) succeeds on the round-trip.
+                    return viz_type, json.dumps(viz_dsl, ensure_ascii=False)
+
+    # Strategy 1b — inline JSON object regex (string-valued viz_dsl only)
     for match in re.finditer(r"\{[^{}]*\"viz_type\"\s*:\s*\"[^\"]+\"[^{}]*\}", text, re.DOTALL):
         chunk = match.group(0)
         try:
@@ -49,7 +72,7 @@ def _extract_dsl_block(text: str) -> Tuple[str, str]:
             continue
         viz_type = obj.get("viz_type", "")
         viz_dsl = obj.get("viz_dsl", "")
-        if viz_type and viz_dsl:
+        if viz_type and isinstance(viz_dsl, str) and viz_dsl:
             return viz_type, viz_dsl
 
     # Strategy 2 — fenced blocks

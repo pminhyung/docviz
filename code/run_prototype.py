@@ -281,30 +281,42 @@ def main() -> int:
     selected = {s.strip() for s in args.strategies.split(",") if s.strip()}
     pairs = [(q, bundles[q["bundle_id"]]) for q in queries]
 
+    def _checkpoint() -> None:
+        merged = list(existing.values())
+        merged.sort(key=lambda r: (r["bundle_id"], r["query_type"], r["strategy"]))
+        _write_all(merged, out_path)
+        print(f"[run_prototype] checkpoint: {len(merged)} records → {out_path}")
+
     # Dispatch per strategy, skipping already-done pairs unless --force.
-    new_records: List[Dict[str, Any]] = []
+    # Checkpoint all.json after each strategy pool so a kill mid-run keeps
+    # the completed strategy intact and a restart with --strategies can
+    # pick up exactly where we stopped.
     if "S1" in selected:
         s1_pairs = [(q, b) for (q, b) in pairs
                     if (q["query_id"], "S1_Direct") not in existing]
         if s1_pairs:
-            new_records.extend(_run_strategy_pool(
+            new = _run_strategy_pool(
                 "S1_Direct", lambda: S1Direct(), s1_pairs,
                 workers=args.s1_workers, raw_path=raw_path,
-            ))
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
     if "S4" in selected:
         s4_pairs = [(q, b) for (q, b) in pairs
                     if (q["query_id"], "S4_Agentic") not in existing]
         if s4_pairs:
-            new_records.extend(_run_strategy_pool(
+            new = _run_strategy_pool(
                 "S4_Agentic", lambda: S4Agentic(), s4_pairs,
                 workers=args.s4_workers, raw_path=raw_path,
-            ))
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
 
-    # Merge with existing and persist.
-    merged = list(existing.values()) + new_records
+    merged = list(existing.values())
     merged.sort(key=lambda r: (r["bundle_id"], r["query_type"], r["strategy"]))
-    _write_all(merged, out_path)
-    print(f"[run_prototype] wrote {len(merged)} records → {out_path}")
+    print(f"[run_prototype] final: {len(merged)} records in {out_path}")
 
     summary = _summarize(merged)
     print(f"[run_prototype] summary: {json.dumps(summary, ensure_ascii=False, indent=2)}")
