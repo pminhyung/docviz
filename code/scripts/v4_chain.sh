@@ -54,13 +54,13 @@ sleep 5
 # ── Step 1 — V4_pool full batch ──────────────────────────────────────────
 run_step "V4_pool full batch (60 records)" \
   "$LOGDIR/v4_pool.log" \
-  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 2" \
+  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 1" \
   || exit 1
 
 # ── Step 2 — V4_consolidated full batch ──────────────────────────────────
 run_step "V4_consolidated full batch (60 records)" \
   "$LOGDIR/v4_cons.log" \
-  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_consolidated --s4-workers 2" \
+  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_consolidated --s4-workers 1" \
   || exit 1
 
 # ── Step 3 — judge new records ───────────────────────────────────────────
