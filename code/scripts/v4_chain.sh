@@ -51,31 +51,48 @@ log "V1 finished"
 # Brief pause to flush
 sleep 5
 
-# ── Step 1 — V4_pool full batch ──────────────────────────────────────────
-run_step "V4_pool full batch (60 records)" \
-  "$LOGDIR/v4_pool.log" \
-  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 1" \
-  || exit 1
-
-# ── Step 2 — V4_consolidated full batch ──────────────────────────────────
+# ── Step 1 — V4_consolidated full batch (priority per user 2026-05-10) ──
 run_step "V4_consolidated full batch (60 records)" \
   "$LOGDIR/v4_cons.log" \
   "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_consolidated --s4-workers 1" \
   || exit 1
 
-# ── Step 3 — judge new records ───────────────────────────────────────────
-# run_judge picks up un-judged (query_id, strategy) pairs from viz/all.json
-# and writes/updates outputs/prototype/judge_scores/all.json.
-run_step "judge run for V1 + V4_pool + V4_consolidated" \
-  "$LOGDIR/judge.log" \
+# ── Step 2 — INTERMEDIATE judge (V1 + V4_consolidated only) ─────────────
+# run_judge picks up un-judged (query_id, strategy) pairs idempotently.
+run_step "INTERMEDIATE judge (V1 + V4_consolidated)" \
+  "$LOGDIR/judge_intermediate.log" \
   "$COMMON_ENV python -m code.judge.run_judge" \
   || exit 1
 
-# ── Step 4 — paired bootstrap analysis ───────────────────────────────────
-run_step "v4_paired_bootstrap analysis" \
-  "$LOGDIR/analysis.log" \
-  "python -m code.analysis.v4_paired_bootstrap" \
+# ── Step 3 — INTERMEDIATE paired bootstrap analysis ─────────────────────
+# Writes docs/analysis/v4_paired_results.md. V4_pool comparisons skip
+# because V4_pool not yet measured; V4_consolidated comparisons populated.
+run_step "INTERMEDIATE analysis (V4_consolidated + V1 + V0/S4 only)" \
+  "$LOGDIR/analysis_intermediate.log" \
+  "python -m code.analysis.v4_paired_bootstrap --out docs/analysis/v4_paired_results_intermediate.md" \
+  || exit 1
+
+log "=== INTERMEDIATE PHASE DONE — V4_consolidated results ready ==="
+log "docs/analysis/v4_paired_results_intermediate.md"
+
+# ── Step 4 — V4_pool full batch ──────────────────────────────────────────
+run_step "V4_pool full batch (60 records)" \
+  "$LOGDIR/v4_pool.log" \
+  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 1" \
+  || exit 1
+
+# ── Step 5 — FINAL judge (adds V4_pool) ─────────────────────────────────
+run_step "FINAL judge (adds V4_pool)" \
+  "$LOGDIR/judge_final.log" \
+  "$COMMON_ENV python -m code.judge.run_judge" \
+  || exit 1
+
+# ── Step 6 — FINAL paired bootstrap analysis ────────────────────────────
+run_step "FINAL analysis (all 6 strategies including V4_pool)" \
+  "$LOGDIR/analysis_final.log" \
+  "python -m code.analysis.v4_paired_bootstrap --out docs/analysis/v4_paired_results.md" \
   || exit 1
 
 log "=== ALL STEPS DONE ==="
-log "v4_paired_results.md written to docs/analysis/"
+log "intermediate: docs/analysis/v4_paired_results_intermediate.md"
+log "final: docs/analysis/v4_paired_results.md"
