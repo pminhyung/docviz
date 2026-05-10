@@ -112,6 +112,12 @@
 
 > **[2026-05-10 design pivot]** — `docs/analysis/oneshot_failure_analysis.md` (commit `b90eda1`) + `docs/weekly_reports/WEEK0_TMG_DESIGN_PIVOT.md` (commit `aff7baf`) 의 두 발견 (C5 가설은 gap 의 절반만 설명; rule-based 라우터가 3 셀에서 empirically 틀림) 에 따라 사용자가 V4 를 새 최우선으로 지시. 아래 V4 spec 이 우선. **V0-V3 (원래 isolation experiment plan) 는 잠정 보류** — V4 측정 결과 미흡 시 fallback 으로 선택적 재개.
 
+> **[2026-05-10 mentor review safeguards]** — V4 측정 직전에 박을 4 가지 risk 안전장치 (mentor 피드백 반영, 액션 1·3·4·5):
+> 1. **V1 baseline 동시 측정** — 같은 60 records 위에서 V1 (rule routing + no one-shot) 도 별도 strategy 로 추가. 19-record drop subset 의 paired **Δ(V4 − V1)** 가 paper §11.4 의 핵심 ablation row 이자 tool-call 아키텍처 복잡도의 정당화 evidence. Δ(V4 − V1) ≤ +0.03 이면 V4 의 추가 복잡도 justification 어려움.
+> 2. **§3.2 amendment 는 Provisional 상태** (commit `903aa42`). V4 측정 결과로 final / narrow / rollback 결정 (PAPER_MASTER_SPEC §3.2 Status 블록 참고).
+> 3. **V4 결과 보고는 점추정 단독 금지** — paired bootstrap CI (BCa, 10K resamples, 95%) + Cohen's d 동반. 19-record drop subset + 60-record 전체에 대해 cell 별 Δ·CI·d 모두.
+> 4. **Q2 subagent draft 검수 체크리스트** — high-faith 만 보지 말 것. 각 viz_type 의 exemplar pool 안에서 syntactic spread (depth / node count / edge label length / series count) 가 실측 데이터 spectrum 을 cover 하는지 명시 검증. (Q2 subagent prompt 자체에 syntactic-diverse 요구가 들어가 있음, 검수 단계에서 빠짐 없이 확인.)
+
 #### V4 (최우선)
 
 **새 architecture**:
