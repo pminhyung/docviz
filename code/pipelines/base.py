@@ -42,8 +42,11 @@ class VizOutput:
     """
     # ── Required for all baselines ─────────────────────────────────────────
     viz_dsl: str                         # raw DSL — Chart.js JSON or Mermaid markdown
-    viz_type: str                        # enum: chartjs_bar | chartjs_line | chartjs_grouped_bar
-                                         #     | mermaid_flowchart | mermaid_timeline | mermaid_mindmap
+    viz_type: str                        # enum (10-type, expanded 2026-05-10):
+                                         #   chart   : chartjs_bar | chartjs_line | chartjs_grouped_bar
+                                         #             | chartjs_pie | chartjs_scatter
+                                         #   diagram : mermaid_flowchart | mermaid_timeline | mermaid_mindmap
+                                         #             | mermaid_sequenceDiagram | mermaid_classDiagram
     rendered_image_path: str             # PNG file path (set after sidecar render); "" if not rendered
     render_success: bool                 # M1 metric
     retrieved_chunks: List[Dict[str, Any]]  # [{doc_id, chunk_id, content}, ...]

@@ -22,8 +22,8 @@ from code.pipelines.base import Bundle, VizOutput
 
 
 VIZ_TYPE_PATTERN = re.compile(
-    r"\b(chartjs_(?:bar|line|grouped_bar)|"
-    r"mermaid_(?:flowchart|timeline|mindmap))\b"
+    r"\b(chartjs_(?:bar|line|grouped_bar|pie|scatter)|"
+    r"mermaid_(?:flowchart|timeline|mindmap|sequenceDiagram|classDiagram))\b"
 )
 
 # Markdown fence with optional language tag — captures the body.
@@ -78,13 +78,20 @@ def _extract_dsl_block(text: str) -> Tuple[str, str]:
     # Strategy 2 — fenced blocks
     for body in _FENCE_RE.findall(text):
         body = body.strip()
-        # Mermaid fingerprints
-        if re.match(r"^(flowchart|graph|sequenceDiagram|mindmap|timeline|gantt|stateDiagram)", body):
+        # Mermaid fingerprints (10-type enum as of 2026-05-10)
+        if re.match(
+            r"^(flowchart|graph|sequenceDiagram|classDiagram|mindmap|timeline|gantt|stateDiagram)",
+            body,
+        ):
             head = body.splitlines()[0]
             if head.startswith("mindmap"):
                 return "mermaid_mindmap", body
             if head.startswith("timeline"):
                 return "mermaid_timeline", body
+            if head.startswith("sequenceDiagram"):
+                return "mermaid_sequenceDiagram", body
+            if head.startswith("classDiagram"):
+                return "mermaid_classDiagram", body
             return "mermaid_flowchart", body
         # Chart.js JSON fingerprint
         if body.startswith("{") and "\"type\"" in body:
@@ -97,6 +104,10 @@ def _extract_dsl_block(text: str) -> Tuple[str, str]:
                 return "chartjs_bar", body
             if t == "line":
                 return "chartjs_line", body
+            if t == "pie" or t == "doughnut":
+                return "chartjs_pie", body
+            if t == "scatter" or t == "bubble":
+                return "chartjs_scatter", body
             # Treat grouped_bar / others under a sensible default.
             return f"chartjs_{t}" if t else "chartjs_bar", body
 
