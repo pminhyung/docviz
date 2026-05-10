@@ -81,6 +81,7 @@ class S1Direct(Pipeline):
         bundle: Bundle,
         *,
         query_type: str | None = None,    # accepted for ABC parity, ignored
+        query_id: str | None = None,      # accepted for ABC parity, ignored
     ) -> VizOutput:
         prompt = VIZ_GEN_PROMPT.format(query=query, docs_concat=self._docs_concat(bundle))
 

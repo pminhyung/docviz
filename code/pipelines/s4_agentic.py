@@ -52,6 +52,7 @@ class S4Agentic(Pipeline):
         bundle: Bundle,
         *,
         query_type: str | None = None,   # accepted for ABC parity, ignored
+        query_id: str | None = None,     # accepted for ABC parity, ignored
     ) -> VizOutput:
         doc_path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
 

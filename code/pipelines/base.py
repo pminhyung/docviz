@@ -77,6 +77,7 @@ class Pipeline(ABC):
         bundle: Bundle,
         *,
         query_type: Optional[str] = None,
+        query_id: Optional[str] = None,
     ) -> VizOutput:
         """Execute the strategy on a (query, bundle) pair and return VizOutput.
 
@@ -84,5 +85,11 @@ class Pipeline(ABC):
         runner so TMG-aware variants (DocViz-Agent Pillar 2, §3.2) can
         route the prompt. Bare-bones baselines (B5 Direct-LLM, our S1)
         accept and ignore it; that is the §11.4 "−TMG" ablation cell.
+
+        `query_id` is the per-record identifier (e.g.,
+        "hotpot_00_relational"). Used by V4 strategies to thread a
+        deterministic key into the generate_viz tool's per-type pool
+        sampler (sha1(query_id) % len(pool)). S1/S4/V0/V1 accept and
+        ignore it.
         """
         raise NotImplementedError

@@ -137,11 +137,18 @@ def _viz_options(query_type: str) -> List[str]:
     return out
 
 
-def build_tmg_rule(query_type: str) -> str:
+def build_tmg_rule(query_type: str, *, include_one_shot: bool = True) -> str:
     """Return a custom_rules block that routes the agent for this query type.
 
     Appended to run_paper_default's existing rules. Must NOT contradict
     the dsl_output_rule (final_answer = single JSON, viz_type ∈ enum).
+
+    `include_one_shot` toggles the reference-output line:
+      - True  → V0 mode (current placeholder one-shot from
+                ONE_SHOT_BY_VIZ_TYPE[primary])
+      - False → V1 mode (rule routing + tip only, no example) — mentor
+                risk #1 baseline; isolates the value of the one-shot
+                independently from the routing decision.
     """
     if query_type not in TYPE_TO_VIZ:
         # Unknown type — emit a no-op block so the agent falls back to the
@@ -152,20 +159,74 @@ def build_tmg_rule(query_type: str) -> str:
     options = _viz_options(query_type)
     options_str = ", ".join(f'"{o}"' for o in options)
     tip = TYPE_TIP[query_type]
-    one_shot = ONE_SHOT_BY_VIZ_TYPE[primary]
 
-    return (
-        f"\nTMG ROUTING (DocViz-Agent Pillar 2 — type-aware):\n"
-        f"- The user query is type **{query_type}**.\n"
-        f"- Recommended viz_type: **{primary}**. Secondary acceptable: {secondary}.\n"
+    parts = [
+        "",
+        "TMG ROUTING (DocViz-Agent Pillar 2 — type-aware):",
+        f"- The user query is type **{query_type}**.",
+        f"- Recommended viz_type: **{primary}**. Secondary acceptable: {secondary}.",
         f"- Restrict viz_type to: {options_str} unless the source content "
-        f"truly fits a different one of the 6 enum values.\n"
-        f"- Generation tip for {query_type}: {tip}\n"
-        f"- Reference output for this type — match the schema exactly, "
-        f"not the content:\n"
-        f"  {one_shot}"
-    )
+        f"truly fits a different enum value.",
+        f"- Generation tip for {query_type}: {tip}",
+    ]
+    if include_one_shot:
+        one_shot = ONE_SHOT_BY_VIZ_TYPE[primary]
+        parts.append(
+            "- Reference output for this type — match the schema exactly, "
+            "not the content:"
+        )
+        parts.append(f"  {one_shot}")
+    return "\n".join(parts)
 
 
 def primary_viz_type(query_type: str) -> str:
     return TYPE_TO_VIZ.get(query_type, ("mermaid_flowchart", ""))[0]
+
+
+# ── V4 — agent inference + tool-call exposure rule ────────────────────────
+
+
+# Used by S4AgenticTMG(mode="v4_pool" | "v4_consolidated"). The agent sees
+# the 10-type pool with use-case hints, and is instructed to call the
+# generate_viz tool (loaded from code/agent_tools/generate_viz.py via
+# custom_tools_path) rather than emit DSL directly.
+V4_POOL_EXPOSURE_RULE = """
+TMG ROUTING (DocViz-Agent Pillar 2 — V4 agent-inference + tool-call):
+You are responsible for choosing the best visualization type from the
+10-enum pool, then calling the `generate_viz` tool to produce the DSL.
+Do NOT write the DSL yourself.
+
+Available viz_type pool:
+  Chart types (5):
+    - chartjs_bar         — single-series quantitative comparison
+    - chartjs_line        — trend over an ordered axis (time, sequence)
+    - chartjs_grouped_bar — multi-series quantitative comparison
+    - chartjs_pie         — proportion / share / part-of-whole
+    - chartjs_scatter     — bivariate correlation / 2-D distribution
+  Diagram types (5):
+    - mermaid_flowchart        — entity relationships, processes
+    - mermaid_timeline         — chronologically ordered events
+    - mermaid_mindmap          — hierarchical taxonomy
+    - mermaid_sequenceDiagram  — interaction protocol / API call flow
+    - mermaid_classDiagram     — typed entity-attribute schema
+
+Process:
+1. Identify the query type (quantitative / relational / temporal /
+   hierarchical / comparative) AND inspect the source content
+   structure (numeric vs textual, single-entity vs multi-entity,
+   sequential vs parallel, etc).
+2. Pick the viz_type from the 10-enum pool that best fits BOTH the
+   query type AND the source structure. The query-type label is a
+   soft prior; you may override based on source content (e.g., a
+   comparative query over qualitative entities is better as
+   mermaid_mindmap than chartjs_grouped_bar).
+3. Call: generate_viz(viz_type=<your choice>, content_brief=<a
+   detailed natural-language description of what the visualization
+   should contain — named entities and concrete phrases from the
+   source, relationships, data points, structure>).
+4. The tool returns a JSON string {"viz_type": "...",
+   "viz_dsl": "..."}. Embed that JSON verbatim as your final_answer.
+
+Use named entities and concrete phrases from the source documents in
+the content_brief; avoid generic placeholder names (Acme/Founder etc).
+"""
