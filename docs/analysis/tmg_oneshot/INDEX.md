@@ -1,4 +1,4 @@
-# TMG one-shot exemplar pool — revision v1 INDEX
+# TMG one-shot exemplar pool — revision v1 + v2 (10-type) INDEX
 
 **Date**: 2026-05-10
 **Scope**: revision v1 of the TMG (Pillar 2 §3.2 amend) one-shot exemplar
@@ -6,6 +6,210 @@ work begun in `docs/analysis/tmg_oneshot_pool_draft.md` (v0). This INDEX
 plus the 6 per-type files in this directory **supersede** v0 for the
 purposes of caller migration. v0 is **archived** (do not edit) so that
 v0 → v1 paired diff evidence is preserved.
+
+**v2 addendum (2026-05-10, same date)**: the viz_type enum is extended
+from 6 → 10 to add `chartjs_pie`, `chartjs_scatter`,
+`mermaid_sequenceDiagram`, `mermaid_classDiagram`. The original 6
+per-type files and v1 spec text below are **preserved unchanged**; v2
+content is additive (4 new per-type files, expanded dict literals,
+expanded V4 measurement scope to the 10-type enum). See §0 below for
+the v2 changes summary; v1 sections (§§1-7) follow unchanged.
+
+---
+
+## 0. v2 addendum — 6 → 10 viz_type enum extension
+
+### 0.1 What is new
+
+- **4 new per-type files** added to this directory (each follows the same
+  v1 self-contained structure: pool variant, consolidated variant,
+  Python literals, 검수 체크리스트):
+  - [chartjs_pie](chartjs_pie.md) — High priority (ChartQA standard;
+    proportion / share comparative queries)
+  - [chartjs_scatter](chartjs_scatter.md) — High priority (quantitative
+    correlation queries)
+  - [mermaid_sequenceDiagram](mermaid_sequenceDiagram.md) — Medium
+    priority (API / process docs corpus)
+  - [mermaid_classDiagram](mermaid_classDiagram.md) — Medium priority
+    (technical documentation, schema description)
+
+### 0.2 Provenance disclosure for the 4 new types
+
+The prototype dataset (`outputs/prototype/judge_scores/all.json`) was
+generated under the 6-type enum, so **none of the 4 new types has a
+historical anchor** in the prototype pool. All 16 v2 exemplars (4 pool +
+1 consolidated × 4 types) are **hand-written** and disclosed as such in
+their per-type files. Content style anchors borrow conventions from v1
+exemplars within the same chart family (chartjs_*: BAR-A / BAR-C / LINE
+multi-series; mermaid_*: FLOW-A role-descriptive labels, FLOW-CONS
+research-provenance domain) so the agent inherits faith-1.00 conventions
+transitively across the family.
+
+### 0.3 v2 dict literals (additive on top of §3.1 / §3.2)
+
+The aggregated dicts in §3.1 / §3.2 below remain the v1 6-key snapshot.
+Under the v2 10-type enum, the same dicts gain 4 keys each. The full
+combined dicts the caller pastes are:
+
+```python
+ONE_SHOT_POOL_BY_VIZ_TYPE: Dict[str, List[str]] = {
+    # --- v1 (6 keys, unchanged) ---
+    "chartjs_bar":               [...],   # see chartjs_bar.md §3.1
+    "chartjs_line":              [...],   # see chartjs_line.md §3.1
+    "chartjs_grouped_bar":       [...],   # see chartjs_grouped_bar.md §3.1
+    "mermaid_flowchart":         [...],   # see mermaid_flowchart.md §3.1
+    "mermaid_timeline":          [...],   # see mermaid_timeline.md §3.1
+    "mermaid_mindmap":           [...],   # see mermaid_mindmap.md §3.1
+    # --- v2 (4 new keys) ---
+    "chartjs_pie":               [...],   # see chartjs_pie.md §3.1
+    "chartjs_scatter":           [...],   # see chartjs_scatter.md §3.1
+    "mermaid_sequenceDiagram":   [...],   # see mermaid_sequenceDiagram.md §3.1
+    "mermaid_classDiagram":      [...],   # see mermaid_classDiagram.md §3.1
+}
+
+ONE_SHOT_CONSOLIDATED_BY_VIZ_TYPE: Dict[str, str] = {
+    # --- v1 (6 keys, unchanged) ---
+    "chartjs_bar":               "...",   # see chartjs_bar.md §3.2
+    "chartjs_line":              "...",   # see chartjs_line.md §3.2
+    "chartjs_grouped_bar":       "...",   # see chartjs_grouped_bar.md §3.2
+    "mermaid_flowchart":         "...",   # see mermaid_flowchart.md §3.2
+    "mermaid_timeline":          "...",   # see mermaid_timeline.md §3.2
+    "mermaid_mindmap":           "...",   # see mermaid_mindmap.md §3.2
+    # --- v2 (4 new keys) ---
+    "chartjs_pie":               "...",   # see chartjs_pie.md §3.2
+    "chartjs_scatter":           "...",   # see chartjs_scatter.md §3.2
+    "mermaid_sequenceDiagram":   "...",   # see mermaid_sequenceDiagram.md §3.2
+    "mermaid_classDiagram":      "...",   # see mermaid_classDiagram.md §3.2
+}
+```
+
+Total under v2: 10 keys × 3 exemplars = **30 pool strings**;
+10 keys × 1 exemplar = **10 consolidated strings**.
+
+Per-type DSL lengths for the 4 new types (chars), comparable to the v1
+table in §3.2 below:
+
+| viz_type                  | pool max | consolidated | ratio |
+|---|---:|---:|---:|
+| chartjs_pie               |  871     |  917         | 1.05× |
+| chartjs_scatter           | 1130     | 1557         | 1.4×  |
+| mermaid_sequenceDiagram   |  848     | 1249         | 1.5×  |
+| mermaid_classDiagram      |  936     | 1299         | 1.4×  |
+
+All within the v1 envelope (BAR/FLOW are 1.4×; mindmap is the largest at
+1.2× of a 1300-char pool max). chartjs_pie consolidates the most
+efficiently (1.05×) because every pie sub-pattern lives in the same
+single chart with shared infrastructure.
+
+### 0.4 v2 invariants (additive; superset of v1)
+
+Every v2 exemplar string satisfies (in addition to the v1 invariants
+listed in §3.1):
+
+- `json.loads(s)` round-trip succeeds
+- `json.loads(s)["viz_type"]` matches the dict key
+- for `chartjs_pie` / `chartjs_scatter`, `json.loads(json.loads(s)
+  ["viz_dsl"])` also succeeds; inner `type ∈ {"pie", "doughnut"}` for
+  `chartjs_pie` and `type ∈ {"scatter", "bubble"}` for `chartjs_scatter`
+  (both are Chart.js-legal under the family key)
+- for `chartjs_scatter`, every `data.datasets[*].data[*]` item has both
+  `x` and `y` keys (the load-bearing scatter convention; differs from
+  line's parallel-array shape)
+- for `mermaid_sequenceDiagram`, the `viz_dsl` value starts with
+  `sequenceDiagram` (header sniff)
+- for `mermaid_classDiagram`, the `viz_dsl` value starts with
+  `classDiagram` (header sniff)
+- contains no `Acme*` / `Founder` / `Engineer X` placeholder regression
+
+### 0.5 V4 measurement plan under the 10-type enum
+
+The V4 measurement plan in §4 below is **unchanged in structure** but the
+60-record subset and any per-type stratification expand to **10 types**
+under v2. Specifically:
+
+- V4_pool / V4_consolidated paired Δ (§4.2) is now defined over 10 types
+  (the per-type subset population is preserved at 6 records per type if
+  the original 60-record subset was uniform; otherwise the 4 new types
+  are added at proportional sample size when the corresponding query-
+  type cells exist in the eval set).
+- The 19-record drop-subset analysis (§4.3) remains scoped to the v0
+  failure cells (which are all 6-type), but a **v2-only stratification**
+  on the 4 new types is added when ≥ 5 records per new type are
+  available in the V4 eval split.
+- Decision rule (§4.2) is unchanged.
+
+The v0 → v1 archived diff trail (§7) is also unchanged; v2 introduces no
+deprecation of v1 content.
+
+### 0.6 v2 smoke-test additions
+
+The smoke-test spec in §6 below applies to v2 unchanged. New invariants
+specific to the 4 new types (scatter `{x, y}` items, header sniffs for
+sequenceDiagram and classDiagram, `chartjs_pie` inner type ∈ {pie,
+doughnut}, `chartjs_scatter` inner type ∈ {scatter, bubble}) should be
+added as new test cases when the v2 dicts are merged into `tmg.py`.
+Recommended additions to `tests/test_oneshot_pool_parses.py`:
+
+```
+def test_scatter_data_items_are_xy_objects():
+    """Every chartjs_scatter exemplar's data items are {x, y} objects, not numbers."""
+    for src in (ONE_SHOT_POOL_BY_VIZ_TYPE, ONE_SHOT_CONSOLIDATED_BY_VIZ_TYPE):
+        items = (
+            [(vt, s) for vt, lst in src.items() for s in lst]
+            if isinstance(next(iter(src.values())), list)
+            else list(src.items())
+        )
+        for vt, s in items:
+            if vt != "chartjs_scatter":
+                continue
+            inner = json.loads(json.loads(s)["viz_dsl"])
+            for ds in inner["data"]["datasets"]:
+                for pt in ds["data"]:
+                    assert isinstance(pt, dict), f"{vt} non-object data item"
+                    assert "x" in pt and "y" in pt, f"{vt} missing x/y"
+
+def test_pie_inner_type_in_family():
+    """chartjs_pie inner type ∈ {'pie', 'doughnut'}; both are Chart.js-legal under the family."""
+    for src in (ONE_SHOT_POOL_BY_VIZ_TYPE, ONE_SHOT_CONSOLIDATED_BY_VIZ_TYPE):
+        items = (
+            [(vt, s) for vt, lst in src.items() for s in lst]
+            if isinstance(next(iter(src.values())), list)
+            else list(src.items())
+        )
+        for vt, s in items:
+            if vt != "chartjs_pie":
+                continue
+            inner_type = json.loads(json.loads(s)["viz_dsl"])["type"]
+            assert inner_type in {"pie", "doughnut"}
+
+def test_scatter_inner_type_in_family():
+    """chartjs_scatter inner type ∈ {'scatter', 'bubble'}; both are Chart.js-legal under the family."""
+    for src in (ONE_SHOT_POOL_BY_VIZ_TYPE, ONE_SHOT_CONSOLIDATED_BY_VIZ_TYPE):
+        items = (
+            [(vt, s) for vt, lst in src.items() for s in lst]
+            if isinstance(next(iter(src.values())), list)
+            else list(src.items())
+        )
+        for vt, s in items:
+            if vt != "chartjs_scatter":
+                continue
+            inner_type = json.loads(json.loads(s)["viz_dsl"])["type"]
+            assert inner_type in {"scatter", "bubble"}
+```
+
+Also update the `expected` dict inside `test_mermaid_header_sniff` to add
+the two new mermaid headers:
+
+```
+expected = {
+    "mermaid_flowchart":       ("graph ",),
+    "mermaid_timeline":        ("timeline",),
+    "mermaid_mindmap":         ("mindmap",),
+    # v2 additions
+    "mermaid_sequenceDiagram": ("sequenceDiagram",),
+    "mermaid_classDiagram":    ("classDiagram",),
+}
+```
 
 ---
 
@@ -64,10 +268,12 @@ v0 → v1 paired diff evidence is preserved.
 
 ---
 
-## 2. Six per-type files
+## 2. Per-type files (v1: 6 files; v2: +4 files = 10 total)
 
 Each file is **self-contained** — the final design for a single viz_type
 can be reviewed without reading the INDEX or sibling files.
+
+v1 files (6):
 
 - [chartjs_bar](chartjs_bar.md)
 - [chartjs_line](chartjs_line.md)
@@ -75,6 +281,13 @@ can be reviewed without reading the INDEX or sibling files.
 - [mermaid_flowchart](mermaid_flowchart.md)
 - [mermaid_timeline](mermaid_timeline.md)
 - [mermaid_mindmap](mermaid_mindmap.md)
+
+v2 additions (4 — see §0 for the v2 addendum):
+
+- [chartjs_pie](chartjs_pie.md) — High priority (v2)
+- [chartjs_scatter](chartjs_scatter.md) — High priority (v2)
+- [mermaid_sequenceDiagram](mermaid_sequenceDiagram.md) — Medium priority (v2)
+- [mermaid_classDiagram](mermaid_classDiagram.md) — Medium priority (v2)
 
 Each file has the same structure:
 1. Pool variant (3 exemplars; V4_pool measurement)
@@ -194,6 +407,12 @@ Properties:
 ---
 
 ## 4. V4 measurement plan (V4_pool vs V4_consolidated)
+
+> **v2 note**: V4 measurement now proceeds on the **10-type enum** (the 4
+> v2-added types use the same V4_pool / V4_consolidated mode flag and
+> sampler as the v1 6 types — no caller signature change beyond what
+> §5.2 below already specifies). See §0.5 for the v2 expansion of the
+> per-type stratification.
 
 ### 4.1 Two variants, same 60-record subset
 
