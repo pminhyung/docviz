@@ -17,7 +17,8 @@ LOGDIR=/tmp/v4_logs
 mkdir -p "$LOGDIR"
 
 VLLM_BASE=http://localhost:9102/v1
-COMMON_ENV="QWEN36_27B_BASE_URL=$VLLM_BASE DOCVIZ_VLLM_BASE_URL=$VLLM_BASE PYTHONUNBUFFERED=1"
+# 9102+9103 round-robin via QWEN36_27B_PORTS — see s4_agentic_tmg._next_reasoner_url
+COMMON_ENV="QWEN36_27B_BASE_URL=$VLLM_BASE DOCVIZ_VLLM_BASE_URL=$VLLM_BASE QWEN36_27B_PORTS=9102,9103 PYTHONUNBUFFERED=1"
 
 stamp() { date '+%Y-%m-%d %H:%M:%S'; }
 
@@ -53,13 +54,13 @@ sleep 5
 # ── Step 1 — V4_pool full batch ──────────────────────────────────────────
 run_step "V4_pool full batch (60 records)" \
   "$LOGDIR/v4_pool.log" \
-  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 1" \
+  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_pool --s4-workers 2" \
   || exit 1
 
 # ── Step 2 — V4_consolidated full batch ──────────────────────────────────
 run_step "V4_consolidated full batch (60 records)" \
   "$LOGDIR/v4_cons.log" \
-  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_consolidated --s4-workers 1" \
+  "$COMMON_ENV python -m code.run_prototype --strategies S4_TMGv4_consolidated --s4-workers 2" \
   || exit 1
 
 # ── Step 3 — judge new records ───────────────────────────────────────────

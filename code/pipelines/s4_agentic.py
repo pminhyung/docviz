@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import os
 import tempfile
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -22,6 +23,27 @@ from code.adapters.agent_client import AgentClient
 from code.adapters.bundle_to_docai import write_bundle_as_docai
 from code.adapters.viz_output_mapper import map_agent_response
 from code.pipelines.base import Bundle, Pipeline, VizOutput
+
+
+# Module-level round-robin assignment of reasoner_base_url across the
+# vLLM hosts listed in QWEN36_27B_PORTS env. Each pipeline INSTANCE
+# gets a sticky URL at __init__ — distributes load across ports when
+# --s4-workers > 1 (run_prototype creates a new instance per task).
+_PORT_COUNTER_LOCK = threading.Lock()
+_PORT_COUNTER = 0
+
+
+def _next_reasoner_url() -> str:
+    """Round-robin pick from QWEN36_27B_PORTS (default 9101,9102,9103)."""
+    global _PORT_COUNTER
+    ports_env = os.environ.get("QWEN36_27B_PORTS", "9101,9102,9103")
+    ports = [p.strip() for p in ports_env.split(",") if p.strip()]
+    if not ports:
+        ports = ["9101"]
+    with _PORT_COUNTER_LOCK:
+        idx = _PORT_COUNTER % len(ports)
+        _PORT_COUNTER += 1
+    return f"http://localhost:{ports[idx]}/v1"
 
 
 class S4Agentic(Pipeline):
@@ -45,6 +67,8 @@ class S4Agentic(Pipeline):
             Path(tempfile.gettempdir()) / "docviz_s4"
         )
         self._work_dir.mkdir(parents=True, exist_ok=True)
+        # Sticky reasoner URL per instance — round-robin across host pool.
+        self._reasoner_base_url = _next_reasoner_url()
 
     def run(
         self,
@@ -83,6 +107,7 @@ class S4Agentic(Pipeline):
                 return_trace=True,
                 return_train_sample=False,
                 reasoner_max_length=self._reasoner_max_length,
+                reasoner_base_url=self._reasoner_base_url,
             )
 
         return map_agent_response(response, bundle, concat_doc_path=doc_path)
