@@ -190,55 +190,28 @@ def primary_viz_type(query_type: str) -> str:
 # the 10-type pool with use-case hints, and is instructed to call the
 # generate_viz tool (loaded from code/agent_tools/generate_viz.py via
 # custom_tools_path) rather than emit DSL directly.
-V4_POOL_EXPOSURE_RULE = """
-TMG ROUTING (DocViz-Agent Pillar 2 — V4 agent-inference + tool-call):
-
-═══════════════════════════════════════════════════════════════════════
-MANDATORY: You MUST call the `generate_viz` tool BEFORE producing your
-final_answer. Do NOT emit prose, summary text, or DSL directly. Your
-final_answer MUST be EXACTLY the JSON string returned by the
-`generate_viz` tool, with no modification or wrapping. If you produce
-final_answer without first invoking `generate_viz`, the output is
-invalid and will be rejected.
-═══════════════════════════════════════════════════════════════════════
-
-You are responsible for choosing the best visualization type from the
-10-enum pool, then calling the `generate_viz` tool to produce the DSL.
-
-Available viz_type pool:
-  Chart types (5):
-    - chartjs_bar         — single-series quantitative comparison
-    - chartjs_line        — trend over an ordered axis (time, sequence)
-    - chartjs_grouped_bar — multi-series quantitative comparison
-    - chartjs_pie         — proportion / share / part-of-whole
-    - chartjs_scatter     — bivariate correlation / 2-D distribution
-  Diagram types (5):
-    - mermaid_flowchart        — entity relationships, processes
-    - mermaid_timeline         — chronologically ordered events
-    - mermaid_mindmap          — hierarchical taxonomy
-    - mermaid_sequenceDiagram  — interaction protocol / API call flow
-    - mermaid_classDiagram     — typed entity-attribute schema
-
-Process (REQUIRED order):
-1. Identify the query type (quantitative / relational / temporal /
-   hierarchical / comparative) AND inspect the source content
-   structure (numeric vs textual, single-entity vs multi-entity,
-   sequential vs parallel, etc).
-2. Pick the viz_type from the 10-enum pool that best fits BOTH the
-   query type AND the source structure. The query-type label is a
-   soft prior; you may override based on source content (e.g., a
-   comparative query over qualitative entities is better as
-   mermaid_mindmap than chartjs_grouped_bar).
-3. **Call the tool**: `generate_viz(viz_type=<your choice>,
-   content_brief=<a detailed natural-language description of what the
-   visualization should contain — named entities and concrete phrases
-   from the source, specific numbers/dates/quantities, relationships,
-   structure>)`. This step is non-optional.
-4. The tool returns a JSON string `{"viz_type": "...",
-   "viz_dsl": "..."}`. Your final_answer MUST be that JSON string,
-   verbatim. No extra prose, no markdown fences, no editing.
-
-Use named entities, specific numbers, dates, and concrete phrases from
-the source documents in the content_brief; avoid generic placeholder
-names. Source-grounded specificity is the priority.
-"""
+V4_POOL_EXPOSURE_RULE = (
+    "- **TMG (Pillar 2 — Type-aware Multi-Viz Generation)**: For any "
+    "request that asks for a visualization, diagram, chart, mindmap, "
+    "or similar visual artifact of the document content, you MUST "
+    "invoke the `generate_viz` action tool to produce the DSL. The "
+    "`viz_type` argument MUST be one of "
+    "{chartjs_bar, chartjs_line, chartjs_grouped_bar, chartjs_pie, "
+    "chartjs_scatter, mermaid_flowchart, mermaid_timeline, "
+    "mermaid_mindmap, mermaid_sequenceDiagram, mermaid_classDiagram}; "
+    "choose it based on the user query type AND the source content "
+    "structure (e.g., qualitative cross-entity comparison → "
+    "`mermaid_mindmap` rather than `chartjs_grouped_bar`). Pass "
+    "`content_brief` as a detailed natural-language description that "
+    "names the entities, dates, numbers, quantities, relationships, "
+    "and any quotes from the source documents that the visualization "
+    "must include — `generate_viz` does not see the documents, only "
+    "this brief.\n"
+    "- **`generate_viz` final_answer format**: When you have invoked "
+    "`generate_viz` and received its result, your `<final_answer>` "
+    "MUST be EXACTLY the JSON string returned by `generate_viz`, "
+    "verbatim and unmodified. Do not write the DSL yourself, do not "
+    "summarize the result in prose, and do not wrap the JSON with "
+    "extra text or markdown fences. If you produce `<final_answer>` "
+    "without first invoking `generate_viz`, the response is invalid."
+)
