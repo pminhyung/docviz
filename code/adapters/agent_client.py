@@ -26,17 +26,25 @@ import httpx
 AGENT_BASE_URL = os.environ.get("DOCVIZ_AGENT_URL", "http://localhost:9024")
 
 # ── On-premise Qwen3.5-397B-A17B-FP8 vLLM cluster ──────────────────────────
-# 8 production hosts on the internal cluster, all serving the same model.
+# 9 production hosts on the internal cluster, all serving the same model.
 # Each entry is "host:port"; the orchestrator's round-robin picks one
 # entry per pipeline instance, allowing parallel sample-level dispatch.
 #
+# Host policy:
+#   - 10.1.211.148:8000 is the *single-host pinned* endpoint (head of list,
+#     always used in single mode);
+#   - 10.1.211.163..170:8000 are the additional pool members used in
+#     multi mode for sample-level parallelism.
+#
 # Mode selection (env DOCVIZ_HOST_MODE, default "single"):
-#   - "single" → only the first host is used (one URL for the whole batch);
-#   - "multi"  → round-robin across all hosts in QWEN_HOSTS.
+#   - "single" → only QWEN_HOSTS[0] (= 148) is used;
+#   - "multi"  → round-robin across all QWEN_HOSTS (148 + 163-170).
 #
 # Override by setting QWEN_HOSTS env to a comma-separated list.
 
-_DEFAULT_QWEN_HOSTS = ",".join(f"10.1.211.{i}:8000" for i in range(163, 171))
+_DEFAULT_QWEN_HOSTS = ",".join(
+    ["10.1.211.148:8000"] + [f"10.1.211.{i}:8000" for i in range(163, 171)]
+)
 QWEN_HOSTS = [
     h.strip() for h in os.environ.get("QWEN_HOSTS", _DEFAULT_QWEN_HOSTS).split(",")
     if h.strip()
@@ -54,6 +62,31 @@ DEFAULT_REASONER_KEY = "EMPTY"   # vLLM ignores; set to non-empty to satisfy
 # Anti-hallucination defaults aligned with PAPER_MASTER_SPEC §3.5 / §19.
 PAPER_DEFAULT_TEMPERATURE = 0
 PAPER_DEFAULT_SEED = 42
+
+# Qwen3.5-397B-A17B-FP8 recommended sampling per Alibaba/Qwen team:
+#   - non-thinking mode: T=0.7, top_p=0.8, top_k=20, min_p=0
+#   - thinking mode:     T=0.6, top_p=0.95, top_k=20, min_p=0
+# We use non-thinking everywhere in Week 0 (chat_template_kwargs=
+# {"enable_thinking": False}). seed=PAPER_DEFAULT_SEED preserved for
+# within-run reproducibility (vLLM honors seed under sampling).
+QWEN_NON_THINKING_SAMPLING = {
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "extra_body": {
+        "top_k": 20,
+        "min_p": 0,
+        "chat_template_kwargs": {"enable_thinking": False},
+    },
+}
+QWEN_THINKING_SAMPLING = {
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "extra_body": {
+        "top_k": 20,
+        "min_p": 0,
+        "chat_template_kwargs": {"enable_thinking": True},
+    },
+}
 
 
 # ── Request / Response wrappers ────────────────────────────────────────────
@@ -129,6 +162,7 @@ class AgentClient:
         reasoner_api_key: str = DEFAULT_REASONER_KEY,
         reasoner_max_length: Optional[int] = 32768,
         extra_overrides: Optional[Dict[str, Any]] = None,
+        omit_default_dsl_rule: bool = False,
     ) -> AgentRunResponse:
         """Run /v2/run with PAPER_MASTER_SPEC defaults baked in.
 
@@ -136,6 +170,13 @@ class AgentClient:
         temperature=0 / seed=42 (passed via custom_rules and reasoner default),
         web_search disabled (via custom_rules; see WEEK0 inventory for the
         verified disable mechanism).
+
+        `omit_default_dsl_rule` (V4 modes): when True, suppress the default
+        "final_answer must be one JSON object {viz_type, viz_dsl}" rule
+        because V4 strategies override the output contract via custom_rules
+        (rule 17/18: invoke `generate_viz` tool → sidecar persists viz →
+        agent's final_answer is a short ack). Keeping the default rule
+        causes a conflict the model resolves in favor of the older default.
         """
         # Encourage DSL-only output and forbid web search via custom_rules.
         # The agent compiles these into the system prompt verbatim.
@@ -150,6 +191,9 @@ class AgentClient:
         # The downstream parser (viz_output_mapper._extract_dsl_block) keys on
         # exactly this JSON shape; matching it eliminates fenced-block heuristics
         # and the prose-fallback that was producing un-renderable viz_dsl.
+        # V4 strategies suppress this rule via omit_default_dsl_rule=True
+        # because they own the output contract (sidecar persistence + ack
+        # final_answer) and any "must emit JSON" instruction conflicts.
         dsl_output_rule = (
             "- Your final_answer must be EXACTLY one JSON object and nothing "
             "else (no prose before or after, no markdown fences). The object "
@@ -171,7 +215,9 @@ class AgentClient:
             "fabricate. If the document is insufficient, return a minimal but "
             "valid DSL covering what is present, not prose."
         )
-        rules = [web_search_off_rule, deterministic_rule, dsl_output_rule]
+        rules = [web_search_off_rule, deterministic_rule]
+        if not omit_default_dsl_rule:
+            rules.append(dsl_output_rule)
         if custom_rules:
             rules.append(custom_rules.strip())
         merged_rules = "\n".join(rules)
@@ -279,7 +325,7 @@ class QwenDirectClient:
             QWEN_HOSTS if DOCVIZ_HOST_MODE == "multi" else QWEN_HOSTS[:1]
         )
         if not chosen:
-            chosen = ["10.1.211.163:8000"]
+            chosen = ["10.1.211.148:8000"]
         self._bases = [f"http://{h}/v1" for h in chosen]
         self._idx = 0
         self._timeout = timeout_seconds

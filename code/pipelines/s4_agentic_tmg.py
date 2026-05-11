@@ -95,7 +95,7 @@ def _next_reasoner_url() -> str:
     """Round-robin pick from QWEN_HOSTS honoring DOCVIZ_HOST_MODE."""
     global _PORT_COUNTER
     from code.adapters.agent_client import QWEN_HOSTS, DOCVIZ_HOST_MODE
-    hosts = QWEN_HOSTS or ["10.1.211.163:8000"]
+    hosts = QWEN_HOSTS or ["10.1.211.148:8000"]
     if DOCVIZ_HOST_MODE != "multi":
         return f"http://{hosts[0]}/v1"
     with _PORT_COUNTER_LOCK:
@@ -213,6 +213,10 @@ class S4AgenticTMG(Pipeline):
                 custom_rules=tmg_rule if tmg_rule else None,
                 custom_tools_path=custom_tools_path,
                 extra_overrides=extra_overrides,
+                # V4 owns the output contract via rule 17/18 (sidecar +
+                # ack final_answer). Suppress the default JSON-only rule
+                # which conflicts with that contract.
+                omit_default_dsl_rule=(self.mode in ("v4_pool", "v4_consolidated")),
             )
 
         vo = map_agent_response(response, bundle, concat_doc_path=doc_path)

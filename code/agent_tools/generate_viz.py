@@ -49,7 +49,16 @@ from typing import Any, Dict, List, Optional
 # oneshot_pool sidecar (read-only) — populated from Q2 revision (b3bebcf).
 # Schema: {"pool": {<viz_type>: [<exemplar_json_str>, ...]},
 #          "consolidated": {<viz_type>: <exemplar_json_str>}}
-_POOL_PATH = Path(__file__).parent / "oneshot_pool.json"
+#
+# NOTE: `Path(__file__).parent` is unsafe here — the agent server
+# (ToolRegistry.load_from_file) COPIES this .py file to a tempfile.mkdtemp
+# directory and exec_module's it from there. `__file__` therefore points
+# at /tmp/doc_agent_tools_XXXX/generate_viz.py, where no sidecar exists.
+# Use the absolute path the orchestrator (or env override) supplies.
+_POOL_PATH = Path(os.environ.get(
+    "DOCVIZ_ONESHOT_POOL_PATH",
+    "/ex_disk2/mhpark/poc/docviz/code/agent_tools/oneshot_pool.json",
+))
 
 # viz_output sidecar (write) — orchestrator reads this after agent
 # returns. Each entry: /{DOCVIZ_VIZ_SIDECAR_DIR}/{tmg_mode}_{query_id}.json
@@ -239,14 +248,22 @@ class GenerateVizTool:
         base_url = secrets.get("vllm_base_url") or self._base_url
         client = OpenAI(base_url=base_url, api_key="EMPTY")
         try:
+            # Qwen3.5-397B recommended non-thinking sampling:
+            # T=0.7, top_p=0.8, top_k=20, min_p=0. seed=42 for in-run
+            # reproducibility.
             response = client.chat.completions.create(
                 model=self._model,
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0,
+                temperature=0.7,
+                top_p=0.8,
                 seed=42,
                 max_tokens=4096,
                 response_format={"type": "json_object"},
-                extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+                extra_body={
+                    "top_k": 20,
+                    "min_p": 0,
+                    "chat_template_kwargs": {"enable_thinking": False},
+                },
             )
         except Exception as e:
             return json.dumps(

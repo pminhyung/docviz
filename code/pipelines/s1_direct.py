@@ -12,8 +12,8 @@ from typing import Any, Dict, List
 
 from code.adapters.agent_client import (
     PAPER_DEFAULT_SEED,
-    PAPER_DEFAULT_TEMPERATURE,
     QWEN_MODEL,
+    QWEN_NON_THINKING_SAMPLING,
     QwenDirectClient,
 )
 from code.adapters.viz_output_mapper import _extract_dsl_block
@@ -44,11 +44,6 @@ Return ONLY a JSON object with two fields:
     "viz_dsl":  "<the raw DSL — Mermaid markdown or Chart.js JSON spec>"}}
 No prose, no markdown fences around the JSON.
 """
-
-
-# Qwen ships in thinking mode by default; for the Direct baseline we want
-# the model to emit DSL immediately, not spend its budget in <think>…</think>.
-NO_THINK = {"chat_template_kwargs": {"enable_thinking": False}}
 
 
 class S1Direct(Pipeline):
@@ -88,11 +83,12 @@ class S1Direct(Pipeline):
         resp: Dict[str, Any] = self._client.chat(
             messages=[{"role": "user", "content": prompt}],
             model=self._model,
-            temperature=PAPER_DEFAULT_TEMPERATURE,
+            temperature=QWEN_NON_THINKING_SAMPLING["temperature"],
+            top_p=QWEN_NON_THINKING_SAMPLING["top_p"],
             seed=PAPER_DEFAULT_SEED,
             max_tokens=self._max_tokens,
             response_format={"type": "json_object"},
-            extra_body=NO_THINK,
+            extra_body=QWEN_NON_THINKING_SAMPLING["extra_body"],
         )
 
         usage = resp.get("usage", {}) or {}

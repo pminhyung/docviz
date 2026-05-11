@@ -42,7 +42,7 @@ def _next_reasoner_url() -> str:
     """Round-robin pick from QWEN_HOSTS honoring DOCVIZ_HOST_MODE."""
     global _PORT_COUNTER
     from code.adapters.agent_client import QWEN_HOSTS, DOCVIZ_HOST_MODE
-    hosts = QWEN_HOSTS or ["10.1.211.163:8000"]
+    hosts = QWEN_HOSTS or ["10.1.211.148:8000"]
     if DOCVIZ_HOST_MODE != "multi":
         return f"http://{hosts[0]}/v1"
     with _PORT_COUNTER_LOCK:
