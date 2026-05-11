@@ -20,7 +20,7 @@ so SAO post-processing can map the agent's citations / page references back to
 the original doc_id.
 
 Why one page per doc (not chunked):
-  - The Qwen3.6-27B vLLM endpoints serve max_model_len=131072 (128K tokens).
+  - The Qwen3.5-397B-A17B-FP8-27B vLLM endpoints serve max_model_len=131072 (128K tokens).
     Even the largest expected bundle (10-K MD&A + Risk = ~20K chars per Doc,
     2 Docs = ~40K chars ≈ ~10K tokens) fits with comfortable headroom.
   - One-page-per-doc preserves a clean doc_id boundary for SAO.

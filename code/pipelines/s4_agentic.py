@@ -26,24 +26,29 @@ from code.pipelines.base import Bundle, Pipeline, VizOutput
 
 
 # Module-level round-robin assignment of reasoner_base_url across the
-# vLLM hosts listed in QWEN36_27B_PORTS env. Each pipeline INSTANCE
-# gets a sticky URL at __init__ — distributes load across ports when
+# on-prem Qwen3.5-397B-A17B-FP8 vLLM cluster. Each pipeline INSTANCE
+# gets a sticky URL at __init__ — distributes load across hosts when
 # --s4-workers > 1 (run_prototype creates a new instance per task).
+#
+# Host pool source of truth: code.adapters.agent_client.QWEN_HOSTS
+# (env QWEN_HOSTS, default 10.1.211.163-170:8000).
+# Mode: env DOCVIZ_HOST_MODE = "single" (first host only) | "multi"
+# (round-robin across all hosts).
 _PORT_COUNTER_LOCK = threading.Lock()
 _PORT_COUNTER = 0
 
 
 def _next_reasoner_url() -> str:
-    """Round-robin pick from QWEN36_27B_PORTS (default 9101,9102,9103)."""
+    """Round-robin pick from QWEN_HOSTS honoring DOCVIZ_HOST_MODE."""
     global _PORT_COUNTER
-    ports_env = os.environ.get("QWEN36_27B_PORTS", "9101,9102,9103")
-    ports = [p.strip() for p in ports_env.split(",") if p.strip()]
-    if not ports:
-        ports = ["9101"]
+    from code.adapters.agent_client import QWEN_HOSTS, DOCVIZ_HOST_MODE
+    hosts = QWEN_HOSTS or ["10.1.211.163:8000"]
+    if DOCVIZ_HOST_MODE != "multi":
+        return f"http://{hosts[0]}/v1"
     with _PORT_COUNTER_LOCK:
-        idx = _PORT_COUNTER % len(ports)
+        idx = _PORT_COUNTER % len(hosts)
         _PORT_COUNTER += 1
-    return f"http://localhost:{ports[idx]}/v1"
+    return f"http://{hosts[idx]}/v1"
 
 
 class S4Agentic(Pipeline):

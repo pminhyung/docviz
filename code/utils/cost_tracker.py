@@ -1,6 +1,6 @@
 """Lightweight token + $ tracker.
 
-Week 0 runs entirely on on-premise Qwen3.6-27B (cost = 0). This module exists
+Week 0 runs entirely on on-premise Qwen3.5-397B-A17B-FP8 (cost = 0). This module exists
 to:
   - count tokens per call (in/out) so we can verify the prototype stays within
     sensible compute bounds before we ever touch closed APIs;
@@ -9,7 +9,7 @@ to:
 
 Usage:
     tracker = CostTracker()
-    tracker.add(provider="vllm-qwen36", model="Qwen3.6-27B",
+    tracker.add(provider="vllm-qwen35-397b", model="Qwen3.5-397B-A17B-FP8",
                 tokens_in=1234, tokens_out=567, cost_usd=0.0)
     print(tracker.summary())
 """

@@ -3,7 +3,7 @@
 
 When `_extract_dsl_block` could not parse the agent / direct-LLM output, the
 mapper falls back to dumping the raw final_answer into `viz_dsl` (and labels
-viz_type=mermaid_flowchart). For chartjs cases where Qwen3.6 emitted the
+viz_type=mermaid_flowchart). For chartjs cases where Qwen3.5-397B-A17B-FP8 emitted the
 spec as a NESTED OBJECT under "viz_dsl", that fallback meant viz_dsl is now
 the FULL JSON text (string) of the model's final_answer.
 

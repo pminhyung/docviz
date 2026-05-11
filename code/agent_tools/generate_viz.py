@@ -1,30 +1,36 @@
-"""V4 custom tool — viz_type-aware DSL generator.
+"""V4 custom tool — viz_type-aware DSL generator with sidecar persistence.
 
 This tool is loaded into the vendored agent via `custom_tools_path`. The
 agent reasons over the user query and source content, decides which
-viz_type from the 6-enum pool best fits, then calls this tool with that
+viz_type from the 10-enum pool best fits, then calls this tool with that
 viz_type plus a content brief. The tool internally:
 
-  1. Looks up the type-matched exemplar from the pool sidecar JSON
-     (one-shot for V4_pool mode; consolidated single example for
-     V4_consolidated mode).
-  2. Calls the on-prem Qwen3.6 vLLM endpoint with the exemplar +
+  1. Looks up the type-matched exemplar from `oneshot_pool.json`
+     (per-type pool sample for V4_pool, single integrated example for
+     V4_consolidated).
+  2. Calls the on-prem Qwen3.5-397B-A17B-FP8 vLLM endpoint with the exemplar +
      content brief as one-shot prompt.
-  3. Returns `{"viz_type": "...", "viz_dsl": "..."}` for the agent to
-     embed in `final_answer`.
+  3. **Writes the produced viz to a sidecar JSON file** keyed by
+     `(tmg_mode, query_id)` under `DOCVIZ_VIZ_SIDECAR_DIR`
+     (default `/tmp/v4_viz_outputs`). The orchestrator
+     (`code/pipelines/s4_agentic_tmg.py:S4AgenticTMG.run`) reads
+     the sidecar after the agent returns to populate `VizOutput`.
+  4. Returns a short status JSON (e.g., `{"status": "viz_generated",
+     "viz_type": ..., "viz_dsl_chars": N}`) so the agent's
+     `<final_answer>` can be a one-sentence ack and need not repeat
+     the (potentially large) viz_dsl.
 
 This realizes PAPER_MASTER_SPEC §3.2 (Provisional, 2026-05-10) — the
-agent makes the type decision; the tool scaffolds the DSL.
+agent makes the type decision; the tool scaffolds the DSL and persists.
 
 Schema sources of truth:
-  - `code/pipelines/tmg.py:VIZ_TYPE_POOL` (the 6-enum)
+  - `code/pipelines/tmg.py:VIZ_TYPE_POOL` (the 10-enum)
   - `code/agent_tools/oneshot_pool.json` (sidecar; populated from Q2
-    subagent revision draft once approved)
+    revision draft, commit b3bebcf)
 
 Mode dispatch:
-  - context["tmg_mode"] ∈ {"v4_pool", "v4_consolidated"} — passed
-    through `tool_secrets` or the agent's runtime context
-  - default: v4_pool (k=1 sample from the pool)
+  - context["tool_secrets"]["tmg_mode"] ∈ {"v4_pool", "v4_consolidated"}
+  - context["tool_secrets"]["query_id"] — record key for sidecar path
 
 This file is *self-contained* — the agent server process loads it
 without requiring the rest of the `code/` package on PYTHONPATH. The
@@ -40,11 +46,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
-# Sidecar JSON path — populated from Q2 subagent revision (commit
-# pending). Schema:
-#   {"pool": {<viz_type>: [<exemplar_json_str>, ...]},
-#    "consolidated": {<viz_type>: <exemplar_json_str>}}
+# oneshot_pool sidecar (read-only) — populated from Q2 revision (b3bebcf).
+# Schema: {"pool": {<viz_type>: [<exemplar_json_str>, ...]},
+#          "consolidated": {<viz_type>: <exemplar_json_str>}}
 _POOL_PATH = Path(__file__).parent / "oneshot_pool.json"
+
+# viz_output sidecar (write) — orchestrator reads this after agent
+# returns. Each entry: /{DOCVIZ_VIZ_SIDECAR_DIR}/{tmg_mode}_{query_id}.json
+# = {"viz_type": "...", "viz_dsl": "..."}
+_DEFAULT_OUTPUT_SIDECAR_DIR = "/tmp/v4_viz_outputs"
 
 
 VIZ_TYPE_POOL = [
@@ -130,10 +140,14 @@ class GenerateVizTool:
         "Generate a visualization DSL of the chosen viz_type "
         "(Mermaid markdown or Chart.js JSON) from a natural-language "
         "content brief. Use this tool ONCE per query, after you have "
-        "decided which viz_type from the 6-enum pool best fits the "
-        "query and source content. Returns a JSON string "
-        '{"viz_type": "...", "viz_dsl": "..."} which you should embed '
-        "verbatim in your final_answer."
+        "decided which viz_type from the 10-enum pool best fits the "
+        "query and source content. The tool persists the produced viz "
+        "to a sidecar file for the downstream pipeline; it returns a "
+        "short status JSON (e.g., "
+        '{"status": "viz_generated", "viz_type": "...", '
+        '"viz_dsl_chars": N}). After calling this tool, produce a '
+        "brief one-sentence <final_answer> acknowledgment — do not "
+        "repeat the DSL."
     )
     parameters = {
         "type": "object",
@@ -143,7 +157,7 @@ class GenerateVizTool:
                 "enum": VIZ_TYPE_POOL,
                 "description": (
                     "The visualization type chosen for this query. "
-                    "Must be one of the 6 enum values."
+                    "Must be one of the 10 enum values."
                 ),
             },
             "content_brief": {
@@ -164,35 +178,48 @@ class GenerateVizTool:
     tool_type = "inference"
 
     def __init__(self, vllm_base_url: Optional[str] = None, model: Optional[str] = None):
-        # vLLM endpoint defaults to first known port; can be overridden
-        # via env or constructor for multi-host setups.
+        # Default vLLM endpoint = first host in the on-prem Qwen3.5-397B
+        # cluster. Per-call override comes through context["tool_secrets"]
+        # ["vllm_base_url"], set by the orchestrator so the tool uses the
+        # SAME host as the agent's reasoner (per-sample parallel).
         self._base_url = (
             vllm_base_url
             or os.environ.get("DOCVIZ_VLLM_BASE_URL")
-            or "http://localhost:9101/v1"
+            or "http://10.1.211.163:8000/v1"
         )
-        self._model = model or os.environ.get("DOCVIZ_VLLM_MODEL", "Qwen3.6-27B")
+        self._model = model or os.environ.get(
+            "DOCVIZ_VLLM_MODEL", "Qwen3.5-397B-A17B-FP8"
+        )
 
     def execute(self, args: Dict[str, Any], context: Dict[str, Any]) -> str:
         viz_type = args.get("viz_type", "")
         content_brief = args.get("content_brief", "")
         # mode + query_id come from agent's per-call context (set by
-        # S4_AgenticTMGv4 / v4_consolidated wrapper before run_paper_default)
-        mode = context.get("tmg_mode", "v4_pool")
-        query_id = context.get("query_id", "_unknown")
+        # S4_AgenticTMG.run() V4 mode via tool_secrets in the request body;
+        # the agent server forwards tool_secrets into context here).
+        secrets = context.get("tool_secrets") or {}
+        mode = secrets.get("tmg_mode", "v4_pool")
+        query_id = secrets.get("query_id", "_unknown")
 
         if viz_type not in VIZ_TYPE_POOL:
             return json.dumps(
-                {"error": f"invalid viz_type={viz_type!r}; must be one of {VIZ_TYPE_POOL}"},
+                {"status": "error",
+                 "error": f"invalid viz_type={viz_type!r}; must be one of {VIZ_TYPE_POOL}"},
                 ensure_ascii=False,
             )
         if not content_brief:
-            return json.dumps({"error": "content_brief is required"}, ensure_ascii=False)
+            return json.dumps(
+                {"status": "error", "error": "content_brief is required"},
+                ensure_ascii=False,
+            )
 
         try:
             exemplar = _select_exemplar(viz_type, query_id, mode)
         except (FileNotFoundError, KeyError) as e:
-            return json.dumps({"error": str(e)}, ensure_ascii=False)
+            return json.dumps(
+                {"status": "error", "error": str(e)},
+                ensure_ascii=False,
+            )
 
         prompt = self._build_prompt(viz_type, content_brief, exemplar)
 
@@ -202,11 +229,15 @@ class GenerateVizTool:
             from openai import OpenAI
         except ImportError:
             return json.dumps(
-                {"error": "openai package not installed in agent server venv"},
+                {"status": "error",
+                 "error": "openai package not installed in agent server venv"},
                 ensure_ascii=False,
             )
 
-        client = OpenAI(base_url=self._base_url, api_key="EMPTY")
+        # Per-call vLLM URL override — orchestrator sticks the agent's
+        # reasoner host on tool_secrets so tool ↔ reasoner share the host.
+        base_url = secrets.get("vllm_base_url") or self._base_url
+        client = OpenAI(base_url=base_url, api_key="EMPTY")
         try:
             response = client.chat.completions.create(
                 model=self._model,
@@ -218,13 +249,70 @@ class GenerateVizTool:
                 extra_body={"chat_template_kwargs": {"enable_thinking": False}},
             )
         except Exception as e:
-            return json.dumps({"error": f"vLLM call failed: {e}"}, ensure_ascii=False)
+            return json.dumps(
+                {"status": "error", "error": f"vLLM call failed: {e}"},
+                ensure_ascii=False,
+            )
 
         raw = response.choices[0].message.content or ""
-        # Pass through — mapper strategy 1a will parse the JSON downstream.
-        # If the model deviated, surface the raw text so map_agent_response
-        # can still attempt extraction.
-        return raw
+
+        # Parse the LLM output to extract (viz_type, viz_dsl).
+        # Mapper strategy 1a equivalent — whole-text JSON parse.
+        viz_dsl = ""
+        out_viz_type = viz_type
+        try:
+            stripped = raw.lstrip()
+            if stripped.startswith("{"):
+                obj, _ = json.JSONDecoder().raw_decode(stripped)
+                if isinstance(obj, dict):
+                    parsed_type = obj.get("viz_type", "")
+                    parsed_dsl = obj.get("viz_dsl", "")
+                    if parsed_type:
+                        out_viz_type = parsed_type
+                    if isinstance(parsed_dsl, str):
+                        viz_dsl = parsed_dsl
+                    elif isinstance(parsed_dsl, (dict, list)):
+                        # Re-serialize nested object → string (chartjs case)
+                        viz_dsl = json.dumps(parsed_dsl, ensure_ascii=False)
+        except Exception:
+            pass
+
+        if not viz_dsl:
+            # LLM didn't produce parseable JSON. Return raw + error status
+            # so the agent has visibility; do NOT write a stale sidecar.
+            return json.dumps(
+                {"status": "error",
+                 "error": "LLM did not return parseable {viz_type, viz_dsl} JSON",
+                 "raw_preview": raw[:300]},
+                ensure_ascii=False,
+            )
+
+        # Persist viz output to sidecar so the orchestrator can read it
+        # without parsing the agent's <final_answer>.
+        sidecar_dir = Path(
+            os.environ.get("DOCVIZ_VIZ_SIDECAR_DIR", _DEFAULT_OUTPUT_SIDECAR_DIR)
+        )
+        sidecar_dir.mkdir(parents=True, exist_ok=True)
+        sidecar_path = sidecar_dir / f"{mode}_{query_id}.json"
+        sidecar_path.write_text(
+            json.dumps(
+                {"viz_type": out_viz_type, "viz_dsl": viz_dsl},
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+        # Return short status to the agent — its <final_answer> can be
+        # a one-sentence ack, no need to repeat the DSL.
+        return json.dumps(
+            {
+                "status": "viz_generated",
+                "viz_type": out_viz_type,
+                "viz_dsl_chars": len(viz_dsl),
+                "sidecar_path": str(sidecar_path),
+            },
+            ensure_ascii=False,
+        )
 
     def _build_prompt(self, viz_type: str, content_brief: str, exemplar: str) -> str:
         use_case = _VIZ_TYPE_USE_CASES.get(viz_type, "")
@@ -237,8 +325,7 @@ class GenerateVizTool:
             f"JSON object structure (`type`/`data`/`options` keys), or "
             f"valid edge/node/dataset/label/cardinality syntax. Use it as "
             f"a syntax reference, not as a content template. Do not carry "
-            f"over the example's domain, title format, structural layout "
-            f"(e.g., categorical subgraphs vs explicit value-bearing edges), "
+            f"over the example's domain, title format, structural layout, "
             f"color palette, or level of abstraction; pick whatever is most "
             f"useful for the brief below.\n"
             f"\n"
@@ -249,15 +336,23 @@ class GenerateVizTool:
             f"{content_brief}\n"
             f"\n"
             f"When generating the DSL: preserve every specific fact present "
-            f"in the brief — named entities, dates, numbers, quantities, "
-            f"role descriptions, quoted phrases — by placing them directly "
-            f"into the appropriate node labels, edge labels, dataset values, "
-            f"titles, or annotations. Do not abstract specific values into "
-            f"category labels (e.g., a $150,000 donation must appear as "
-            f"\"$150,000\" in an edge label, not as a generic \"Donation\" "
-            f"node). Do not omit a fact because the example's structure "
-            f"would not naturally include it; alter the structure to fit "
-            f"the brief's facts instead.\n"
+            f"in the brief — named entities, dates, numerical quantities, "
+            f"role descriptions, quoted phrases — by placing them in the "
+            f"location appropriate for the {viz_type} grammar:\n"
+            f"  - For chartjs_* types, numeric quantities go into the "
+            f"`data` arrays as numbers, with their context preserved in "
+            f"`labels` / `dataset.label` / `options.title` (units, "
+            f"timeframes, named entities). Format conversion (e.g., "
+            f"\"$150,000\" → 150000 with a label/title noting the unit) "
+            f"is acceptable as long as the value and its meaning survive.\n"
+            f"  - For mermaid_* types, names / dates / quantities go into "
+            f"node labels, edge labels, or annotations as text — preserved "
+            f"in their natural source form when meaningful (e.g., "
+            f"\"Donated $150,000\" as an edge label rather than reducing "
+            f"to a generic \"Donation\" link).\n"
+            f"Do not omit a fact because the example's structure would not "
+            f"naturally include it; alter the structure to fit the brief's "
+            f"facts instead.\n"
             f"\n"
             f"Return ONLY a JSON object "
             f'{{"viz_type": "{viz_type}", "viz_dsl": "<the raw DSL string>"}}. '

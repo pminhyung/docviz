@@ -6,7 +6,7 @@ score every item at once. Output is a JSON list aligned with the input
 checklist; per-item answer ∈ {YES, PARTIAL, NO} maps to {1.0, 0.5, 0.0}.
 
 Spec L342 prescribes Claude Opus 4.6 as scorer (cross-judge against the
-GPT-5 generator); Week 0 substitutes Qwen3.6-27B for both — single-model
+GPT-5 generator); Week 0 substitutes Qwen3.5-397B-A17B-FP8 for both — single-model
 judge is documented as a deviation in the open-questions track file.
 """
 from __future__ import annotations
@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 
 from code.adapters.agent_client import (
     PAPER_DEFAULT_SEED,
-    QWEN_36_27B_MODEL,
+    QWEN_MODEL,
     QwenDirectClient,
 )
 
@@ -98,7 +98,7 @@ def score_checklist(
     sub_queries: List[str],
     checklist: List[Dict[str, Any]],
     client: Optional[QwenDirectClient] = None,
-    model: str = QWEN_36_27B_MODEL,
+    model: str = QWEN_MODEL,
     max_tokens: int = 2200,
     temperature: float = 0.0,
     seed: int = PAPER_DEFAULT_SEED,

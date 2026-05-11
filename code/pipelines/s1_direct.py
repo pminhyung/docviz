@@ -1,6 +1,6 @@
 """S1 Direct pipeline (≡ §7 baseline B5: Direct-LLM).
 
-Concat all bundle docs + query → single Qwen3.6-27B chat call → JSON output
+Concat all bundle docs + query → single Qwen3.5-397B-A17B-FP8 chat call → JSON output
 {viz_type, viz_dsl}. No agent loop, no retrieval, no sub-queries.
 
 Used as the non-agentic baseline against which the agentic strategy (S4) is
@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 from code.adapters.agent_client import (
     PAPER_DEFAULT_SEED,
     PAPER_DEFAULT_TEMPERATURE,
-    QWEN_36_27B_MODEL,
+    QWEN_MODEL,
     QwenDirectClient,
 )
 from code.adapters.viz_output_mapper import _extract_dsl_block
@@ -46,7 +46,7 @@ No prose, no markdown fences around the JSON.
 """
 
 
-# Qwen3.6 ships in thinking mode by default; for the Direct baseline we want
+# Qwen ships in thinking mode by default; for the Direct baseline we want
 # the model to emit DSL immediately, not spend its budget in <think>…</think>.
 NO_THINK = {"chat_template_kwargs": {"enable_thinking": False}}
 
@@ -59,7 +59,7 @@ class S1Direct(Pipeline):
     def __init__(
         self,
         client: QwenDirectClient | None = None,
-        model: str = QWEN_36_27B_MODEL,
+        model: str = QWEN_MODEL,
         max_tokens: int = 4096,
         doc_char_cap: int = 12_000,
     ):

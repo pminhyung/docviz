@@ -26,6 +26,7 @@ Comparing on the same 60 (query, bundle) pairs:
 """
 from __future__ import annotations
 
+import json
 import os
 import tempfile
 import threading
@@ -39,31 +40,68 @@ from code.pipelines.base import Bundle, Pipeline, VizOutput
 from code.pipelines.tmg import V4_POOL_EXPOSURE_RULE, build_tmg_rule
 
 
+# generate_viz tool's viz output sidecar — written by the tool, read by
+# this orchestrator after the agent returns. Path format:
+# /{DOCVIZ_VIZ_SIDECAR_DIR}/{mode}_{query_id}.json
+_DEFAULT_VIZ_SIDECAR_DIR = "/tmp/v4_viz_outputs"
+
+
+def _read_viz_sidecar(mode: str, query_id: Optional[str]) -> Optional[dict]:
+    """Read the viz output sidecar produced by generate_viz tool.
+
+    Returns the parsed dict or None if missing / unparseable.
+    Removes the file after a successful read to keep the dir clean
+    and avoid stale-file races on subsequent runs.
+    """
+    if not query_id:
+        return None
+    sidecar_dir = Path(
+        os.environ.get("DOCVIZ_VIZ_SIDECAR_DIR", _DEFAULT_VIZ_SIDECAR_DIR)
+    )
+    path = sidecar_dir / f"{mode}_{query_id}.json"
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    try:
+        path.unlink()
+    except OSError:
+        pass
+    return data
+
+
 _GENERATE_VIZ_TOOL_PATH = (
     Path(__file__).resolve().parent.parent / "agent_tools" / "generate_viz.py"
 )
 
 
 # Module-level round-robin assignment of reasoner_base_url across the
-# vLLM hosts listed in QWEN36_27B_PORTS env. Each pipeline INSTANCE
+# on-prem Qwen3.5-397B-A17B-FP8 vLLM cluster. Each pipeline INSTANCE
 # gets a sticky URL at __init__ — combined with run_prototype's
 # `pipeline_factory()` per-task creation under ThreadPoolExecutor, this
-# distributes load across ports when --s4-workers > 1.
+# distributes load across hosts when --s4-workers > 1.
+#
+# Host pool source of truth: code.adapters.agent_client.QWEN_HOSTS
+# (env QWEN_HOSTS, default 10.1.211.163-170:8000).
+# Mode: env DOCVIZ_HOST_MODE = "single" (first host only) | "multi"
+# (round-robin across all hosts).
 _PORT_COUNTER_LOCK = threading.Lock()
 _PORT_COUNTER = 0
 
 
 def _next_reasoner_url() -> str:
-    """Round-robin pick from QWEN36_27B_PORTS (default 9101,9102,9103)."""
+    """Round-robin pick from QWEN_HOSTS honoring DOCVIZ_HOST_MODE."""
     global _PORT_COUNTER
-    ports_env = os.environ.get("QWEN36_27B_PORTS", "9101,9102,9103")
-    ports = [p.strip() for p in ports_env.split(",") if p.strip()]
-    if not ports:
-        ports = ["9101"]
+    from code.adapters.agent_client import QWEN_HOSTS, DOCVIZ_HOST_MODE
+    hosts = QWEN_HOSTS or ["10.1.211.163:8000"]
+    if DOCVIZ_HOST_MODE != "multi":
+        return f"http://{hosts[0]}/v1"
     with _PORT_COUNTER_LOCK:
-        idx = _PORT_COUNTER % len(ports)
+        idx = _PORT_COUNTER % len(hosts)
         _PORT_COUNTER += 1
-    return f"http://localhost:{ports[idx]}/v1"
+    return f"http://{hosts[idx]}/v1"
 
 
 _STRATEGY_NAMES = {
@@ -137,6 +175,10 @@ class S4AgenticTMG(Pipeline):
                 "tool_secrets": {
                     "query_id": query_id or "_unknown",
                     "tmg_mode": self.mode,
+                    # Tool uses the SAME vLLM endpoint as the agent's
+                    # reasoner so this pipeline instance's sticky host
+                    # is honored end-to-end (per-sample parallel).
+                    "vllm_base_url": self._reasoner_base_url,
                 }
             }
         else:
@@ -173,4 +215,23 @@ class S4AgenticTMG(Pipeline):
                 extra_overrides=extra_overrides,
             )
 
-        return map_agent_response(response, bundle, concat_doc_path=doc_path)
+        vo = map_agent_response(response, bundle, concat_doc_path=doc_path)
+
+        # V4 modes: the generate_viz tool persisted the viz to a sidecar
+        # file. Override the (likely empty / ack-only) viz from the agent's
+        # short final_answer with the sidecar payload. Falls back to the
+        # mapped agent response if the sidecar is missing (e.g., the agent
+        # never invoked the tool — a content failure we surface as-is).
+        if self.mode in ("v4_pool", "v4_consolidated"):
+            sidecar = _read_viz_sidecar(self.mode, query_id)
+            if sidecar:
+                vo.viz_type = sidecar.get("viz_type") or vo.viz_type
+                vo.viz_dsl = sidecar.get("viz_dsl") or vo.viz_dsl
+            else:
+                vo.errors.append(
+                    f"{self.name}: generate_viz sidecar missing for "
+                    f"query_id={query_id!r}; agent likely did not invoke "
+                    "the tool. Final_answer used as fallback."
+                )
+
+        return vo
