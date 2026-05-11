@@ -137,11 +137,18 @@ def _viz_options(query_type: str) -> List[str]:
     return out
 
 
-def build_tmg_rule(query_type: str) -> str:
+def build_tmg_rule(query_type: str, *, include_one_shot: bool = True) -> str:
     """Return a custom_rules block that routes the agent for this query type.
 
     Appended to run_paper_default's existing rules. Must NOT contradict
     the dsl_output_rule (final_answer = single JSON, viz_type ∈ enum).
+
+    `include_one_shot` toggles the reference-output line:
+      - True  → V0 mode (current placeholder one-shot from
+                ONE_SHOT_BY_VIZ_TYPE[primary])
+      - False → V1 mode (rule routing + tip only, no example) — mentor
+                risk #1 baseline; isolates the value of the one-shot
+                independently from the routing decision.
     """
     if query_type not in TYPE_TO_VIZ:
         # Unknown type — emit a no-op block so the agent falls back to the
@@ -152,20 +159,60 @@ def build_tmg_rule(query_type: str) -> str:
     options = _viz_options(query_type)
     options_str = ", ".join(f'"{o}"' for o in options)
     tip = TYPE_TIP[query_type]
-    one_shot = ONE_SHOT_BY_VIZ_TYPE[primary]
 
-    return (
-        f"\nTMG ROUTING (DocViz-Agent Pillar 2 — type-aware):\n"
-        f"- The user query is type **{query_type}**.\n"
-        f"- Recommended viz_type: **{primary}**. Secondary acceptable: {secondary}.\n"
+    parts = [
+        "",
+        "TMG ROUTING (DocViz-Agent Pillar 2 — type-aware):",
+        f"- The user query is type **{query_type}**.",
+        f"- Recommended viz_type: **{primary}**. Secondary acceptable: {secondary}.",
         f"- Restrict viz_type to: {options_str} unless the source content "
-        f"truly fits a different one of the 6 enum values.\n"
-        f"- Generation tip for {query_type}: {tip}\n"
-        f"- Reference output for this type — match the schema exactly, "
-        f"not the content:\n"
-        f"  {one_shot}"
-    )
+        f"truly fits a different enum value.",
+        f"- Generation tip for {query_type}: {tip}",
+    ]
+    if include_one_shot:
+        one_shot = ONE_SHOT_BY_VIZ_TYPE[primary]
+        parts.append(
+            "- Reference output for this type — match the schema exactly, "
+            "not the content:"
+        )
+        parts.append(f"  {one_shot}")
+    return "\n".join(parts)
 
 
 def primary_viz_type(query_type: str) -> str:
     return TYPE_TO_VIZ.get(query_type, ("mermaid_flowchart", ""))[0]
+
+
+# ── V4 — agent inference + tool-call exposure rule ────────────────────────
+
+
+# Used by S4AgenticTMG(mode="v4_pool" | "v4_consolidated"). The agent sees
+# the 10-type pool with use-case hints, and is instructed to call the
+# generate_viz tool (loaded from code/agent_tools/generate_viz.py via
+# custom_tools_path) rather than emit DSL directly.
+V4_POOL_EXPOSURE_RULE = (
+    "- **TMG (Pillar 2 — Type-aware Multi-Viz Generation)**: For any "
+    "request that asks for a visualization, diagram, chart, mindmap, "
+    "or similar visual artifact of the document content, you MUST "
+    "invoke the `generate_viz` action tool to produce the DSL. The "
+    "`viz_type` argument MUST be one of "
+    "{chartjs_bar, chartjs_line, chartjs_grouped_bar, chartjs_pie, "
+    "chartjs_scatter, mermaid_flowchart, mermaid_timeline, "
+    "mermaid_mindmap, mermaid_sequenceDiagram, mermaid_classDiagram}; "
+    "choose it based on the user query type AND the source content "
+    "structure (e.g., qualitative cross-entity comparison → "
+    "`mermaid_mindmap` rather than `chartjs_grouped_bar`). Pass "
+    "`content_brief` as a detailed natural-language description that "
+    "names the entities, dates, numbers, quantities, relationships, "
+    "and any quotes from the source documents that the visualization "
+    "must include — `generate_viz` does not see the documents, only "
+    "this brief.\n"
+    "- **`generate_viz` short final_answer**: The `generate_viz` tool "
+    "persists the produced visualization to its own sidecar file and "
+    "returns only a short status string (e.g., `viz_generated`). After "
+    "you receive this status, produce a one-sentence "
+    "`<final_answer>` such as \"Visualization generated.\" — do NOT "
+    "repeat or restate the DSL in `<final_answer>`. The downstream "
+    "pipeline reads the visualization from the sidecar, not from your "
+    "`<final_answer>` text."
+)

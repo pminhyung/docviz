@@ -12,7 +12,7 @@ Items are grounded in the bundle content and the query type — generic
 queryable evidence hints that the scorer can later resolve.
 
 Spec L341 prescribes GPT-5 for checklist generation; Week 0 substitutes
-on-prem Qwen3.6-27B (cost-zero policy). Cross-judge with Claude Opus 4.6
+on-prem Qwen3.5-397B-A17B-FP8 (cost-zero policy). Cross-judge with Claude Opus 4.6
 on the prototype 30-sample subset is deferred to closed-API window.
 """
 from __future__ import annotations
@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 
 from code.adapters.agent_client import (
     PAPER_DEFAULT_SEED,
-    QWEN_36_27B_MODEL,
+    QWEN_MODEL,
     QwenDirectClient,
 )
 
@@ -100,7 +100,7 @@ def generate_checklist(
     docs: List[Dict[str, Any]],
     strategy_class: str,                # "agentic" | "non_agentic"
     client: Optional[QwenDirectClient] = None,
-    model: str = QWEN_36_27B_MODEL,
+    model: str = QWEN_MODEL,
     max_tokens: int = 1500,
     temperature: float = 0.0,
     seed: int = PAPER_DEFAULT_SEED,

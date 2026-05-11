@@ -3,7 +3,7 @@
 Per PAPER_MASTER_SPEC §5.2:
   - 2 queries per bundle, types pinned by source (TYPE_ASSIGNMENT)
   - Filter: ≤25 words AND references ≥1 bundle entity
-  - Spec L263 prescribes GPT-4o-mini; Week 0 deviates to on-prem Qwen3.6-27B
+  - Spec L263 prescribes GPT-4o-mini; Week 0 deviates to on-prem Qwen3.5-397B-A17B-FP8
     (cost = 0, see code/utils/cost_tracker.py docstring + PR1 bootstrap).
     Cross-validation with Claude Opus 4.6 (L266) is deferred to the closed-API
     window — recorded in docs/active/tracks/feat-source-loaders/open-questions.md.
@@ -23,7 +23,7 @@ from typing import Dict, List, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from code.adapters.agent_client import QWEN_36_27B_MODEL, QwenDirectClient
+from code.adapters.agent_client import QWEN_MODEL, QwenDirectClient
 from code.pipelines.base import Bundle
 from code.utils.bundle_io import read_bundles_json
 from code.utils.cost_tracker import CostTracker
@@ -46,7 +46,7 @@ MAX_RETRIES = 2                    # filter-fail → retry with seed offset
 WORD_LIMIT = 25                    # spec §5.2 L265
 MIN_ENTITY_LEN = 4                 # entity tokens must be ≥4 chars to count
 
-# Qwen3.6 ships in thinking mode by default; query generation is an instruction-
+# Qwen ships in thinking mode by default; query generation is an instruction-
 # following task, not a reasoning task, so we disable thinking to avoid the
 # entire token budget being spent in <think>…</think> with content=None.
 NO_THINK = {"chat_template_kwargs": {"enable_thinking": False}}
@@ -154,7 +154,7 @@ def _generate_one(
         seed = 42 + attempt
         resp = client.chat(
             messages=[{"role": "user", "content": prompt}],
-            model=QWEN_36_27B_MODEL,
+            model=QWEN_MODEL,
             temperature=temperature,
             seed=seed,
             max_tokens=MAX_TOKENS,
@@ -182,8 +182,8 @@ def _generate_one(
         raw_log.write(json.dumps(record, ensure_ascii=False) + "\n")
         raw_log.flush()
         tracker.add(
-            provider="vllm-qwen36",
-            model=QWEN_36_27B_MODEL,
+            provider="vllm-qwen35-397b",
+            model=QWEN_MODEL,
             tokens_in=record["tokens_in"],
             tokens_out=record["tokens_out"],
             cost_usd=0.0,
@@ -231,7 +231,7 @@ def generate_queries(
                     "query": query,
                     "word_count": wc,
                     "entity_hits": hits[:8],
-                    "model": QWEN_36_27B_MODEL,
+                    "model": QWEN_MODEL,
                     "retries_used": attempts,
                     "filter_passed": ok,
                 }

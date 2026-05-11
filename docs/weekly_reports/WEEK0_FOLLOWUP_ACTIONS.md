@@ -108,7 +108,54 @@
 
 ---
 
-### 액션 3 — C5 mechanism 격리 실험
+### 액션 3 — V4: agent inference + curated exemplar pool via tool-call
+
+> **[2026-05-10 design pivot]** — `docs/analysis/oneshot_failure_analysis.md` (commit `b90eda1`) + `docs/weekly_reports/WEEK0_TMG_DESIGN_PIVOT.md` (commit `aff7baf`) 의 두 발견 (C5 가설은 gap 의 절반만 설명; rule-based 라우터가 3 셀에서 empirically 틀림) 에 따라 사용자가 V4 를 새 최우선으로 지시. 아래 V4 spec 이 우선. **V0-V3 (원래 isolation experiment plan) 는 잠정 보류** — V4 측정 결과 미흡 시 fallback 으로 선택적 재개.
+
+> **[2026-05-10 mentor review safeguards]** — V4 측정 직전에 박을 4 가지 risk 안전장치 (mentor 피드백 반영, 액션 1·3·4·5):
+> 1. **V1 baseline 동시 측정** — 같은 60 records 위에서 V1 (rule routing + no one-shot) 도 별도 strategy 로 추가. 19-record drop subset 의 paired **Δ(V4 − V1)** 가 paper §11.4 의 핵심 ablation row 이자 tool-call 아키텍처 복잡도의 정당화 evidence. Δ(V4 − V1) ≤ +0.03 이면 V4 의 추가 복잡도 justification 어려움.
+> 2. **§3.2 amendment 는 Provisional 상태** (commit `903aa42`). V4 측정 결과로 final / narrow / rollback 결정 (PAPER_MASTER_SPEC §3.2 Status 블록 참고).
+> 3. **V4 결과 보고는 점추정 단독 금지** — paired bootstrap CI (BCa, 10K resamples, 95%) + Cohen's d 동반. 19-record drop subset + 60-record 전체에 대해 cell 별 Δ·CI·d 모두.
+> 4. **Q2 subagent draft 검수 체크리스트** — high-faith 만 보지 말 것. 각 viz_type 의 exemplar pool 안에서 syntactic spread (depth / node count / edge label length / series count) 가 실측 데이터 spectrum 을 cover 하는지 명시 검증. (Q2 subagent prompt 자체에 syntactic-diverse 요구가 들어가 있음, 검수 단계에서 빠짐 없이 확인.)
+
+#### V4 (최우선)
+
+**새 architecture**:
+- custom_rules 에 6 viz_type pool + 각 use-case 짧게 노출 (`chartjs_bar = quantitative comparison`, `mermaid_mindmap = hierarchical taxonomy`, ...). 강제 라우팅 없음.
+- agent reasoner: query + source 보고 viz_type 본인이 결정 → tool call: `generate_viz(viz_type=<chosen>, content_brief=...)`
+- `generate_viz` tool 내부:
+  - `ONE_SHOT_POOL_BY_VIZ_TYPE[viz_type]` 에서 1-2 examples 선정 (Q2 subagent draft 결과)
+  - LLM 호출: `[examples] + content_brief + DSL 생성 instructions` → `(viz_type, viz_dsl)` 반환
+- agent: tool 응답 받아 final_answer 로 wrap
+
+**새 코드**:
+- `code/agent_tools/generate_viz.py` — custom tool (vendored agent 의 tools 인터페이스)
+- `code/pipelines/tmg.py` — `ONE_SHOT_BY_VIZ_TYPE` → `ONE_SHOT_POOL_BY_VIZ_TYPE` 로 확장. `TYPE_TO_VIZ` + `build_tmg_rule` 의 강제 라우팅 부분은 deprecate (custom_rules 는 6-type pool + use-case 노출만 담당)
+- `code/pipelines/s4_agentic_tmg.py` — `run_paper_default(custom_tools_path=<...>, custom_rules=<6-pool 노출만>)` 로 변경. 새 strategy name 후보: `S4_AgenticTMGv4` (기존 `S4_AgenticTMG` = v1 보존)
+- `code/run_prototype.py` — strategy registry 갱신
+
+**V4 측정 (paired)**:
+- 같은 60 records 로 4-way (S1, S4, S4_TMG=v1, S4_TMG_v4)
+- paired Δ(v4 − v1) 가 §11.4 ablation row 의 핵심 measurement
+- hypothesis prior (oneshot_failure_analysis.md Part 5): hotpot relational faith 0.71 → ~0.88-0.90 회복
+
+**성공 기준**:
+- Δ(v4 − v1) faith mean ≥ +0.10 (V4 가 placeholder-rule 변형보다 의미있게 회복)
+- 3 mismatch 셀 (arxiv/comp, hotpot/comp, multinews/comp) 에서 agent 가 mindmap/timeline/flowchart 자기 inference 로 picking 하는지 trace 검증
+- 10k chartjs JSON +15%p 효과 보존 (curated pool 의 고품질 chartjs example 로)
+
+**결과 분기**:
+- 위 기준 통과 → §11.4 ablation row 에 v4 paired Δ 로 채움. C6 finding 후보 ("rule-based viz_type routing fails source-conditional cases; agent inference closes gap"). PR7 + closed-API 활성과 결합해 paper-grade closing.
+- v4 ≈ v1 → V1 (one-shot 자체 제거, 잠정 보류 영역) 재개. one-shot 자체가 무용인지 검증.
+- v4 < v1 (예상 밖) → mentor escalate. agent inference 가 vendored agent 환경에서 routing 결정을 안정적으로 못하는지, tool-call interface 가 vLLM Qwen3.6 에서 깨지는지 등 infra-level 진단.
+
+**소요**: 코드 ~반나절 + Qwen3.6 vLLM batch ~62 분 + 채점 ~25 분 + 분석 30 분 = ~1.5 일.
+
+---
+
+#### V0-V3 (잠정 보류 — 원래 plan)
+
+> 아래는 design pivot 이전의 C5 격리 실험 plan. V4 측정 후 필요 시 fallback variant 로 선택적 재개.
 
 **왜 필요한가**: 현재 C5 결론 ("generic placeholder one-shot 이 entity-rich labeling 을 suppress") 은 단일 텍스트 비교 + 5/10 paired drop 에 기반한다. 망친 원인이 진짜 "예시의 content style" 인지, 아니면 (a) 예시 존재 자체, (b) 예시 길이, (c) 예시 도메인 mismatch 인지 분리 안 됨. Reviewer 가 즉시 묻는다: *"네 가지 변수가 한꺼번에 바뀌었는데 어떻게 content style 이 원인이라 단정하나?"*. 이걸 못 답하면 C5 는 paper finding 이 아니라 anecdote.
 

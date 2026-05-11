@@ -103,29 +103,41 @@ This is the ChartMuseum + InstructBLIP hybrid model — task novelty + method + 
 
 ### 3.2 Pillar 2: Type-aware Multi-Viz Generation (TMG)
 
-**Mechanism**: Query-type classifier routes to appropriate visualization type.
+> **Status: Provisional amendment** (2026-05-10). The mechanism revision in this section reflects design intent informed by the Week-0 prototype paired analysis (commit `b90eda1`); empirical validation is pending the V4 measurement specified in `docs/weekly_reports/WEEK0_FOLLOWUP_ACTIONS.md` 액션 3. On V4 result this section is either (i) promoted to final (V4 − V1 paired Δ ≥ +0.05 faith with CI excluding 0), (ii) narrowed (V4 − V1 in (+0.03, +0.05) — keep agent-inference framing but drop the per-type exemplar pool claim), or (iii) rolled back to the prior rule-based formulation (V4 − V1 ≤ +0.03 — tool-call complexity not justified). The provisional tag is removed once the corresponding decision is committed.
 
-**Mapping table**:
-- Quantitative → Chart.js bar/line
-- Relational → Mermaid flowchart
+**Mechanism**: A deterministic 6-type viz pool and a per-type exemplar pool are exposed to the agent. The agent reasons over the query and source documents to select viz_type from the pool, then invokes a viz-generation tool that produces DSL using exemplar(s) matched to the chosen type. The 5-class query-type taxonomy is supplied as a soft prior in the agent's context, not as a hard router.
+
+> **Revision history**: prior versions of §3.2 prescribed a rule-based query-type → viz-type classifier ("Query-type classifier routes to appropriate visualization type"). The Week-0 prototype measurement (commit `24bbff3`) and paired analysis (commit `b90eda1`) showed (i) the rule-based router contradicts the agentic framing of C1, and (ii) the spec's `comparative → grouped_bar` row is empirically wrong for non-financial sources (3 cells: arxiv, hotpotqa, multinews). The mechanism is amended on 2026-05-10 to agent-inference + tool-call (commit `aff7baf`).
+
+**10 viz_type pool** (agent-selectable enum, expanded 2026-05-10 from 6 → 10):
+- chart (5): chartjs_bar, chartjs_line, chartjs_grouped_bar, chartjs_pie, chartjs_scatter
+- diagram (5): mermaid_flowchart, mermaid_timeline, mermaid_mindmap, mermaid_sequenceDiagram, mermaid_classDiagram
+
+**Soft-prior mapping** (informational; agent may override based on source content):
+- Quantitative → Chart.js bar / line / **scatter** (correlation / bivariate distribution) / **pie** (proportion / share)
+- Relational → Mermaid flowchart / mindmap / **sequenceDiagram** (interaction or message protocol) / **classDiagram** (typed entity-attribute schema)
 - Temporal → Mermaid timeline / Chart.js line
 - Hierarchical → Mermaid mindmap
-- Comparative → Mermaid flowchart / Chart.js grouped bar
+- Comparative → numeric multi-series → Chart.js grouped_bar; numeric proportion → Chart.js pie; qualitative cross-entity → Mermaid (flowchart / mindmap / timeline / classDiagram) depending on source structure
 
 **Why this differentiates from baselines**:
-- B1, B2, B3: chart-only output
-- B4: mindmap-style only
-- B5: no type-aware routing
-- Ours: 5 query types × 3 viz primitives = unified coverage
+- B1, B2, B3: chart-only output (no diagram capability)
+- B4: mindmap-style only (no chart capability)
+- B5: no type-aware exemplar pool, no agentic viz_type selection
+- Ours: 10 viz primitives × per-type curated exemplar pool, agent-inferred viz_type → unified coverage with source-conditioned override
 
-**Ablation** ("- TMG"): Use fixed viz type (e.g., always flowchart). Expected drop: -3~6%p on type-appropriateness axis.
+The 6 → 10 expansion (2026-05-10) added: chartjs_pie (ChartQA standard, comparative-share queries), chartjs_scatter (quantitative correlation), mermaid_sequenceDiagram (API/process documentation, software-doc corpus), mermaid_classDiagram (technical schema documentation). The original 6 cover Week-0 prototype S1/S4/V0/V1 measurements; the 4 added types are V4-only at first measurement (V4_pool / V4_consolidated strategies; backward-compat baselines retain 6-type prompts).
+
+**Per-type exemplar pool**: each viz_type maps to 2-3 high-faith exemplars curated to span syntactic diversity (depth / node count / edge-label style for Mermaid; series count / axis style for Chart.js) so the tool can scaffold DSL across realistic source-content shapes without over-constraining a single template. Selection criterion is a dual constraint: faith ≥ 0.75 + spread on syntactic features.
+
+**Ablation** ("- TMG"): Remove the per-type exemplar pool and the 6-type pool exposure (agent emits final_answer without type-aware scaffolding). Expected drop: -3~6%p on type-appropriateness; entity-rich query types may shift faithfulness in either direction depending on exemplar content style. Week-0 prototype measured the placeholder-exemplar variant (faith −10.4%p on entity-rich Mermaid, +15%p on chartjs JSON formatting); per-type domain-rich exemplars are the Week-0/1 calibration target (V4 in `WEEK0_FOLLOWUP_ACTIONS.md` 액션 3).
 
 ### 3.3 Pillar 3: Source-Attributed DSL Output (SAO)
 
 **Mechanism**: Each visual element (node, edge, data point) carries metadata pointing to source document and chunk.
 
 **Output schema**:
-- viz_type: one of {chartjs_bar, chartjs_line, chartjs_grouped_bar, mermaid_flowchart, mermaid_timeline, mermaid_mindmap}
+- viz_type: one of {chartjs_bar, chartjs_line, chartjs_grouped_bar, chartjs_pie, chartjs_scatter, mermaid_flowchart, mermaid_timeline, mermaid_mindmap, mermaid_sequenceDiagram, mermaid_classDiagram} — expanded 2026-05-10 from the original 6 to 10
 - viz_dsl: rendered DSL code (Chart.js JSON or Mermaid markdown)
 - source_attribution: list of {element_id, source_doc_id, chunk_id, evidence_span} entries
 
@@ -138,7 +150,7 @@ This is the ChartMuseum + InstructBLIP hybrid model — task novelty + method + 
 
 ### 3.4 Pillar interaction
 
-The three pillars compose as follows: CIS produces source-tagged retrieval chunks; TMG decides viz type from query; SAO grounds each visual element back to source documents. Each pillar is necessary; the full ablation removing all three drops to baseline B5 Direct-LLM level (-15.6%p average).
+The three pillars compose as follows: CIS produces source-tagged retrieval chunks; TMG exposes the 6-type viz pool with per-type exemplars while the agent infers viz_type from query and source content; SAO grounds each visual element back to source documents. Each pillar is necessary; the full ablation removing all three drops to baseline B5 Direct-LLM level (-15.6%p average).
 
 ### 3.5 Implementation notes for the research agent
 

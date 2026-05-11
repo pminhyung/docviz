@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import os
 import tempfile
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -22,6 +23,32 @@ from code.adapters.agent_client import AgentClient
 from code.adapters.bundle_to_docai import write_bundle_as_docai
 from code.adapters.viz_output_mapper import map_agent_response
 from code.pipelines.base import Bundle, Pipeline, VizOutput
+
+
+# Module-level round-robin assignment of reasoner_base_url across the
+# on-prem Qwen3.5-397B-A17B-FP8 vLLM cluster. Each pipeline INSTANCE
+# gets a sticky URL at __init__ — distributes load across hosts when
+# --s4-workers > 1 (run_prototype creates a new instance per task).
+#
+# Host pool source of truth: code.adapters.agent_client.QWEN_HOSTS
+# (env QWEN_HOSTS, default 10.1.211.163-170:8000).
+# Mode: env DOCVIZ_HOST_MODE = "single" (first host only) | "multi"
+# (round-robin across all hosts).
+_PORT_COUNTER_LOCK = threading.Lock()
+_PORT_COUNTER = 0
+
+
+def _next_reasoner_url() -> str:
+    """Round-robin pick from QWEN_HOSTS honoring DOCVIZ_HOST_MODE."""
+    global _PORT_COUNTER
+    from code.adapters.agent_client import QWEN_HOSTS, DOCVIZ_HOST_MODE
+    hosts = QWEN_HOSTS or ["10.1.211.163:8000"]
+    if DOCVIZ_HOST_MODE != "multi":
+        return f"http://{hosts[0]}/v1"
+    with _PORT_COUNTER_LOCK:
+        idx = _PORT_COUNTER % len(hosts)
+        _PORT_COUNTER += 1
+    return f"http://{hosts[idx]}/v1"
 
 
 class S4Agentic(Pipeline):
@@ -45,6 +72,8 @@ class S4Agentic(Pipeline):
             Path(tempfile.gettempdir()) / "docviz_s4"
         )
         self._work_dir.mkdir(parents=True, exist_ok=True)
+        # Sticky reasoner URL per instance — round-robin across host pool.
+        self._reasoner_base_url = _next_reasoner_url()
 
     def run(
         self,
@@ -52,6 +81,7 @@ class S4Agentic(Pipeline):
         bundle: Bundle,
         *,
         query_type: str | None = None,   # accepted for ABC parity, ignored
+        query_id: str | None = None,     # accepted for ABC parity, ignored
     ) -> VizOutput:
         doc_path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
 
@@ -82,6 +112,7 @@ class S4Agentic(Pipeline):
                 return_trace=True,
                 return_train_sample=False,
                 reasoner_max_length=self._reasoner_max_length,
+                reasoner_base_url=self._reasoner_base_url,
             )
 
         return map_agent_response(response, bundle, concat_doc_path=doc_path)

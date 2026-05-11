@@ -153,7 +153,12 @@ def _run_one(
 ) -> Dict[str, Any]:
     t0 = time.time()
     try:
-        vo = pipeline.run(q["query"], bundle, query_type=q.get("query_type"))
+        vo = pipeline.run(
+            q["query"],
+            bundle,
+            query_type=q.get("query_type"),
+            query_id=q["query_id"],
+        )
     except Exception as e:
         # Build a degraded VizOutput so downstream code doesn't have to branch
         vo = VizOutput(
@@ -319,8 +324,45 @@ def main() -> int:
                      if (q["query_id"], "S4_AgenticTMG") not in existing]
         if s4t_pairs:
             new = _run_strategy_pool(
-                "S4_AgenticTMG", lambda: S4AgenticTMG(), s4t_pairs,
+                "S4_AgenticTMG", lambda: S4AgenticTMG(mode="v0"), s4t_pairs,
                 workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # NEW V1 — rule routing + NO one-shot (mentor risk #1 baseline)
+    if "S4_TMGv1" in selected:
+        v1_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "S4_AgenticTMGv1noshot") not in existing]
+        if v1_pairs:
+            new = _run_strategy_pool(
+                "S4_AgenticTMGv1noshot", lambda: S4AgenticTMG(mode="v1"),
+                v1_pairs, workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # NEW V4_pool — agent inference + tool-call + per-type pool sample
+    if "S4_TMGv4_pool" in selected:
+        v4p_pairs = [(q, b) for (q, b) in pairs
+                     if (q["query_id"], "S4_AgenticTMGv4_pool") not in existing]
+        if v4p_pairs:
+            new = _run_strategy_pool(
+                "S4_AgenticTMGv4_pool", lambda: S4AgenticTMG(mode="v4_pool"),
+                v4p_pairs, workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # NEW V4_consolidated — agent inference + tool-call + single integrated example
+    if "S4_TMGv4_consolidated" in selected:
+        v4c_pairs = [(q, b) for (q, b) in pairs
+                     if (q["query_id"], "S4_AgenticTMGv4_consolidated") not in existing]
+        if v4c_pairs:
+            new = _run_strategy_pool(
+                "S4_AgenticTMGv4_consolidated",
+                lambda: S4AgenticTMG(mode="v4_consolidated"),
+                v4c_pairs, workers=args.s4_workers, raw_path=raw_path,
             )
             for r in new:
                 existing[(r["query_id"], r["strategy"])] = r

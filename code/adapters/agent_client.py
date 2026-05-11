@@ -5,10 +5,10 @@ The agent is the source-of-truth for the agentic Cross-doc Iterative Search
   - Posts RunRequestV2 to the agent's FastAPI server (default http://localhost:9024).
   - Locks paper-experiment defaults (web_search disabled, temperature=0,
     seed=42, language="en", DSL-only output).
-  - Pins the reasoner backbone to Qwen3.6-27B served by local vLLM.
+  - Pins the reasoner backbone to Qwen3.5-397B-A17B-FP8 served by local vLLM.
 
-The Qwen3.6-27B endpoints currently serve max_model_len=131072. Three
-instances at localhost:9101/9102/9103 (TP=4 each, GPU 4-15). For Week 0
+The Qwen3.5-397B-A17B-FP8 endpoints currently serve max_model_len=131072. Three
+instances at 10.1.211.163-170:8000 . For Week 0
 the agent is given a single endpoint; load-balancing across the three
 ports lives in any follow-up direct-call client (S1 baseline).
 """
@@ -25,16 +25,28 @@ import httpx
 
 AGENT_BASE_URL = os.environ.get("DOCVIZ_AGENT_URL", "http://localhost:9024")
 
-QWEN_36_27B_BASE_URL = os.environ.get(
-    "QWEN36_27B_BASE_URL", "http://localhost:9101/v1"
-)
-# Env-overridable for partial-cluster recovery (e.g., when only 9101 is up).
-# Comma-separated, e.g. QWEN36_27B_PORTS=9101 or QWEN36_27B_PORTS=9101,9102.
-QWEN_36_27B_PORTS = [
-    int(p) for p in os.environ.get("QWEN36_27B_PORTS", "9101,9102,9103").split(",")
-    if p.strip()
+# ── On-premise Qwen3.5-397B-A17B-FP8 vLLM cluster ──────────────────────────
+# 8 production hosts on the internal cluster, all serving the same model.
+# Each entry is "host:port"; the orchestrator's round-robin picks one
+# entry per pipeline instance, allowing parallel sample-level dispatch.
+#
+# Mode selection (env DOCVIZ_HOST_MODE, default "single"):
+#   - "single" → only the first host is used (one URL for the whole batch);
+#   - "multi"  → round-robin across all hosts in QWEN_HOSTS.
+#
+# Override by setting QWEN_HOSTS env to a comma-separated list.
+
+_DEFAULT_QWEN_HOSTS = ",".join(f"10.1.211.{i}:8000" for i in range(163, 171))
+QWEN_HOSTS = [
+    h.strip() for h in os.environ.get("QWEN_HOSTS", _DEFAULT_QWEN_HOSTS).split(",")
+    if h.strip()
 ]
-QWEN_36_27B_MODEL = "Qwen3.6-27B"
+DOCVIZ_HOST_MODE = os.environ.get("DOCVIZ_HOST_MODE", "single").lower()
+QWEN_MODEL = os.environ.get("QWEN_MODEL", "Qwen3.5-397B-A17B-FP8")
+QWEN_BASE_URL = os.environ.get(
+    "QWEN_BASE_URL",
+    f"http://{QWEN_HOSTS[0]}/v1" if QWEN_HOSTS else "http://10.1.211.163:8000/v1",
+)
 
 DEFAULT_REASONER_KEY = "EMPTY"   # vLLM ignores; set to non-empty to satisfy
                                   # the agent's Pydantic validator.
@@ -112,8 +124,8 @@ class AgentClient:
         session_id: Optional[str] = None,
         return_trace: bool = True,
         return_train_sample: bool = False,
-        reasoner_model_name: str = QWEN_36_27B_MODEL,
-        reasoner_base_url: str = QWEN_36_27B_BASE_URL,
+        reasoner_model_name: str = QWEN_MODEL,
+        reasoner_base_url: str = QWEN_BASE_URL,
         reasoner_api_key: str = DEFAULT_REASONER_KEY,
         reasoner_max_length: Optional[int] = 32768,
         extra_overrides: Optional[Dict[str, Any]] = None,
@@ -142,15 +154,19 @@ class AgentClient:
             "- Your final_answer must be EXACTLY one JSON object and nothing "
             "else (no prose before or after, no markdown fences). The object "
             "has two keys: \"viz_type\" and \"viz_dsl\".\n"
-            "  - viz_type ∈ {\"mermaid_flowchart\", \"mermaid_timeline\", "
-            "\"mermaid_mindmap\", \"chartjs_bar\", \"chartjs_grouped_bar\", "
-            "\"chartjs_line\"}.\n"
+            "  - viz_type ∈ {\"chartjs_bar\", \"chartjs_line\", "
+            "\"chartjs_grouped_bar\", \"chartjs_pie\", \"chartjs_scatter\", "
+            "\"mermaid_flowchart\", \"mermaid_timeline\", \"mermaid_mindmap\", "
+            "\"mermaid_sequenceDiagram\", \"mermaid_classDiagram\"} "
+            "(10-type enum; expanded 2026-05-10).\n"
             "  - viz_dsl is a single string holding the raw DSL: Mermaid "
             "markdown for the mermaid_* types, or a Chart.js JSON spec "
             "(serialized as a string) for the chartjs_* types.\n"
-            "- Pick the viz_type that best fits the user's query type "
-            "(temporal → timeline, hierarchical → mindmap, relational/process "
-            "→ flowchart, quantitative → chartjs_*).\n"
+            "- Pick the viz_type that best fits the user's query type and "
+            "the source structure (temporal → timeline, hierarchical → "
+            "mindmap, relational/process → flowchart or sequenceDiagram, "
+            "quantitative → chartjs_*, proportion → chartjs_pie, "
+            "correlation → chartjs_scatter, schema → classDiagram).\n"
             "- Use only facts present in the supplied document; do not "
             "fabricate. If the document is insufficient, return a minimal but "
             "valid DSL covering what is present, not prose."
@@ -245,18 +261,26 @@ class AgentClient:
 
 
 class QwenDirectClient:
-    """OpenAI-compatible client targeting Qwen3.6-27B vLLM with round-robin
-    across the three local ports. Used by S1 Direct (and any other strategy
-    that bypasses the agent loop).
+    """OpenAI-compatible client targeting the Qwen3.5-397B-A17B-FP8 vLLM
+    cluster (10.1.211.163-170:8000 by default). Used by S1 Direct and any
+    other strategy that bypasses the agent loop.
+
+    Host selection honors DOCVIZ_HOST_MODE:
+      - "single" → only the first host in QWEN_HOSTS (sequential calls);
+      - "multi"  → round-robin across all hosts.
     """
 
     def __init__(
         self,
-        ports: List[int] = QWEN_36_27B_PORTS,
-        host: str = "localhost",
+        hosts: Optional[List[str]] = None,
         timeout_seconds: float = 600.0,
     ):
-        self._bases = [f"http://{host}:{p}/v1" for p in ports]
+        chosen = hosts if hosts is not None else (
+            QWEN_HOSTS if DOCVIZ_HOST_MODE == "multi" else QWEN_HOSTS[:1]
+        )
+        if not chosen:
+            chosen = ["10.1.211.163:8000"]
+        self._bases = [f"http://{h}/v1" for h in chosen]
         self._idx = 0
         self._timeout = timeout_seconds
 
@@ -269,7 +293,7 @@ class QwenDirectClient:
         self,
         messages: List[Dict[str, str]],
         *,
-        model: str = QWEN_36_27B_MODEL,
+        model: str = QWEN_MODEL,
         temperature: float = PAPER_DEFAULT_TEMPERATURE,
         seed: int = PAPER_DEFAULT_SEED,
         max_tokens: Optional[int] = None,

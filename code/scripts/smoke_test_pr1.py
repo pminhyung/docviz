@@ -5,7 +5,7 @@ End-to-end sanity check for the bootstrap layer:
 
   1. Build a tiny synthetic Bundle (2 Docs).
   2. Convert to docai dict-of-pages JSON via bundle_to_docai.
-  3. Verify Qwen3.6-27B vLLM endpoint health (3 ports).
+  3. Verify Qwen3.5-397B-A17B-FP8 vLLM endpoint health (3 ports).
   4. POST to the agent /v2/run endpoint (must already be running).
   5. Map RunResponseV2 → VizOutput, print summary.
 
@@ -31,8 +31,8 @@ import httpx
 from code.adapters.agent_client import (
     AgentClient,
     QwenDirectClient,
-    QWEN_36_27B_PORTS,
-    QWEN_36_27B_BASE_URL,
+    QWEN_HOSTS,
+    QWEN_BASE_URL,
 )
 from code.adapters.bundle_to_docai import write_bundle_as_docai
 from code.adapters.viz_output_mapper import map_agent_response
@@ -47,10 +47,10 @@ SAMPLE_QUERY = (
 
 
 def _check_vllm_endpoints() -> None:
-    print("[1/5] Checking Qwen3.6-27B vLLM endpoints…")
+    print("[1/5] Checking Qwen3.5-397B-A17B-FP8 vLLM endpoints…")
     bad = []
     with httpx.Client(timeout=5.0) as c:
-        for p in QWEN_36_27B_PORTS:
+        for p in QWEN_HOSTS:
             try:
                 r = c.get(f"http://localhost:{p}/v1/models")
                 if r.status_code != 200:
@@ -158,7 +158,7 @@ def main() -> int:
 
     # CostTracker is exercised here for sanity even though cost is $0.
     t = CostTracker()
-    t.add(provider="vllm-qwen36", model="Qwen3.6-27B",
+    t.add(provider="vllm-qwen36", model="Qwen3.5-397B-A17B-FP8",
           tokens_in=0, tokens_out=getattr(resp, "total_tokens", 0),
           tag="smoke")
     print("CostTracker summary:", t.summary())
