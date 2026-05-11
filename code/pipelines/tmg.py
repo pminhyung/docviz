@@ -192,9 +192,18 @@ def primary_viz_type(query_type: str) -> str:
 # custom_tools_path) rather than emit DSL directly.
 V4_POOL_EXPOSURE_RULE = """
 TMG ROUTING (DocViz-Agent Pillar 2 — V4 agent-inference + tool-call):
+
+═══════════════════════════════════════════════════════════════════════
+MANDATORY: You MUST call the `generate_viz` tool BEFORE producing your
+final_answer. Do NOT emit prose, summary text, or DSL directly. Your
+final_answer MUST be EXACTLY the JSON string returned by the
+`generate_viz` tool, with no modification or wrapping. If you produce
+final_answer without first invoking `generate_viz`, the output is
+invalid and will be rejected.
+═══════════════════════════════════════════════════════════════════════
+
 You are responsible for choosing the best visualization type from the
 10-enum pool, then calling the `generate_viz` tool to produce the DSL.
-Do NOT write the DSL yourself.
 
 Available viz_type pool:
   Chart types (5):
@@ -210,7 +219,7 @@ Available viz_type pool:
     - mermaid_sequenceDiagram  — interaction protocol / API call flow
     - mermaid_classDiagram     — typed entity-attribute schema
 
-Process:
+Process (REQUIRED order):
 1. Identify the query type (quantitative / relational / temporal /
    hierarchical / comparative) AND inspect the source content
    structure (numeric vs textual, single-entity vs multi-entity,
@@ -220,13 +229,16 @@ Process:
    soft prior; you may override based on source content (e.g., a
    comparative query over qualitative entities is better as
    mermaid_mindmap than chartjs_grouped_bar).
-3. Call: generate_viz(viz_type=<your choice>, content_brief=<a
-   detailed natural-language description of what the visualization
-   should contain — named entities and concrete phrases from the
-   source, relationships, data points, structure>).
-4. The tool returns a JSON string {"viz_type": "...",
-   "viz_dsl": "..."}. Embed that JSON verbatim as your final_answer.
+3. **Call the tool**: `generate_viz(viz_type=<your choice>,
+   content_brief=<a detailed natural-language description of what the
+   visualization should contain — named entities and concrete phrases
+   from the source, specific numbers/dates/quantities, relationships,
+   structure>)`. This step is non-optional.
+4. The tool returns a JSON string `{"viz_type": "...",
+   "viz_dsl": "..."}`. Your final_answer MUST be that JSON string,
+   verbatim. No extra prose, no markdown fences, no editing.
 
-Use named entities and concrete phrases from the source documents in
-the content_brief; avoid generic placeholder names (Acme/Founder etc).
+Use named entities, specific numbers, dates, and concrete phrases from
+the source documents in the content_brief; avoid generic placeholder
+names. Source-grounded specificity is the priority.
 """
