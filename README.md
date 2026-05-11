@@ -30,8 +30,10 @@ Each weekly milestone produces a `WEEK<N>_REPORT.md` in `docs/weekly_reports/` w
 ## Key Documents
 
 Read in this order before starting work:
-1. `PAPER_MASTER_SPEC.md` — full strategic and experimental specification
-2. `QG-MDV_Week0_Action_Guide.md` — concrete Day 1-14 actions
+1. `AMENDMENT_v0.3_ACTION_SPEC.md` — **latest operational source of truth** (action-level, P0/P1/P2/P3 priority, supersedes conflicting v0.2 guidance)
+2. `PAPER_MASTER_SPEC.md` — full strategic and experimental specification (v0.2 baseline)
+3. `CHANGELOG.md` — version history with reasons for each change
+4. `QG-MDV_Week0_Action_Guide.md` — concrete prototype-phase actions
 
 ## Status
 
