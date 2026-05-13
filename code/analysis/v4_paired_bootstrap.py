@@ -261,15 +261,22 @@ def _detect_drop_subset(
 _AXES = ["faithfulness", "coverage", "type_appropriateness", "search_query_quality"]
 _PAIRINGS = [
     # (label, baseline_strategy, comparison_strategy)
+    # ── v0.3 paper baseline matrix (B6 vs B1-B5, B7) ─────────────────────
+    ("B6 − B5 (Direct-LLM)",            "S1_Direct",      "S4_AgenticTMGv4_consolidated"),
+    ("B6 − B7 (SelfRefine)",            "S7_SelfRefine",  "S4_AgenticTMGv4_consolidated"),
+    ("B6 − B1 (MatPlotAgent)",          "B1_MatPlotAgent", "S4_AgenticTMGv4_consolidated"),
+    ("B6 − B2 (NVAGENT)",               "B2_NVAGENT",     "S4_AgenticTMGv4_consolidated"),
+    ("B6 − B3 (CoDA)",                  "B3_CoDA",        "S4_AgenticTMGv4_consolidated"),
+    ("B6 − B4 (ViviDoc)",               "B4_ViviDoc",     "S4_AgenticTMGv4_consolidated"),
+    # ── Layer D pillar ablation (Full vs each ablation) ─────────────────
+    ("B6 Full − B6 NoTMG",              "B6_NoTMG",       "B6_Full"),
+    ("B6 Full − B6 NoSAO",              "B6_NoSAO",       "B6_Full"),
+    # ── Historical V4-internal comparisons (kept for reference) ─────────
     ("V0 − S4 (placeholder TMG vs no-TMG)", "S4_Agentic", "S4_AgenticTMG"),
     ("V1 − S4 (rule routing, no one-shot)", "S4_Agentic", "S4_AgenticTMGv1noshot"),
-    ("V1 − V0 (one-shot effect, rule held)", "S4_AgenticTMG", "S4_AgenticTMGv1noshot"),
     ("V4_pool − V1 (MENTOR RISK #1)", "S4_AgenticTMGv1noshot", "S4_AgenticTMGv4_pool"),
-    ("V4_pool − V0 (V4 vs current placeholder)", "S4_AgenticTMG", "S4_AgenticTMGv4_pool"),
-    ("V4_pool − S4 (V4 vs no-TMG baseline)", "S4_Agentic", "S4_AgenticTMGv4_pool"),
-    ("V4_consolidated − V4_pool (NEW direction)", "S4_AgenticTMGv4_pool",
-        "S4_AgenticTMGv4_consolidated"),
-    ("V4_consolidated − V0", "S4_AgenticTMG", "S4_AgenticTMGv4_consolidated"),
+    ("V4_consolidated − V4_pool",       "S4_AgenticTMGv4_pool",
+                                        "S4_AgenticTMGv4_consolidated"),
 ]
 
 

@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "qid": "hotpot_22_relational",
+      "success": true,
+      "viz_type": "mermaid_timeline",
+      "viz_dsl_len": 590,
+      "tokens_out": 31861,
+      "duration": 193.56848073005676,
+      "errors": []
+    },
+    {
+      "qid": "hotpot_31_comparative",
+      "success": false,
+      "exception": "ReadTimeout: timed out",
+      "duration": 600.1131331920624
+    },
+    {
+      "qid": "hotpot_40_comparative",
+      "success": true,
+      "viz_type": "chartjs_grouped_bar",
+      "viz_dsl_len": 824,
+      "tokens_out": 30960,
+      "duration": 186.4529092311859,
+      "errors": []
+    },
+    {
+      "qid": "multinews_17_temporal",
+      "success": true,
+      "viz_type": "mermaid_timeline",
+      "viz_dsl_len": 783,
+      "tokens_out": 32215,
+      "duration": 184.67095303535461,
+      "errors": []
+    },
+    {
+      "qid": "govreport_24_temporal",
+      "success": true,
+      "viz_type": "mermaid_timeline",
+      "viz_dsl_len": 1168,
+      "tokens_out": 50666,
+      "duration": 198.95383310317993,
+      "errors": []
+    }
+  ],
+  "n_ok": 4,
+  "n": 5
+}

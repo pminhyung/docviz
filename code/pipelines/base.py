@@ -64,6 +64,18 @@ class VizOutput:
     cost_usd: float = 0.0
     errors: List[str] = field(default_factory=list)
 
+    # ── D7 image-level visual quality (v0.3 amendment) ─────────────────────
+    # Populated downstream of generation by the A5 image-judge (Claude Sonnet
+    # via `claude -p` CLI) and the M5 CLIPScore deterministic metric.
+    # Sub-keys, all Optional[float]:
+    #   readability ∈ [0, 1]    — A5 sub-dim 1 (labels visible, no truncation/overlap)
+    #   layout      ∈ [0, 1]    — A5 sub-dim 2 (alignment, balance, spacing)
+    #   overall     ∈ [0, 1]    — A5 sub-dim 3 (end-user usability for the query)
+    #   clipscore   ∈ [0, 1]    — M5 CLIP image-text alignment (deterministic)
+    # Empty dict for records that have not yet been evaluated on the
+    # image axis (CLIPScore runs on all, A5 only on the 100-record sub-sample).
+    visual_quality_score: Dict[str, Any] = field(default_factory=dict)
+
 
 class Pipeline(ABC):
     """Base class for all baseline strategies (B1-B5) and DocViz-Agent (B6)."""

@@ -102,16 +102,16 @@ def _build_synthetic_bundle() -> Bundle:
     return bundle
 
 
-def _serialize_bundle(bundle: Bundle) -> str:
-    print("[3/5] Serializing bundle → docai JSON…")
+def _serialize_bundle(bundle: Bundle) -> list:
+    print("[3/5] Serializing bundle → docai JSON (one file per source doc)…")
     out_dir = Path(tempfile.gettempdir()) / "docviz_smoke"
-    path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=out_dir)
-    print(f"      path: {path}")
+    paths, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=out_dir)
+    print(f"      paths ({len(paths)}): {paths}")
     print(f"      page_to_doc_id: {page_to_doc_id}")
-    return path
+    return paths
 
 
-def _run_agent(doc_path: str) -> object:
+def _run_agent(doc_paths: list) -> object:
     print("[4/5] POST /v2/run …")
     base_url = os.environ.get("DOCVIZ_AGENT_URL", "http://localhost:9024")
     print(f"      agent base_url: {base_url}")
@@ -121,7 +121,7 @@ def _run_agent(doc_path: str) -> object:
             print("      start it with: bash agent/run_server.sh --port 9024 &")
             sys.exit(2)
         resp = client.run_paper_default(
-            doc_json_path=doc_path,
+            doc_json_paths=doc_paths,
             user_query=SAMPLE_QUERY,
             n_steps_max=4,           # smoke
             return_trace=True,
@@ -134,9 +134,9 @@ def _run_agent(doc_path: str) -> object:
     return resp
 
 
-def _map_and_summarize(resp: object, bundle: Bundle, doc_path: str) -> None:
+def _map_and_summarize(resp: object, bundle: Bundle, doc_paths: list) -> None:
     print("[5/5] Mapping RunResponseV2 → VizOutput…")
-    vo = map_agent_response(resp, bundle, concat_doc_path=doc_path)
+    vo = map_agent_response(resp, bundle, concat_doc_path=doc_paths[0] if doc_paths else None)
     summary = {
         "viz_type": vo.viz_type,
         "viz_dsl_chars": len(vo.viz_dsl),
@@ -152,9 +152,9 @@ def _map_and_summarize(resp: object, bundle: Bundle, doc_path: str) -> None:
 def main() -> int:
     _check_vllm_endpoints()
     bundle = _build_synthetic_bundle()
-    doc_path = _serialize_bundle(bundle)
-    resp = _run_agent(doc_path)
-    _map_and_summarize(resp, bundle, doc_path)
+    doc_paths = _serialize_bundle(bundle)
+    resp = _run_agent(doc_paths)
+    _map_and_summarize(resp, bundle, doc_paths)
 
     # CostTracker is exercised here for sanity even though cost is $0.
     t = CostTracker()

@@ -33,12 +33,16 @@ KO_LANG_PATCH = """**모든 'observation', 'reasoning', 'step_name', 'final_answ
 EN_LANG_PATCH = """**All 'observation', 'reasoning', 'step_name', and 'final_answer' text MUST BE written in English.**
 **Use professional and formal tone in all responses.**"""
 
-# Final answer format patch
-FINAL_ANSWER_PATCH = """When providing the final answer:
-1. Structure your response with clear sections and headers when appropriate.
-2. Include citations [N] for all factual claims derived from documents.
-3. Be comprehensive yet concise - prioritize the most relevant information.
-4. Use the appropriate language as specified in the instructions."""
+# Final answer format patch — terse-output directive.
+# The previous version instructed "structure with sections/headers + include
+# citations [N] + be comprehensive". With the V4 tool-call architecture
+# (custom rules 17/18) the model must emit `<final_answer>success</final_answer>`
+# and deliver the visualization via the generate_viz sidecar, so the older
+# directives directly conflicted with rule 18 and were a major contributor
+# to the prose-as-final_answer failure mode. Replaced with a short-output
+# directive that is compatible with both V4 (single-word ack) and any
+# future non-V4 modes (keeps reasoning/observation terse).
+FINAL_ANSWER_PATCH = """Keep all outputs (observation, reasoning, step_name, final_answer) as short as possible. Do not pad with sections, headers, or commentary. Exit the task as soon as the required action sequence is complete; do not continue producing prose after the last required action."""
 
 # ChatExaone training prepend patch
 CHATEXAONE_PATCH = """[|system|]You are EXAONE model from LG AI Research, a helpful assistant."""

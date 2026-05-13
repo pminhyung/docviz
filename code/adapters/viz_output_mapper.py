@@ -114,26 +114,74 @@ def _extract_dsl_block(text: str) -> Tuple[str, str]:
     return "", text
 
 
-def _extract_sub_queries(steps: List[StepReasoning]) -> List[str]:
-    """Pull search/sub-queries from the agent step trace in order.
+_RETRIEVAL_TOOLS = {"search", "ReadFullDocument", "GetPage"}
 
-    Look at action payloads on tool_call steps; common fields are
-    "query", "search_query", "subquery". Falls back to step_name when
-    the action is missing structured query text.
+
+def _extract_sub_queries(steps: List[StepReasoning]) -> List[str]:
+    """Pull retrieval queries from the agent step trace in order.
+
+    Only retrieval tool invocations contribute to the returned list:
+      - `search`: every string in `arguments.query` (array)
+      - `ReadFullDocument`: `arguments.goal` (the goal-of-summary string)
+      - `GetPage`: skipped — it's an index selection, not a query
+
+    All other tool calls (including `generate_viz` and any custom tool that
+    is not retrieval) are excluded so that the downstream
+    retrieval-query-quality judge sees ONLY actual retrieval queries.
+
+    Requires the agent server to expose `action.arguments` un-redacted
+    (RunRequestV2.redact_args=False) — otherwise `arguments` is the literal
+    string "__ARGS_REDACTED__" and we fall back to `step_name`. The
+    fallback preserves prior behaviour when the server keeps redaction on.
     """
     out: List[str] = []
     for s in steps:
         if s.step_type not in {"tool_call", "tool_invoke", "search"}:
             continue
         action = s.action or {}
-        for key in ("query", "search_query", "subquery", "q"):
-            v = action.get(key)
-            if isinstance(v, str) and v.strip():
-                out.append(v.strip())
-                break
+        tool_name = action.get("name") or action.get("tool_name") or ""
+
+        # Filter to retrieval tools only — exclude generate_viz, etc.
+        if tool_name and tool_name not in _RETRIEVAL_TOOLS:
+            continue
+        # When tool_name is missing, accept the step (legacy traces) to
+        # preserve fallback behaviour.
+
+        args = action.get("arguments")
+        # Un-redacted path: arguments is a dict
+        if isinstance(args, dict):
+            if tool_name == "search":
+                qs = args.get("query")
+                if isinstance(qs, list):
+                    out.extend(str(q).strip() for q in qs if str(q).strip())
+                    continue
+                if isinstance(qs, str) and qs.strip():
+                    out.append(qs.strip())
+                    continue
+            if tool_name == "ReadFullDocument":
+                goal = args.get("goal")
+                if isinstance(goal, str) and goal.strip():
+                    out.append(f"[RFD] {goal.strip()}")
+                    continue
+            # Other retrieval tools — fall through to top-level query keys
+            for key in ("query", "search_query", "subquery", "q", "goal"):
+                v = args.get(key) if isinstance(args.get(key), str) else None
+                if v and v.strip():
+                    out.append(v.strip())
+                    break
+            else:
+                if s.step_name:
+                    out.append(s.step_name)
+        # Redacted path or pre-trace-collector format: try top-level then fall back
         else:
-            if s.step_name:
-                out.append(s.step_name)
+            for key in ("query", "search_query", "subquery", "q"):
+                v = action.get(key)
+                if isinstance(v, str) and v.strip():
+                    out.append(v.strip())
+                    break
+            else:
+                if s.step_name:
+                    out.append(s.step_name)
     return out
 
 

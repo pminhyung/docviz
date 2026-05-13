@@ -33,7 +33,7 @@ from code.utils.bundle_io import validate_bundle, write_bundles_json
 
 
 SEED = 42
-N_BUNDLES = 10
+N_BUNDLES = 50
 ALLOWED_TYPES = {"comparison", "bridge"}
 # HotpotQA supporting paragraphs are short by construction (1-3 sents per
 # Wikipedia title). The PAPER_MASTER_SPEC §5.1 char floor (3K) is calibrated

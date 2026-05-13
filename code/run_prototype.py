@@ -40,6 +40,12 @@ from code.pipelines.base import Bundle, Pipeline, VizOutput
 from code.pipelines.s1_direct import S1Direct
 from code.pipelines.s4_agentic import S4Agentic
 from code.pipelines.s4_agentic_tmg import S4AgenticTMG
+from code.pipelines.s7_self_refine import S7SelfRefine
+from code.pipelines.b1_matplotagent import B1MatPlotAgent
+from code.pipelines.b2_nvagent import B2NVAGENT
+from code.pipelines.b3_coda import B3CoDA
+from code.pipelines.b4_vividoc import B4ViviDoc
+from code.pipelines.ablation_variants import B6Full, B6NoTMG, B6NoSAO, B6NoCIS
 from code.utils.bundle_io import read_bundles_json
 from code.utils.cost_tracker import CostTracker
 
@@ -280,11 +286,55 @@ def main() -> int:
 
     out_path = Path(args.out)
     raw_path = Path(args.raw)
-    existing = {} if args.force else _load_existing(out_path)
-    if existing:
-        print(f"[run_prototype] resume: {len(existing)} records already in {out_path}")
-
     selected = {s.strip() for s in args.strategies.split(",") if s.strip()}
+
+    # Mapping from CLI --strategies tokens to the in-record `strategy` names
+    # used by the strategy-pool dispatchers below. --force only drops the
+    # selected strategies' existing entries; other strategies' records are
+    # preserved so the canonical all.json doesn't lose unrelated history.
+    _STRATEGY_RECORD_NAMES = {
+        "S1": {"S1_Direct"},
+        "S4": {"S4_Agentic"},
+        "S4_TMG": {"S4_AgenticTMG"},
+        "S4_TMGv1": {"S4_AgenticTMGv1noshot"},
+        "S4_TMGv4_pool": {"S4_AgenticTMGv4_pool"},
+        "S4_TMGv4_consolidated": {"S4_AgenticTMGv4_consolidated"},
+        "S7_SelfRefine": {"S7_SelfRefine"},
+        # v0.3 amendment §9 paper baselines (B1-B4 external specialists,
+        # B5/B7 = our S1Direct/S7SelfRefine, B6 = our V4_consolidated)
+        "B1": {"B1_MatPlotAgent"},
+        "B2": {"B2_NVAGENT"},
+        "B3": {"B3_CoDA"},
+        "B4": {"B4_ViviDoc"},
+        # Layer D ablation variants (Phase 8)
+        "B6_Full": {"B6_Full"},
+        "B6_NoTMG": {"B6_NoTMG"},
+        "B6_NoSAO": {"B6_NoSAO"},
+        "B6_NoCIS": {"B6_NoCIS"},
+    }
+    selected_record_names: set[str] = set()
+    for tok in selected:
+        selected_record_names |= _STRATEGY_RECORD_NAMES.get(tok, set())
+
+    full_existing = _load_existing(out_path)
+    if args.force:
+        # Keep records of strategies NOT being re-run; drop only the ones
+        # we're about to overwrite. This protects against the historical
+        # data-loss bug where --force dropped EVERY non-selected strategy.
+        existing = {
+            k: v for k, v in full_existing.items()
+            if v.get("strategy") not in selected_record_names
+        }
+        dropped = len(full_existing) - len(existing)
+        if dropped:
+            print(f"[run_prototype] --force: dropping {dropped} existing records "
+                  f"of {sorted(selected_record_names)}, preserving "
+                  f"{len(existing)} records of other strategies")
+    else:
+        existing = full_existing
+        if existing:
+            print(f"[run_prototype] resume: {len(existing)} records already in {out_path}")
+
     pairs = [(q, bundles[q["bundle_id"]]) for q in queries]
 
     def _checkpoint() -> None:
@@ -363,6 +413,108 @@ def main() -> int:
                 "S4_AgenticTMGv4_consolidated",
                 lambda: S4AgenticTMG(mode="v4_consolidated"),
                 v4c_pairs, workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # NEW B7 SelfRefine — v0.3 D4.1 (Madaan 2023 init → critique → refine)
+    if "S7_SelfRefine" in selected:
+        s7_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "S7_SelfRefine") not in existing]
+        if s7_pairs:
+            new = _run_strategy_pool(
+                "S7_SelfRefine", lambda: S7SelfRefine(), s7_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # NEW B1-B4 — v0.3 §9 specialist baselines (on-prem Qwen redirect)
+    if "B1" in selected:
+        b1_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B1_MatPlotAgent") not in existing]
+        if b1_pairs:
+            new = _run_strategy_pool(
+                "B1_MatPlotAgent", lambda: B1MatPlotAgent(), b1_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B2" in selected:
+        b2_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B2_NVAGENT") not in existing]
+        if b2_pairs:
+            new = _run_strategy_pool(
+                "B2_NVAGENT", lambda: B2NVAGENT(), b2_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B3" in selected:
+        b3_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B3_CoDA") not in existing]
+        if b3_pairs:
+            new = _run_strategy_pool(
+                "B3_CoDA", lambda: B3CoDA(), b3_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B4" in selected:
+        b4_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B4_ViviDoc") not in existing]
+        if b4_pairs:
+            new = _run_strategy_pool(
+                "B4_ViviDoc", lambda: B4ViviDoc(), b4_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    # Layer D pillar ablation variants (Phase 8)
+    if "B6_Full" in selected:
+        bf_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B6_Full") not in existing]
+        if bf_pairs:
+            new = _run_strategy_pool(
+                "B6_Full", lambda: B6Full(), bf_pairs,
+                workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B6_NoTMG" in selected:
+        bt_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B6_NoTMG") not in existing]
+        if bt_pairs:
+            new = _run_strategy_pool(
+                "B6_NoTMG", lambda: B6NoTMG(), bt_pairs,
+                workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B6_NoSAO" in selected:
+        bs_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B6_NoSAO") not in existing]
+        if bs_pairs:
+            new = _run_strategy_pool(
+                "B6_NoSAO", lambda: B6NoSAO(), bs_pairs,
+                workers=args.s4_workers, raw_path=raw_path,
+            )
+            for r in new:
+                existing[(r["query_id"], r["strategy"])] = r
+            _checkpoint()
+    if "B6_NoCIS" in selected:
+        bc_pairs = [(q, b) for (q, b) in pairs
+                    if (q["query_id"], "B6_NoCIS") not in existing]
+        if bc_pairs:
+            new = _run_strategy_pool(
+                "B6_NoCIS", lambda: B6NoCIS(), bc_pairs,
+                workers=args.s1_workers, raw_path=raw_path,
             )
             for r in new:
                 existing[(r["query_id"], r["strategy"])] = r

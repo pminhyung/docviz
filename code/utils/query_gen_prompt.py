@@ -10,12 +10,43 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-# §5.2 L256-260 — source → 2 query types per bundle
+# v0.3 amendment §3.5 — 6-source type-assignment table.
+# Each source gets primary + secondary query types based on natural content
+# fit. The generator emits 1 query per bundle (300 total = 6 sources × 50
+# bundles), using the per-source split below.
+#
+# tech_docs primary swapped to "relational" (amendment §3.5 had
+# Hierarchical|Relational) so the 5-type distribution lands at the
+# amendment §3.5-footnote target: Q=50 / R=60 / T=60 / H=70 / C=60.
+#
+# TYPE_ASSIGNMENT order: [primary, secondary]. Used for legacy code
+# paths that still take 2 types per bundle; the new generator consumes
+# SOURCE_TYPE_SPLIT directly.
 TYPE_ASSIGNMENT: Dict[str, List[str]] = {
     "hotpotqa":  ["relational",   "comparative"],
     "multinews": ["temporal",     "comparative"],
     "arxiv":     ["hierarchical", "comparative"],
     "10k":       ["quantitative", "temporal"],
+    "govreport": ["temporal",     "hierarchical"],
+    "tech_docs": ["relational",   "hierarchical"],
+}
+
+# v0.3 amendment §3.5 footnote — per-source bundle→type split for the
+# 1-query-per-bundle generator. Numbers sum to N_BUNDLES per source.
+# 10k uses 15 (cached EDGAR tech-sector subset; see load_10k.py docstring).
+# Resulting 5-type distribution (total 265, ~88% of amendment 300 target):
+#   Q = 15 (10k — short of 50 target; documented in paper §5.1 caveat)
+#   R = 30 (hotpotqa) + 30 (tech_docs)                    = 60
+#   T = 30 (multinews) + 30 (govreport)                    = 60
+#   H = 30 (arxiv)     + 20 (govreport) + 20 (tech_docs)   = 70
+#   C = 20 (hotpotqa)  + 20 (multinews) + 20 (arxiv)       = 60
+SOURCE_TYPE_SPLIT: Dict[str, List[tuple]] = {
+    "10k":       [("quantitative",  15)],
+    "hotpotqa":  [("relational",    30), ("comparative",  20)],
+    "multinews": [("temporal",      30), ("comparative",  20)],
+    "arxiv":     [("hierarchical",  30), ("comparative",  20)],
+    "govreport": [("temporal",      30), ("hierarchical", 20)],
+    "tech_docs": [("relational",    30), ("hierarchical", 20)],
 }
 
 # §4.2 L195-202 — operational definitions used in the generation prompt

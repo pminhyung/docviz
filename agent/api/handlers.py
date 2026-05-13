@@ -141,11 +141,13 @@ class AgentHandler:
         if request.doc_image_dir:
             image_dirs = [request.doc_image_dir]
 
-        # Load documents
+        # Load documents — N-way multi-doc takes precedence over the legacy
+        # single/dual-path fields.
         multi_docs, filenames, doc_contexts = runner.load_documents(
             doc_json_path=request.doc_json_path,
             doc_json_path_2=request.doc_json_path_2,
             image_dir=request.doc_image_dir,
+            doc_json_paths=request.doc_json_paths,
         )
 
         # Run query
@@ -157,7 +159,7 @@ class AgentHandler:
         )
 
         # Get trace data (redacted)
-        trace_data = runner.trace_collector.export_session(session, redact=True)
+        trace_data = runner.trace_collector.export_session(session, redact=request.redact_args)
 
         # Validate output
         validator = OutputValidator(

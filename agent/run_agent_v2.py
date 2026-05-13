@@ -323,18 +323,16 @@ class AgentV2Runner:
         self.selector_client = SelectorClient(url=legacy_url)
         print(f"[Setup] SelectorClient initialized: {legacy_url or SELECTOR_URLS}")
 
-        # Initialize web search client (Brave primary + DDG fallback)
-        brave_keys_raw = os.environ.get("BRAVE_KEYS", "[]").strip().strip("'\"")
-        try:
-            brave_keys = json.loads(brave_keys_raw)
-        except Exception:
-            brave_keys = []
+        # Initialize web search client. The current WebSearchClient signature
+        # accepts manager_url / serpapi_key / api_base / engine / max_content_length
+        # only (Brave/DDG path was removed). We don't actually exercise web
+        # search on this codepath — custom_rules forbid it for paper experiments
+        # — but the runner still requires a client instance for context wiring.
         serpapi_key = os.environ.get("SERPAPI_KEY", "")
         self.web_search_client = WebSearchClient(
-            brave_keys=brave_keys,
-            serpapi_keys=[serpapi_key] if serpapi_key else [],
+            serpapi_key=serpapi_key,
         )
-        print(f"[Setup] WebSearchClient initialized: brave_keys={len(brave_keys)}, serpapi={'yes' if serpapi_key else 'no'}")
+        print(f"[Setup] WebSearchClient initialized: serpapi={'yes' if serpapi_key else 'no'}")
 
         print("[Setup] Setup completed successfully")
 
@@ -343,6 +341,7 @@ class AgentV2Runner:
         doc_json_path: str,
         doc_json_path_2: Optional[str] = None,
         image_dir: Optional[str] = None,
+        doc_json_paths: Optional[List[str]] = None,
     ) -> Tuple[List[List[Dict[str, Any]]], List[str], str]:
         """
         Load documents from JSON paths.
@@ -351,13 +350,25 @@ class AgentV2Runner:
             doc_json_path: Path to first document JSON
             doc_json_path_2: Optional path to second document JSON
             image_dir: Optional path to image directory (for docai format)
+            doc_json_paths: Optional N-way multi-doc list. If provided, takes
+                precedence over doc_json_path / doc_json_path_2 and forces
+                single_doc=False on this call so all N paths are loaded as
+                distinct documents (one per source doc), preserving the
+                per-doc title + snippet structure expected by DOC_STEP_PROMPT
+                and the filelist/document_number conventions in the action
+                loop.
 
         Returns:
             Tuple of (multi_docs, filenames, doc_contexts)
         """
-        doc_paths = [doc_json_path]
-        if doc_json_path_2 and not self.single_doc:
-            doc_paths.append(doc_json_path_2)
+        if doc_json_paths:
+            doc_paths = list(doc_json_paths)
+            effective_single_doc = False
+        else:
+            doc_paths = [doc_json_path]
+            if doc_json_path_2 and not self.single_doc:
+                doc_paths.append(doc_json_path_2)
+            effective_single_doc = self.single_doc
 
         # Build image_dirs list
         image_dirs = None
@@ -366,7 +377,7 @@ class AgentV2Runner:
 
         multi_docs, filenames, loaded_image_dirs = self.doc_loader.load_documents(
             doc_paths,
-            single_doc=self.single_doc,
+            single_doc=effective_single_doc,
             image_dirs=image_dirs
         )
 

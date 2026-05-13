@@ -247,11 +247,12 @@ class GenerateVizTool:
         # reasoner host on tool_secrets so tool ↔ reasoner share the host.
         base_url = secrets.get("vllm_base_url") or self._base_url
         client = OpenAI(base_url=base_url, api_key="EMPTY")
-        try:
+
+        def _call() -> Any:
             # Qwen3.5-397B recommended non-thinking sampling:
             # T=0.7, top_p=0.8, top_k=20, min_p=0. seed=42 for in-run
             # reproducibility.
-            response = client.chat.completions.create(
+            return client.chat.completions.create(
                 model=self._model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
@@ -265,11 +266,33 @@ class GenerateVizTool:
                     "chat_template_kwargs": {"enable_thinking": False},
                 },
             )
+
+        # 3-second retry on transient failures (matches QwenDirectClient
+        # semantics — connection-refused is fatal here since the tool
+        # has a sticky base_url tied to the agent's reasoner host).
+        import time as _t
+        try:
+            response = _call()
         except Exception as e:
-            return json.dumps(
-                {"status": "error", "error": f"vLLM call failed: {e}"},
-                ensure_ascii=False,
+            err_text = str(e).lower()
+            is_refused = "connect" in err_text and (
+                "refused" in err_text or "unreachable" in err_text
             )
+            if is_refused:
+                return json.dumps(
+                    {"status": "error", "error": f"vLLM connect refused: {e}"},
+                    ensure_ascii=False,
+                )
+            # transient: 3s sleep + 1 retry
+            _t.sleep(3.0)
+            try:
+                response = _call()
+            except Exception as e2:
+                return json.dumps(
+                    {"status": "error",
+                     "error": f"vLLM call failed twice: first={e} retry={e2}"},
+                    ensure_ascii=False,
+                )
 
         raw = response.choices[0].message.content or ""
 
@@ -370,6 +393,23 @@ class GenerateVizTool:
             f"Do not omit a fact because the example's structure would not "
             f"naturally include it; alter the structure to fit the brief's "
             f"facts instead.\n"
+            f"\n"
+            f"Output simplicity (CRITICAL for valid output):\n"
+            f"  - Match the exemplar's structural depth — do NOT introduce "
+            f"keys or nesting levels that are not present in the exemplar.\n"
+            f"  - For chartjs_* types, do NOT add tooltip callbacks, "
+            f"`ticks.callback` formatters, JS function strings (e.g. "
+            f"`\"function(context){{...}}\"`), animation configs, or any "
+            f"plugin not shown in the exemplar. These features are NOT "
+            f"required for valid Chart.js output and significantly "
+            f"increase the risk of malformed JSON. Place units / "
+            f"formatting context in `dataset.label` / `options.title` / "
+            f"`scales.*.title` text instead.\n"
+            f"  - For mermaid_* types, avoid styling directives "
+            f"(`classDef`, `style ... fill:`, theme blocks) unless the "
+            f"exemplar includes them.\n"
+            f"  - Keep your output's brace/bracket nesting balance "
+            f"verifiable by eye — every `{{` must have a matching `}}`.\n"
             f"\n"
             f"Return ONLY a JSON object "
             f'{{"viz_type": "{viz_type}", "viz_dsl": "<the raw DSL string>"}}. '

@@ -574,6 +574,45 @@ Report progress at the end of each layer via `docs/weekly_reports/PROGRESS_<LAYE
 
 ---
 
+## 16. Cost-efficient two-phase judge strategy (addendum)
+
+To avoid spending closed-API budget on Layer A/B/D runs that may not yet
+show the intended trend, the text-axis judge is run in **two phases**:
+
+| Phase | Judge config | Scope | Purpose |
+|---|---|---|---|
+| **Phase 1 — Trend scan** (active) | On-prem **Qwen3.5-397B-A17B-FP8** (same model as generator, T=0 deterministic) | All Layer A / B / D runs as they are produced | Cheap, fast trend signal: does V4 (B6) outperform B5/B7 and approach specialists? Are pillar ablations directionally correct? Are held-out home-turf gaps within target? |
+| **Phase 2 — Paper-grade re-judge** (deferred until budget activates) | Closed-API per spec L342: **Claude Opus 4.6** as scorer cross-judged against **GPT-5** generator (§8.2) | **Only the headline cells**: Layer A main result table + Layer D pillar ablation overall + Layer B home-turf rows | Paper-grade numbers + cross-judge κ as G7 verification gate evidence |
+
+Decision gate between phases:
+- If Phase 1 trend shows V4 advantage **≥ +5%p over best baseline** on
+  multi-doc and Layer B home-turf gap **≤ 7%p**, proceed to Phase 2.
+- If trend is borderline (V4 advantage +2-5%p), run Phase 2 on a
+  20-record sub-sample first to disambiguate before full re-judge.
+- If trend is negative (V4 < baselines), do not spend Phase 2 budget —
+  iterate on method (rule strengthening, ablation diagnostics) and
+  re-run Phase 1.
+
+Code location: `code/judge/scorer.py` module docstring + commented
+`_score_with_closed_api_TODO` stub for Phase-2 swap site. The cross-judge
+agreement check (Phase-1 Qwen vs Phase-2 Opus on the same 20-record
+sub-sample) becomes G7 evidence; target Cohen κ ≥ 0.6.
+
+Budget estimate:
+- Phase 1 (Qwen on-prem): **$0** for all Layer A / B / D runs.
+- Phase 2 (closed-API on headline cells only):
+  - Layer A: 7 baselines × 300 records = 2,100 records → ~$525
+  - Layer D: 4 variants × 300 records = 1,200 records → ~$300
+  - Layer B home turfs (B-1 + B-2 + B-3): ~250 records × 7 baselines = ~1,750 records → ~$440
+  - **Total Phase 2 ~$1,265** (within §10's $1,720-2,020 envelope)
+
+Reviewer-attack defense: paper §6 explicitly documents the two-phase
+methodology and reports both Qwen self-judge and Opus cross-judge scores
+side-by-side for the headline cells, with κ agreement as judge-validity
+evidence (§8.2).
+
+---
+
 ## END OF AMENDMENT v0.3
 
 This amendment supersedes any conflicting guidance in v0.2 spec. CHANGELOG.md entry v0.3 will be added once this amendment is merged.

@@ -238,5 +238,965 @@
       "original_answer": "The Outsiders",
       "type_hint": "bridge"
     }
+  },
+  {
+    "bundle_id": "hotpot_10",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_10_1",
+        "title": "Circuit court",
+        "content": "Circuit court is the name of court systems in several common law jurisdictions.  The core concept of circuit courts requires judges to travel to different locales in order to ensure wide visibility and understanding of cases in a region.  More generally, some modern circuit courts may also refer to a court which merely holds trials for cases of multiple locations in some rotation.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_10_5",
+        "title": "Eric S. Pistorius",
+        "content": "Eric S. Pistorius (born 1956), is a Circuit court Judge of the Seventh Circuit of Illinois, residing from Jerseyville, Illinois.  He used to be an attorney at law for his law firm and specialized in the areas of: personal injury, litigation, criminal defense, and collections.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What was the concept of the business Eric S .Pistorius worked for after being an attorney?",
+      "original_answer": "to ensure wide visibility and understanding of cases in a region",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_11",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_11_6",
+        "title": "Taipei",
+        "content": "Taipei ( ), officially known as Taipei City, is the capital and a special municipality of Taiwan (officially known as the Republic of China, \"ROC\").  Sitting at the northern tip of the island, Taipei City is an enclave of the municipality of New Taipei City.  It is about 25 km southwest of the northern port city Keelung.  Most of the city is located on the Taipei Basin, an ancient lakebed bounded by the two relatively narrow valleys of the Keelung and Xindian rivers, which join to form the Tamsui River along the city's western border.  Formerly known as Taipeh-fu during the Qing era and Taihoku under Japanese rule, Taipei became the capital of Taiwan Province as part of the Republic of China in 1945 and has been the capital of the ROC since 1949, when the Kuomintang lost the mainland to the Communists in the Chinese Civil War.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_11_9",
+        "title": "Lingnan Fine Arts Museum",
+        "content": "The Lingnan Fine Arts Museum () of the Academia Sinica is a museum in Nangang District, Taipei, Taiwan.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which port city lies approximately 25 km north of the Lingnan Fine Arts Museum?",
+      "original_answer": "Keelung",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_12",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_12_6",
+        "title": "Édouard Roger-Vasselin",
+        "content": "Édouard Roger-Vasselin (] ; born 28 November 1983) is a male tennis player from France.  He won the men's doubles title at Roland Garros in 2014, partnering Julien Benneteau.  He is the son of 1983 French Open semifinalist Christophe Roger-Vasselin.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_12_7",
+        "title": "Stefan Edberg",
+        "content": "Stefan Bengt Edberg (] ; born 19 January 1966) is a Swedish former world no. 1 professional tennis player (in both singles and doubles).  A major proponent of the serve-and-volley style of tennis, he won six Grand Slam singles titles and three Grand Slam men's doubles titles between 1985 and 1996.  He also won the Masters Grand Prix and was a part of the Swedish Davis Cup-winning-team four times.  In addition he won four Masters Series titles, four Championship Series titles and the unofficial Olympic tournament 1984, was ranked in the singles top 10 for ten successive years, 9 years in the top 5, and is considered one of the greatest players of his era.  Edberg began coaching Roger Federer in January 2014, with this partnership ending in December 2015.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Has Stefan Edberg won more events than  Édouard Roger-Vasselin?",
+      "original_answer": "yes",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_13",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_13_6",
+        "title": "Xyloband",
+        "content": "Xylobands are wristbands that contain light-emitting diodes and radio frequency receivers.  The lights inside the wristband can be controlled by a software program, which sends signals to the wristband, instructing it to light up or blink, for example.  The RGB version has a white strap and can emit any colour on the spectrum.  The single colour version is available in green, blue, yellow, red, pink and white.  The first use of Xylobands on a large scale was on Coldplay's 2012 Mylo Xyloto tour.  A Xyloband was given to each member of the audience, and as the concert played, the flashing of the bands was synchronized to the music.  The inventor of the wristbands, Jason Regler, stated that he had the idea for the flashing wristbands while at a Coldplay concert, during the song \"Fix You\".",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_13_8",
+        "title": "Fix You",
+        "content": "\"Fix You\" is a song by British rock band Coldplay.  It was written by all four members of the band for their third studio album, \"X&Y\" (2005).  The track is built around an organ accompanied by slow tempo drums and vocals.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": " Jason Regler, stated that he had the idea for the flashing wristbands during a song built around which instrument ?",
+      "original_answer": "an organ",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_14",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_14_3",
+        "title": "The Soul of Buddha",
+        "content": "The Soul of Buddha is a 1918 American silent romance film directed by J. Gordon Edwards and starring Theda Bara, who also wrote the film's story.  The film was produced by Fox Film Corporation and shot at the Fox Studio in Fort Lee, New Jersey.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_14_9",
+        "title": "Fort Lee, New Jersey",
+        "content": "Fort Lee is a borough at the eastern border of Bergen County, New Jersey, United States, in the New York City Metropolitan Area, situated atop the Hudson Palisades.  As of the 2010 United States Census, the borough's population was 35,345, reflecting a decline of 116 (−0.3%) from the 35,461 counted in the 2000 Census, which had in turn increased by 3,464 (+10.8%) from the 31,997 counted in the 1990 Census.  The borough is the western terminus of the George Washington Bridge and is located across the Hudson River from the Manhattan borough of New York City.  Named for the site of an early American Revolutionary War military encampment, it later became the birthplace of the American film industry.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": " The Soul of Buddha is a 1918 American silent romance film shot in a borough  that is the western terminus of what?",
+      "original_answer": "the George Washington Bridge",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_15",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_15_0",
+        "title": "Vitor Belfort",
+        "content": "Vitor Vieira Belfort (] ; born April 1, 1977) is a Brazilian mixed martial artist currently competing in the Middleweight division of the Ultimate Fighting Championship.  He is the former UFC Light Heavyweight Champion, UFC 12 Heavyweight Tournament Champion, and the Cage Rage World Light Heavyweight Champion.  As of June 16, 2017, he is the #11 contender in official UFC Middleweight rankings.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_15_2",
+        "title": "Blackzilians",
+        "content": "The Blackzilians is a defunct professional team of fighters in mixed martial arts, boxing, kickboxing, amateur wrestling and catch wrestling located in South Florida.  They are most well known for being the team that includes former UFC light heavyweight champions 'Sugar' Rashad Evans and Vitor Belfort and former UFC lightweight champion Eddie Alvarez.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which \"Blackzilians\" fighter is currently competing in the Middleweight division of Ultimate Fighting Championship?",
+      "original_answer": "Vitor Belfort",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_16",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_16_5",
+        "title": "Berber languages",
+        "content": "The Berber languages, also known as Berber or the Amazigh languages (Berber name: \"Tamaziɣt\", \"Tamazight\"; Neo-Tifinagh: ⵜⴰⵎⴰⵣⵉⵖⵜ, Tuareg Tifinagh: ⵜⴰⵎⴰⵣⵉⵗⵜ, ⵝⴰⵎⴰⵣⵉⵗⵝ , ] , ] ), are a family of similar and closely related languages and dialects spoken by the Berbers indigenous to North Africa.  The Berber languages constitute a branch of the Afroasiatic family.  They were traditionally written with the ancient Libyco-Berber script, which now exists in the form of Tifinagh.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_16_8",
+        "title": "Tugurt language",
+        "content": "The Tugurt language, also known as Oued Righ Berber and Temacine Tamazight, is a Zenati Berber variety spoken in some of the oases of the northeastern Oued Righ region around Touggourt in Algeria.  s of 1893 , its main speech area was in Temacine, Blidet-Amor, Meggarine and Ghomra.  It is closely related to the nearby Tumzabt (Mozabite) and Teggargrent (Ouargli) languages.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What language, traditionally written with the ancient Libyco-Berber script, is closely related to the Tumzabt and Teggargrent languages?",
+      "original_answer": "The Tugurt language",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_17",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_17_0",
+        "title": "Charles Fraser-Smith",
+        "content": "Charles Fraser-Smith (26 January 1904 – 9 November 1992) was an author and one-time missionary who is widely credited as being the inspiration for Ian Fleming's James Bond quartermaster Q.  During World War II, Fraser-Smith worked for the Ministry of Supply, fabricating equipment nicknamed \"Q-devices\" (after Q-ships) for SOE agents operating in occupied Europe.  Prior to the war, Fraser-Smith had worked as a missionary in North Africa.  After the war he purchased a dairy farm in Bratton Fleming, Devon, where he died in 1992.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_17_5",
+        "title": "Q (James Bond)",
+        "content": "Q is a fictional character in the James Bond films and film novelisations.  Q (standing for Quartermaster as well as a reference to the deceptive Q-ships) is a job title, unlike M, which is a cypher for the character's name.  He is the head of Q Branch (or later Q Division), the fictional research and development division of the British Secret Service.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Who is the fictional head of a British Secret Service division and for which a one-time missionary was the inspiration for?",
+      "original_answer": "Q",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_18",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_18_4",
+        "title": "Northern Lights (novel)",
+        "content": "Northern Lights (known as The Golden Compass in North America and some other countries) is a young-adult fantasy novel by Philip Pullman, published by Scholastic UK in 1995.  Set in a parallel universe, it features the journey of Lyra Belacqua to the Arctic in search of her missing friend, Roger Parslow, and her imprisoned uncle, Lord Asriel, who has been conducting experiments with a mysterious substance known as \"Dust\".",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_18_8",
+        "title": "Northern Lights Audio",
+        "content": "Northern Lights is a book by Philip Pullman, written in 1995.  The BBC and Cavalcade audiobook was first recorded in 2002",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Phillip Pullman's book set in a parallel universe featuring a character named Lyra Belacqua was put into audio in what year?",
+      "original_answer": "2002",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_19",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_19_0",
+        "title": "Johnny English Reborn",
+        "content": "Johnny English Reborn is a 2011 British action comedy film parodying the James Bond secret agent genre.  The film is the sequel to \"Johnny English\" (2003), and stars Rowan Atkinson reprising his role as the title character and directed by Oliver Parker.  The film is the second installment of the \"Johnny English film series\".",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_19_1",
+        "title": "Johnny English (film series)",
+        "content": "Johnny English is a British series of action comedy film parodying the James Bond secret agent genre.  It features Rowan Atkinson as the titular character, based on the screenplay was written by Neal Purvis and Robert Wade.  The series included 3 instalments: \"Johnny English\" (2003), \"Johnny English Reborn\" (2011), and the upcoming \"Johnny English 3\" which is in pre-production.  The series also infused with comedy similar to Atkinson's Mr. Bean character and grossed $320 worldwide.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Who directed the second film in a British series of action comedy film parodying the James Bond secret agent genre with comedy similar to Rowan Atkinson's Mr. Bean character?",
+      "original_answer": "Oliver Parker",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_20",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_20_4",
+        "title": "Rafael Márquez (boxer)",
+        "content": "Rafael Márquez Méndez (born 25 March 1975) is a Mexican former professional boxer who competed from 1995 to 2013.  He is a two-time world champion in two weight classes, having held the IBF bantamweight title from 2003 to 2007; and the WBC, \"Ring\" magazine, and lineal super bantamweight titles in 2007.  He also held the IBO bantamweight title from 2005 to 2007, and challenged once for WBO featherweight title in 2011.  Márquez was known for his formidable knockout power and relentless pressure fighting style.  His older brother Juan Manuel Márquez is also a professional boxer and multiple-time world champion.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_20_9",
+        "title": "Juan Manuel Márquez",
+        "content": "Juan Manuel Márquez Méndez (born August 23, 1973) is a Mexican former professional boxer who competed from 1993 to 2014.  He is the third Mexican boxer (after Érik Morales and Jorge Arce) to become a four-weight world champion, having formerly held nine world championships including the WBA (Super), IBF, and WBO featherweight titles between 2003 and 2007; the WBC super featherweight title from 2007 to 2008; the WBA (Super), WBO, \"Ring\" magazine, and lineal lightweight titles between 2008 and 2012; and the WBO junior welterweight title from 2012 to 2013.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What Was the name of Juan Manuel Márquez's  WBO champion holding younger brother?",
+      "original_answer": "Rafael Márquez",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_21",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_21_0",
+        "title": "Kim Jong-kook (singer)",
+        "content": "Kim Jong-kook (Hangul: 김종국; Hanja: 金鐘國; born 25 April 1976) is a South Korean singer, actor and TV personality.  He was initially part of the Korean duo Turbo, but later pursued a successful career as a solo artist.  Apart from being a triple Daesang award-winning singer, he is also an active participant in variety shows such as \"X-man\" and \"Family Outing\" (since episode 19).  He gained worldwide popularity as part of the SBS variety show \"Running Man\".",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_21_7",
+        "title": "Running Man Brothers",
+        "content": "Running Man Brothers is a South Korean pop duo, which is named after the South Korean television show \"Running Man\".  The group is composed of cast members Kim Jong-kook and Haha and was formed in 2014.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "The Running Man Brothers is a South Korean pop duo. Kim Jong-kook is one member and he is from what country?",
+      "original_answer": "South Korea",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_22",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_22_5",
+        "title": "Matt Groening",
+        "content": "Matthew Abraham \"Matt\" Groening ( ; born February 15, 1954) is an American cartoonist, writer, producer, animator, and voice actor.  He is the creator of the comic strip \"Life in Hell\" (1977–2012) and the television series \"The Simpsons\" (1989–present), \"Futurama\" (1999–2003, 2008–2013), and the upcoming \"Disenchantment\" (2018).  \"The Simpsons\" has gone on to become the longest-running U.S. primetime-television series in history, as well as the longest-running animated series and sitcom.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_22_8",
+        "title": "Lisa Simpson",
+        "content": "Lisa Marie Simpson is a fictional character in the animated television series \"The Simpsons\".  She is the middle child and most intelligent of the Simpson family.  Voiced by Yeardley Smith, Lisa first appeared on television in \"The Tracey Ullman Show\" short \"Good Night\" on April 19, 1987.  Cartoonist Matt Groening created and designed her while waiting to meet James L. Brooks.  Groening had been invited to pitch a series of shorts based on his comic \"Life in Hell\", but instead decided to create a new set of characters.  He named the elder Simpson daughter after his younger sister Lisa Groening.  After appearing on \"The Tracey Ullman Show\" for three years, the Simpson family were moved to their own series on Fox, which debuted on December 17, 1989.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "The creator of the Lisa Simpson character was born in what year?",
+      "original_answer": "1954",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_23",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_23_2",
+        "title": "Charles de Gaulle Airport",
+        "content": "Paris Charles de Gaulle Airport (French: \"Aéroport de Paris-Charles-de-Gaulle\" , IATA: CDG, ICAO: LFPG ), also known as Roissy Airport (name of the local district), is the largest international airport in France.  It is named after Charles de Gaulle (1890–1970), leader of the Free French Forces during the Second World War, founder of the French Fifth Republic and President of France from 1959 to 1969.  Charles de Gaulle Airport is located within portions of several communes 25 km to the northeast of Paris.  Charles de Gaulle Airport serves as the principal hub for Air France as well as a European hub for fellow SkyTeam alliance partner Delta Air Lines.  Additionally, the airport serves as a focus city for low-cost carriers Vueling and Norwegian Air Shuttle.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_23_3",
+        "title": "Eagle Aviation France",
+        "content": "Eagle Aviation France was a charter airline based in Saint-Nazaire, France.  Its wet lease operations were based in Paris at Charles de Gaulle Airport.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Where is the international airport which Eagle Aviation wet lease operations were based in located ",
+      "original_answer": "France.",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_24",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_24_4",
+        "title": "Definitely Maybe Tour",
+        "content": "Definitely Maybe Tour was a world concert tour by English band Oasis in support of their hugely successful debut album \"Definitely Maybe\".  The tour, which spanned the UK, Europe, Japan, the US and Canada, included 143 shows over a period of several months in 1994 and 1995 amidst 10 different tour legs.  The tour started on 6 February 1994 with a short concert at Gleneagles, Scotland, and ended on 22 April 1995 at the Sheffield Arena, which featured an acoustic debut of the future hit Don't Look Back in Anger and was also the last concert to feature original drummer Tony McCarroll.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_24_6",
+        "title": "Don't Look Back in Anger",
+        "content": "\"Don't Look Back in Anger\" is a song by the English rock band Oasis.  It was released on 19 February 1996 as the fifth single from their second studio album, \"(What's the Story) Morning Glory? \" (1995).  The song was written by the band's guitarist and main songwriter, Noel Gallagher.  It became the band's second single to reach number one on the UK Singles Chart, where it also went platinum.  \"Don't Look Back in Anger\" was also the first Oasis single with lead vocals by Noel (who had previously only sung lead on B-sides) instead of his brother, Liam.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Who sang lead vocals on the Oasis hit single which had an acoustic debut in drummer Tony McCarroll's last concert ? ",
+      "original_answer": "Noel Gallagher",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_25",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_25_1",
+        "title": "Liberal arts education",
+        "content": "The liberal arts (Latin: \"artes liberales\") are those subjects or skills that in classical antiquity were considered essential for a free person (Latin: \"liberalis\", \"worthy of a free person\") to know in order to take an active part in civic life, something that (for Ancient Greece) included participating in public debate, defending oneself in court, serving on juries, and most importantly, military service.  Grammar, logic, and rhetoric were the core liberal arts, while arithmetic, geometry, the theory of music, and astronomy also played a (somewhat lesser) part in education.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_25_7",
+        "title": "St. John's College, Belize",
+        "content": "St. John's College has three divisions, and a number of central academic centres and activities.  Through its three divisions, it offers a wide variety of liberal arts and science courses at the secondary, British A-level, and United States junior college levels.  St. John's College is a Roman Catholic institution in the Jesuit tradition, one of the oldest, largest, and most diverse educational institutions in Belize, founded by the Jesuits in 1887.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "St. John's College, Belize offers an education in a tradition in which what three subjects were the core?",
+      "original_answer": "Grammar, logic, and rhetoric",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_26",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_26_2",
+        "title": "Robert Holding",
+        "content": "Robert Earl Holding (November 29, 1926 – April 19, 2013) was an American businessman who owned Sinclair Oil Corporation, the Little America Hotels, the Grand America Hotel, the Westgate Hotel in San Diego, California (directed by Georg Hochfilzer), and two ski resorts, Sun Valley in central Idaho since 1977, and Snowbasin near Ogden, Utah, since 1984.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_26_7",
+        "title": "Sinclair Oil Corporation",
+        "content": "Sinclair Oil Corporation is an American petroleum corporation, founded by Harry F. Sinclair on May 1, 1916, as the Sinclair Oil and Refining Corporation by combining the assets of 11 small petroleum companies.  Originally a New York corporation, Sinclair Oil reincorporated in Wyoming in 1976.  The corporation's logo features the silhouette of a large green dinosaur.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Robert Earl Holding owned an oil company that was originally founded by who?",
+      "original_answer": "Harry F. Sinclair",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_27",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_27_2",
+        "title": "Kissed It",
+        "content": "\"Kissed It\" is a song by the American soul singer Macy Gray.  It is the second US single from her fifth album \"The Sellout\".  The song was released digitally on May 24, 2010 in the United States and features the musicians of Velvet Revolver and Guns N' Roses, Slash, Duff McKagan and Matt Sorum.  In September 2010, the song peaked on the Italian Airplay Chart at number 62.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_27_4",
+        "title": "Velvet Revolver",
+        "content": "Velvet Revolver was an American hard rock supergroup consisting of former Guns N' Roses members Slash (lead guitar), Duff McKagan (bass, backing vocals), and Matt Sorum (drums, backing vocals), alongside Dave Kushner (rhythm guitar) formerly of punk band Wasted Youth and Scott Weiland formerly of Stone Temple Pilots.  Weiland left the band to rejoin Stone Temple Pilots in 2008.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What instrument does Duff McKagan play on Macy Gray's single, Kissed It?",
+      "original_answer": "bass",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_28",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_28_0",
+        "title": "Linda Ronstadt",
+        "content": "Linda Maria Ronstadt (born July 15, 1946) is an American popular music and country music singer.  She has earned 11 Grammy Awards, three American Music Awards, two Academy of Country Music awards, an Emmy Award, and an ALMA Award, and many of her albums have been certified gold, platinum or multiplatinum in the United States and internationally.  She has also earned nominations for a Tony Award and a Golden Globe award.  She was inducted into the Rock and Roll Hall of Fame in April 2014.  On July 28, 2014, she was awarded the National Medal of Arts and Humanities.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_28_4",
+        "title": "J. D. Souther",
+        "content": "John David Souther, known professionally as J.D. Souther (born November 2, 1945) is an American singer and songwriter.  He has written and co-written songs recorded by Linda Ronstadt and the Eagles.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which American popular music and country music singer recorded J. D. Souther song ",
+      "original_answer": "Linda Maria Ronstadt",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_29",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_29_5",
+        "title": "Celtic nations",
+        "content": "The Celtic nations are territories in western Europe where Celtic languages or cultural traits have survived.  The term \"nation\" is used in its original sense to mean a people who share a common identity and culture and are identified with a traditional territory.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_29_9",
+        "title": "Pan Celtic Festival",
+        "content": "The Pan Celtic Festival (Irish: \"Féile Pan Cheilteach\" ) is a Celtic-language music festival held annually in the week following Easter, since its inauguration in 1971.  The first Pan Celtic Festival took place in Killarney, County Kerry, Ireland.  Its aim is to promote the modern Celtic languages and cultures and artists from all six Celtic nations: Brittany, Cornwall, Ireland, Isle of Man, Scotland and Wales.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "In which six Western European territories have Celtic languages or cultural traits survived?",
+      "original_answer": "Brittany, Cornwall, Ireland, Isle of Man, Scotland and Wales.",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_30",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_30_6",
+        "title": "Awake (film)",
+        "content": "Awake is a 2007 American conspiracy thriller film written and directed by Joby Harold.  It stars Hayden Christensen, Jessica Alba, Terrence Howard and Lena Olin.  The film was released in the United States and Canada on November 30, 2007.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_30_7",
+        "title": "Samuel Sim",
+        "content": "Samuel Sim is a film and television composer.  He first gained recognition with his award winning score for the BBC drama series \"Dunkirk\".  Since then he has written the music for a wide variety of film and television productions, most recently scoring the film \"Awake\" for The Weinstein Company and the BBC/HBO drama series \"House of Saddam\".  His most recent acclaimed music is the soundtrack for Home Fires.  Home Fires (Music from the Television Series) released May 6, 2016 by Sony Classical Records.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What film was written and directed by Joby Harold with music written by Samuel Sim?",
+      "original_answer": "Awake",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_31",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_31_1",
+        "title": "Carlene LeFevre",
+        "content": "Carlene LeFevre is a competitive eater from Henderson, Nevada.  She and her husband, Rich LeFevre, are said to form the \"First Family of Competitive Eating\" in spite of having normal weights and ages around 60, and are both top ranked members of the International Federation of Competitive Eating.  The childless couple has combined to take two of the top seven places in Nathan's Hot Dog Eating Contest in 2003, 2004, and 2005.  She is nicknamed \"The Madam of Etiquette\" for her relative degree of decorum while consuming mass quantities of food quickly.  Her trademark technique is called the \"Carlene Pop,\" in which she bounces up and down while eating to get the food to settle.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_31_9",
+        "title": "Nathan's Hot Dog Eating Contest",
+        "content": "The Nathan's Hot Dog Eating Contest is an annual American hot dog competitive eating competition.  It is held each year on Independence Day at Nathan's Famous Corporation's original, and best-known restaurant at the corner of Surf and Stillwell Avenues in Coney Island, a neighborhood of Brooklyn, New York City.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What group did Carlene LeFevre and Rich LeFevre form in Brooklyn, New York City?",
+      "original_answer": "the \"First Family of Competitive Eating\"",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_32",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_32_2",
+        "title": "Juan Martín del Potro",
+        "content": "Juan Martín del Potro (] , born 23 September 1988), also known as Delpo is an Argentinian professional tennis player who is currently ranked world No. 24 in men's singles by the Association of Tennis Professionals (ATP).  His biggest achievement has been winning the 2009 US Open, defeating Rafael Nadal in the semifinal and 5-time defending champion Roger Federer in the final.  He was the first to defeat both Federer and Nadal during the same major and was the only man outside the Big Four to win a major between the 2005 French Open and the 2013 US Open, a span of 35 tournaments.  He is also the second Argentine and the fifth-youngest man to win the US Open in the Open Era.  Other career highlights include winning the bronze medal in men's singles at the 2012 London Olympics and the silver medal at the 2016 Rio Olympics and being part of his country's successful Davis Cup team; but his career has also been hampered by a succession of wrist injuries.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_32_8",
+        "title": "Michaël Llodra",
+        "content": "Michaël Llodra (] ; born 18 May 1980) is a French former professional tennis player.  He is a successful doubles player with three Grand Slam championships and an Olympic silver medal, and has also had success in singles, winning five career titles and gaining victories over Novak Djokovic, Juan Martín del Potro, Tomáš Berdych, Robin Söderling, Jo-Wilfried Tsonga, Nikolay Davydenko, Janko Tipsarević and John Isner.  Llodra has been called \"the best volleyer on tour\".",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Michaël Llodra of France, called \"the best volleyer on tour\", defeated Juan Martín del Potro a professional of what nationality?",
+      "original_answer": "Argentinian",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_33",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_33_1",
+        "title": "Charles Tazewell",
+        "content": "Charles Tazewell (June 2, 1900 – June 26, 1972) was a radio playwright and children's book author, whose work has been adapted multiple times for film.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_33_4",
+        "title": "The Small One",
+        "content": "The Small One is a 1978 American animated featurette produced by Walt Disney Productions and released theatrically by Buena Vista Distribution on December 16, 1978 with a Christmas 1978 re-issue of \"Pinocchio\".  The story is based on a children's book of the same name by Charles Tazewell and was an experiment for the new generation of Disney animators including Don Bluth, Richard Rich, Henry Selick, Gary Goldman and John Pomeroy.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What company produced the 1978 movie based on a book written by a radio playwright and children's book author born in 1900?",
+      "original_answer": "Walt Disney Productions",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_34",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_34_5",
+        "title": "Topeka High School",
+        "content": "Topeka High School (THS) is a fully accredited high school, serving students in grades 9–12, located in Topeka, Kansas.  It is one of four high schools within Topeka Public Schools.  In the 2010-2011 school year, there were 1,840 students enrolled.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_34_9",
+        "title": "Chris Barnes (bowler)",
+        "content": "Chris Barnes (born February 25, 1970 in Topeka, Kansas) is an American professional bowler currently on the Professional Bowlers Association (PBA) Tour.  He attended Topeka High School, and then bowled collegiately at Wichita State University, where he earned a Bachelor of Arts degree in Business Management.  He was a member of Team USA for four years.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "How many students were enrolled in American professional bowler Chris Barnes' high school in the 2010-2011 school year?",
+      "original_answer": "1,840 students",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_35",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_35_2",
+        "title": "Dundee Canal",
+        "content": "The Dundee Canal was an industrial canal in Clifton and Passaic in Passaic County, New Jersey.  It was built between 1858 and 1861 and ran parallel to the Passaic River.  It supplied hydropower and water for manufacturing.  There was interest by some members of the business community to modify the canal to support navigational uses, but the canal was never used for that purpose.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_35_4",
+        "title": "Miami Canal",
+        "content": "The Miami Canal, or C-6 Canal, flows from Lake Okeechobee in the U.S. state of Florida to its terminus at the Miami River, which flows through downtown Miami.  The canal flows in a south and southeasterly direction for approximately 77 miles, and passes through three counties: Broward, Palm Beach, and Miami-Dade.  It was constructed in the early part of the 20th century to drain the Everglades Agricultural Area (EAA).",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which canal, Miami Canal or Dundee Canal, also supplies hydro-power and water for manufacturing?",
+      "original_answer": "Dundee Canal",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_36",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_36_1",
+        "title": "Ella Fitzgerald",
+        "content": "Ella Jane Fitzgerald (April 25, 1917 – June 15, 1996) was an African - American jazz singer often referred to as the First Lady of Song, Queen of Jazz and Lady Ella.  She was noted for her purity of tone, impeccable diction, phrasing and intonation, and a \"horn-like\" improvisational ability, particularly in her scat singing.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_36_4",
+        "title": "Would You Like to Take a Walk?",
+        "content": "\"Would You Like to Take a Walk?\"  is a popular song with music by Harry Warren and lyrics by Mort Dixon and Billy Rose.  It appeared in the Broadway show \"Sweet and Low\" starring James Barton, Fannie Brice and George Jessel.  The song was published in 1930 by Remick Music Corporation.  The song has become a pop standard, recorded by many artists including Rudy Vallee in 1931, Annette Hanshaw in 1931 , and Bing Crosby.  It plays in the 1939 Porky Pig cartoon \"Naughty Neighbors\" and the 1942 Daffy Duck cartoon \"The Daffy Duckaroo\".  Ella Fitzgerald and Louis Armstrong recorded the song for Decca in 1951, accompanied by the Dave Barbour Orchestra.  It was later included on Ella's Decca album \"Ella and Her Fellas\".",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What is the middle name of the singer who recorded Would You Like to Take a Walk? with Louis Armstrong in 1951",
+      "original_answer": "Jane",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_37",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_37_0",
+        "title": "Seven Faces",
+        "content": "Seven Faces is a 1929 American pre-Code drama film with fantasy elements that was released by Fox Film Corporation in the Fox Movietone sound-on-film system on December 1, 1929.  Based upon the piece of short fiction \"A Friend of Napoleon\" which was published in the June 30, 1923, issue of \"The Saturday Evening Post\" magazine by popular writer Richard Connell (whose best known work, \"The Most Dangerous Game\", was filmed three years later), it was directed by Berthold Viertel and stars Paul Muni in his second screen appearance.  \"Seven Faces\" is a lost film, with no excerpts from its footage known to exist.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_37_3",
+        "title": "The Most Dangerous Game",
+        "content": "\"The Most Dangerous Game\", also published as \"The Hounds of Zaroff\", is a short story by Richard Connell, first published in \"Collier's\" on January 19, 1924.  The story features a big-game hunter from New York City who falls off a yacht and swims to an isolated island in the Caribbean, where he is hunted by a Russian aristocrat.  The story is inspired by the big-game hunting safaris in Africa and South America that were particularly fashionable among wealthy Americans in the 1920s.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "What was Richard Connell's best known work The Hounds of Zaroff also published as?",
+      "original_answer": "The Most Dangerous Game",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_38",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_38_6",
+        "title": "Alan Garner",
+        "content": "Alan Garner OBE (born 17 October 1934) is an English novelist best known for his children's fantasy novels and his retellings of traditional British folk tales.  Much of his work is firmly rooted in the landscape, history and folklore of his native county of Cheshire, North West England, being set in the region and making use of the native Cheshire dialect.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_38_7",
+        "title": "The Stone Book Quartet",
+        "content": "The Stone Book Quartet, or Stone Book series, is a set of four short novels by Alan Garner and published by William Collins, Sons, from 1976 to 1978.  Set in eastern Cheshire, they feature one day each in the life of four generations of Garner's family and they span more than a century.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "The Stone Book series is set in what country? ",
+      "original_answer": "North West England",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_39",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_39_0",
+        "title": "Jonathan Marray",
+        "content": "Jonathan \"Jonny\" Marray (born 10 March 1981) is a British tennis player and a Wimbledon Men's Doubles champion.  Marray is a former top 20 doubles player, reaching a career high of world no. 15 in January 2013, mainly due to more regular appearances on the ATP World Tour, following his victory at Wimbledon 2012.  He has also competed on the singles tour, reaching world no. 215 in April 2005, but was unable to continue his singles career, in part due to injuries.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_39_2",
+        "title": "Wayne Black",
+        "content": "Wayne Hamilton Black (born 17 November 1973 in Harare, is a former professional male tennis player from Zimbabwe.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Are both Jonathan Marray and Wayne Black British?",
+      "original_answer": "no",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_40",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_40_0",
+        "title": "Brett Scallions",
+        "content": "Brett Allen Scallions (born December 21, 1971) is an American musician.  He is the lead vocalist, rhythm guitarist, and lyricist of post-grunge band Fuel.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_40_4",
+        "title": "Mick Jagger",
+        "content": "Sir Michael Philip Jagger, MBE (born 26 July 1943) is an English singer-songwriter, multi-instrumentalist, and composer, who gained fame as the lead singer and one of the founder members of the Rolling Stones (1962-present).  Jagger's career has spanned over five decades, and he has been described as \"one of the most popular and influential frontmen in the history of rock & roll\".  His distinctive voice and performance, along with Keith Richards' guitar style, have been the trademark of the Rolling Stones throughout the career of the band.  Jagger gained press notoriety for his admitted drug use and romantic involvements, and was often portrayed as a countercultural figure.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Are Mick Jagger and Brett Scallions both musicians?",
+      "original_answer": "yes",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_41",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_41_1",
+        "title": "John F. Fitzgerald",
+        "content": "John Francis \"Honey Fitz\" Fitzgerald (February 11, 1863 – October 2, 1950) was an American politician, father of Rose Kennedy and maternal grandfather of President John F. Kennedy.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_41_2",
+        "title": "Doyle's Cafe",
+        "content": "Doyle's Cafe is a bar / restaurant located on Washington Street in the Jamaica Plain neighborhood of Boston, Massachusetts.  Doyle's Cafe was established in 1882 and is located near the Samuel Adams Brewery.  Its close proximity to the Samuel Adams Brewery affords Doyle's the unique opportunity to serve new or experimental Samuel Adams beers.  It is also where Samuel Adams Boston Lager was first put on tap.  Throughout its history, Doyle's has been known as a favorite watering hole for both local and national politicians.  On St. Patrick's Day in 1988, Senator Ted Kennedy helped dedicate a new room at the location to his maternal grandfather, John F. Fitzgerald.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "When did Senator Ted Kennedy helped dedicate a new room at the location to his maternal grandfather, John F. Fitzgerald.",
+      "original_answer": "St. Patrick's Day in 1988",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_42",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_42_0",
+        "title": "The Color Purple",
+        "content": "The Color Purple is a 1982 epistolary novel by American author Alice Walker that won the 1983 Pulitzer Prize for Fiction and the National Book Award for Fiction.  It was later adapted into a film and musical of the same name.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_42_7",
+        "title": "Diamond White (singer)",
+        "content": "Diamond White (born January 1, 1999) is an American singer, actress and voice actress who, in 2007 at the age of 8, starred in a Chicago-based production of \"The Color Purple\" that also toured nationally.  She voices Frankie Greene in \",\" Fuli on the Disney Junior series \"The Lion Guard,\" and has had cameo appearances on \"The Haunted Hathaways\" and \"Sofia the First\" and a recurring role on \"Phineas and Ferb.\"  In 2012, she was a contestant on the second season of the American version of \"The X Factor,\" finishing in fifth place.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which 8-year old star of an epistolary novel turned musical by Alice Walker also voiced Frankie Greene in a Disney series?",
+      "original_answer": "Diamond White",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_43",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_43_3",
+        "title": "DC Talk",
+        "content": "DC Talk (stylized as dc Talk) is a Christian rap and rock trio.  The group was formed at Liberty University in Lynchburg, Virginia in 1987 by Toby McKeehan, Michael Tait, and Kevin Max Smith.  They released five major studio albums together: \"DC Talk\" (1989), \"Nu Thang\" (1990), \"Free at Last\" (1992), \"Jesus Freak\" (1995), and \"Supernatural\" (1998).  In 2002, the \"Encyclopedia of Contemporary Christian Music\" called DC Talk \"the most popular overtly Christian act of all time.\"",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_43_4",
+        "title": "Manchester Orchestra",
+        "content": "Manchester Orchestra is an American indie rock band from Atlanta, Georgia, formed in 2004.  The group is composed of rhythm guitarist-singer-songwriter Andy Hull, lead guitarist Robert McDowell, bassist Andy Prince and drummer Tim Very.  Former drummer Jeremiah Edmond parted ways with the band in January 2010 to focus on his family and on running the band's record label, Favorite Gentlemen.  The band's original bassist, Jonathan Corley, parted ways with the band in 2013.  Keyboardist/percussionist Chris Freeman announced his departure from the band in September 2016.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Which music group has the most members, DC Talk, or Manchester Orchestra?",
+      "original_answer": "Manchester Orchestra",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_44",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_44_3",
+        "title": "Orlando Brown (actor)",
+        "content": "Orlando Brown (born December 4, 1987) is an American actor, voice actor, rapper and singer.  He is best known for his role as Eddie Thomas in \"That's So Raven\", 3J Winslow in \"Family Matters\", Tiger in \"Major Payne\", Max in \"Two of a Kind\", Damey Wayne in the short-lived Waynehead, Dobbs in \"Max Keeble's Big Move\", and Frankie in \"Eddie's Million Dollar Cook Off\".",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_44_5",
+        "title": "Family Matters",
+        "content": "Family Matters is an American sitcom which originated on ABC from September 22, 1989 to May 9, 1997, before moving to CBS from September 19, 1997 to July 17, 1998.  A spin-off of \"Perfect Strangers,\" the series revolves around the Winslow family, a middle-class African American family living in Chicago, Illinois.  Midway through the first season, the show introduced the Winslows' nerdy neighbor Steve Urkel (Jaleel White), who quickly became its breakout character and eventually the show's main character.  Having run for nine seasons, \"Family Matters\" became the second longest-running non-animated US sitcom with a predominantly African American cast, behind only \"The Jeffersons\" (11).  Having aired 215 episodes, \"Family Matters\" is ranked third, behind only \"Tyler Perry's House of Payne\" (254), and \"The Jeffersons\" (253).",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Orlando Brown is best known for his role as 3J Winslow in an American sitcom that was a spin-off of what?",
+      "original_answer": "Perfect Strangers",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_45",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_45_0",
+        "title": "Livesey Hall War Memorial",
+        "content": "The Livesey Hall War Memorial commemorates the fallen of World War I and World War II who had been employed by the South Suburban Gas Company of London.  It is also a tribute to those employees who served in the wars.  The monument was designed and executed by British sculptor Sydney March, of the March family of artists.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_45_9",
+        "title": "World War II casualties",
+        "content": "World War II was the deadliest military conflict in history in absolute terms of total casualties.  Over 60 million people were killed, which was about 3% of the 1940 world population (est. 2.3 billion).  The tables below give a detailed country-by-country count of human losses.  World War II fatality statistics vary, with estimates of total deaths ranging from 50 million to more than 80 million.  The higher figure of over 80 million includes deaths from war-related disease and famine.  Civilians killed totalled 50 to 55 million, including 19 to 28 million from war-related disease and famine.  Military deaths from all causes totalled 21 to 25 million, including deaths in captivity of about 5 million prisoners of war.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "The Livesey Hal War Memorial commemorates the fallen of which war, that had over 60 million casualties?",
+      "original_answer": "World War II",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_46",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_46_0",
+        "title": "HMAS Narani",
+        "content": "HMAS \"Narani\" was an auxiliary minesweeper operated by the Royal Australian Navy (RAN) during World War II.  \"Narani\" was requisitioned from the Illawarra & South Coast Steam Navigation Company as auxiliaries.  The 381-ton vessel was armed with a 12-pounder 12cwt QF gun, a 20mm Oerlikon cannon, a .303-inch Vickers machine gun, and four Type D depth charges, and was commissioned into the RAN on 11 June 1941.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_46_1",
+        "title": "Vickers machine gun",
+        "content": "The Vickers machine gun or Vickers gun is a name primarily used to refer to the water-cooled .303 British (7.7 mm) machine gun produced by Vickers Limited, originally for the British Army.  The machine gun typically required a six to eight-man team to operate: one fired, one fed the ammunition, the rest helped to carry the weapon, its ammunition, and spare parts.  It was in service from before the First World War until the 1960s, with air-cooled versions of it on many Allied World War I fighter aircraft.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Where was the air-cooled version of a weapon system used on the HMAS \"Narani\" found?",
+      "original_answer": "World War I fighter aircraft.",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_47",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_47_1",
+        "title": "Gravel v. United States",
+        "content": "Gravel v. United States, 408 U.S. 606 (1972), was a case regarding the protections offered by the Speech or Debate Clause of the United States Constitution.  In the case, the Supreme Court of the United States held that the privileges and immunities of the Constitution's Speech or Debate Clause enjoyed by members of Congress also extend to Congressional aides, but not to activity outside the legislative process.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_47_9",
+        "title": "Minersville School District v. Gobitis",
+        "content": "Minersville School District v. Gobitis, 310 U.S. 586 (1940) , was a decision by the Supreme Court of the United States involving the religious rights of public school students under the First Amendment to the United States Constitution.  The Court ruled that public schools could compel students—in this case, Jehovah's Witnesses—to salute the American Flag and recite the Pledge of Allegiance despite the students' religious objections to these practices.  This decision led to increased persecution of Witnesses in the United States.  The Supreme Court overruled this decision a mere three years later, in \"West Virginia State Board of Education v. Barnette\", 319 U.S. 624 (1943).",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Did Minersville School District v. Gobitis and Gravel v. United States occur in the same decade?",
+      "original_answer": "no",
+      "type_hint": "comparison"
+    }
+  },
+  {
+    "bundle_id": "hotpot_48",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_48_1",
+        "title": "Yakuza (series)",
+        "content": "Yakuza, known in Japan as Ryū ga Gotoku (龍が如く , \"Like a Dragon\") , is an open world action-adventure beat 'em up video game franchise created, owned and published by Sega.  The series originated from Toshihiro Nagoshi's desire to create a game that would tell the way of life of the \"yakuza\".  Nagoshi initially struggled to find a platform for the project, until Sony showed interest in the prospect.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_48_3",
+        "title": "Yakuza Kiwami",
+        "content": "Yakuza Kiwami is a 2016 action-adventure game developed by Sega for the PlayStation 3 and PlayStation 4.  It is a remake of \"Yakuza\", the first video game in the \"Yakuza\" series.  Similarly to \"Yakuza 0\", the prequel installment before it, \"Yakuza Kiwami\" was released exclusively on PlayStation 4 in Europe and North America in August 2017.  A \"Kiwami\" remake of \"Yakuza 2\" is set for a Japanese release in December 2017.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": "Yakuza Kiwami is a remake of the first video game in what video game series that is an open world action-adventure beat 'em up video game franchise?",
+      "original_answer": "Yakuza",
+      "type_hint": "bridge"
+    }
+  },
+  {
+    "bundle_id": "hotpot_49",
+    "source": "hotpotqa",
+    "docs": [
+      {
+        "doc_id": "hotpot_49_7",
+        "title": "Theodore G. Bilbo",
+        "content": "Theodore Gilmore Bilbo (October 13, 1877August 21, 1947) was an American politician who twice served as governor of Mississippi (1916–20, 1928–32) and later was elected a U.S. Senator (1935–47).  A master of filibuster and scathing rhetoric, a rough-and-tumble fighter in debate, he made his name a synonym for white supremacy.  Like many Southern Democrats of his era, Bilbo believed that black people were inferior; he defended segregation, and was a member of the Ku Klux Klan.",
+        "page_id": null
+      },
+      {
+        "doc_id": "hotpot_49_8",
+        "title": "Mississippi gubernatorial election, 1919",
+        "content": "The 1919 Mississippi gubernatorial election took place on November 4, 1919, in order to elect the Governor of Mississippi.  Incumbent Democrat Theodore G. Bilbo was term-limited, and could not run for reelection to a second term.  As was common at the time, the Democratic candidate won in a landslide in the general election so therefore the Democratic primary was the real contest, and winning the primary was considered tantamount to election.",
+        "page_id": null
+      }
+    ],
+    "metadata": {
+      "language": "en",
+      "original_question": " The 1919 Mississippi gubernatorial election Incumbent Democrat was a master of what?",
+      "original_answer": "filibuster",
+      "type_hint": "bridge"
+    }
   }
 ]

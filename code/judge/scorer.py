@@ -5,9 +5,21 @@ Receives the checklist for a (query, bundle) plus the candidate viz
 score every item at once. Output is a JSON list aligned with the input
 checklist; per-item answer ∈ {YES, PARTIAL, NO} maps to {1.0, 0.5, 0.0}.
 
-Spec L342 prescribes Claude Opus 4.6 as scorer (cross-judge against the
-GPT-5 generator); Week 0 substitutes Qwen3.5-397B-A17B-FP8 for both — single-model
-judge is documented as a deviation in the open-questions track file.
+Two-phase judge strategy (cost-efficient):
+  ▸ Phase 1 (active, on-prem): Qwen3.5-397B via QwenDirectClient — used to
+    pull *trend signal* on all layers (A in-domain, B held-out, D pillar
+    ablation). Cheap, fast, deterministic at T=0.
+  ▸ Phase 2 (closed-API, deferred): once Phase 1 trend confirms our
+    headline claims qualitatively (V4 > B5/B7 with positive multi-doc gap,
+    near-specialist on home turfs), the same checklist + candidates are
+    re-scored under the paper-spec cross-judge config (Claude Opus 4.6 as
+    scorer, cross-judged against GPT-5 generator per spec L342 / §8.2).
+    Only the *paper-headline cells* are re-scored — Layer A main result
+    table + Layer D ablation overall — to keep API spend bounded.
+
+The Phase-2 cross-judge call site is preserved here as commented-out
+reference (`_score_with_closed_api_TODO`) so the swap is mechanical when
+budget activates.
 """
 from __future__ import annotations
 
@@ -20,6 +32,29 @@ from code.adapters.agent_client import (
     QWEN_MODEL,
     QwenDirectClient,
 )
+
+
+# ── Phase-2 closed-API scorer hook (deferred) ───────────────────────────────
+# When closed-API budget activates, swap the Qwen scorer with the Claude
+# Opus 4.6 scorer below to obtain paper-grade numbers for the *headline*
+# Layer A + Layer D result cells. Cross-judge κ vs Qwen Phase-1 scores
+# becomes G7 verification gate evidence (target Cohen κ ≥ 0.6).
+#
+# def _score_with_closed_api_TODO(prompt: str) -> str:
+#     """Drop-in for Phase-2 paper-grade scoring.
+#     Implementation when ANTHROPIC_API_KEY active:
+#         from anthropic import Anthropic
+#         cli = Anthropic()
+#         msg = cli.messages.create(
+#             model="claude-opus-4-6",       # spec L342
+#             max_tokens=2200, temperature=0,
+#             messages=[{"role": "user", "content": prompt}],
+#         )
+#         return msg.content[0].text
+#     Cost projection: ~$0.25-0.40 per record × ~3,000 headline records ≈ $750-1,200.
+#     Confined to Layer A + Layer D headline cells per the §10 budget envelope.
+#     """
+#     ...
 
 
 NO_THINK = {"chat_template_kwargs": {"enable_thinking": False}}
@@ -43,7 +78,9 @@ Visualization DSL (raw):
 Visualization parsed structure:
 {viz_parsed}
 
-Sub-queries used by the agent (relevant only for search_query_quality):
+Retrieval queries issued by the agent (relevant only for search_query_quality;
+covers both `search` tool queries and `ReadFullDocument` retrieval goals;
+RFD goals are prefixed with "[RFD]"):
 {sub_queries}
 
 Score EACH item in the checklist below. For each item answer:
@@ -61,8 +98,13 @@ Return strictly a single JSON object:
 Rules:
 - Output one entry per checklist item, in the same order.
 - Justification ≤ 25 words.
-- For "search_query_quality" items when sub_queries is "(none)" or empty,
-  answer "NO" with justification "non-agentic strategy: no sub-queries".
+- For "search_query_quality" items when the retrieval queries list is "(none)"
+  or empty (i.e., a non-agentic strategy with no search or RFD calls at all),
+  answer "NO" with justification "non-agentic strategy: no retrieval queries".
+- For agentic strategies that used `ReadFullDocument` instead of `search`,
+  evaluate the RFD goal (prefixed "[RFD]") as the retrieval intent and score
+  it on the same axis (specificity, on-target framing, exclusion of
+  irrelevant material) — do not penalize as if it were absent.
 - No prose outside the JSON.
 """
 

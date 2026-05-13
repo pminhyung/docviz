@@ -83,7 +83,7 @@ class S4Agentic(Pipeline):
         query_type: str | None = None,   # accepted for ABC parity, ignored
         query_id: str | None = None,     # accepted for ABC parity, ignored
     ) -> VizOutput:
-        doc_path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
+        doc_paths, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
 
         # Stash the page→doc_id mapping on the Bundle so map_agent_response can
         # resolve agent page citations back to canonical doc_ids for SAO.
@@ -106,7 +106,7 @@ class S4Agentic(Pipeline):
                 )
 
             response = client.run_paper_default(
-                doc_json_path=doc_path,
+                doc_json_paths=doc_paths,
                 user_query=query,
                 n_steps_max=self._n_steps_max,
                 return_trace=True,
@@ -115,4 +115,4 @@ class S4Agentic(Pipeline):
                 reasoner_base_url=self._reasoner_base_url,
             )
 
-        return map_agent_response(response, bundle, concat_doc_path=doc_path)
+        return map_agent_response(response, bundle, concat_doc_path=doc_paths[0] if doc_paths else None)

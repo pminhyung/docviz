@@ -2,9 +2,10 @@
 
 Usage:
     python -m code.utils.merge_bundles
-    python -m code.utils.merge_bundles --strict       # fail if total != 30
+    python -m code.utils.merge_bundles --strict       # fail if total != 300
 
-Validates each bundle against the schema (≥2 docs, 3K-80K chars).
+v0.3 amendment D1.1: 6 sources × 50 bundles each = 300 total. Validates
+each bundle against the schema (≥2 docs, per-source min_chars).
 """
 from __future__ import annotations
 
@@ -27,11 +28,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = REPO_ROOT / "data" / "prototype" / "bundles"
 OUT_PATH = BUNDLE_DIR / "all.json"
 
+# v0.3 amendment D1.1 — 6 sources × 50 bundles = 300 total
 EXPECTED = {
-    "hotpotqa": 10,
-    "multinews": 10,
-    "arxiv": 5,
-    "10k": 5,
+    "hotpotqa":  50,
+    "multinews": 50,
+    "arxiv":     50,
+    "10k":       50,
+    "govreport": 50,
+    "tech_docs": 50,
 }
 TARGET_TOTAL = sum(EXPECTED.values())
 
@@ -39,10 +43,12 @@ TARGET_TOTAL = sum(EXPECTED.values())
 # (see WEEK0_LOG.md decision note). Master spec's 3K-80K range applies to the
 # larger sources.
 PER_SOURCE_MIN_CHARS = {
-    "hotpotqa": 500,
+    "hotpotqa":  500,
     "multinews": 3_000,
-    "arxiv": 3_000,
-    "10k": 3_000,
+    "arxiv":     3_000,
+    "10k":       3_000,
+    "govreport": 3_000,
+    "tech_docs": 3_000,
 }
 
 

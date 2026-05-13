@@ -59,6 +59,16 @@ class RunRequestV2(BaseModel):
         default=None,
         description="Path to second document JSON file (for multi-doc)"
     )
+    doc_json_paths: Optional[List[str]] = Field(
+        default=None,
+        description="Paths to N document JSON files (for N-way multi-doc). "
+                    "If provided, takes precedence over doc_json_path / doc_json_path_2 "
+                    "and forces single_doc=False so each path is loaded as its own document. "
+                    "Use this for bundle workflows where the input is a collection of "
+                    "distinct source documents (e.g., arXiv papers, 10-K sections) and "
+                    "the agent should see each as a separate document with its own "
+                    "title, snippet, and document_number for search/RFD."
+    )
     doc_image_dir: Optional[str] = Field(
         default=None,
         description="Path to image directory for docai format documents"
@@ -156,6 +166,18 @@ class RunRequestV2(BaseModel):
     train_sample_version: Literal["v1", "v2"] = Field(
         default="v1",
         description="Training sample format: 'v1' (default, 7 keys + train_system_prompt + custom keys) or 'v2' (admin, adds metadata fields)"
+    )
+
+    # Trace redaction control — default-on for external API safety; orchestrators
+    # that are both producer and consumer of the trace (e.g., this repo's
+    # pipeline → judge chain) can opt-out to see actual tool arguments,
+    # specifically the `search.query` array and `ReadFullDocument.goal` text,
+    # which the downstream judge needs for the retrieval-query-quality axis.
+    redact_args: bool = Field(
+        default=True,
+        description="Whether to redact tool `action_args` and truncate `action_result` in the returned trace. "
+                    "Default True (backward compat / external API safety). Set False for internal pipelines that "
+                    "need the actual search queries and RFD goals downstream (e.g., judge scoring)."
     )
 
     model_config = {

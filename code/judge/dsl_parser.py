@@ -65,11 +65,40 @@ def parse_mermaid(dsl: str) -> Dict[str, Any]:
     return out
 
 
+def _repair_json_braces(text: str) -> str:
+    """Best-effort fix for Qwen's two most common Chart.js JSON errors:
+    1-3 trailing extra/missing `}`. Iteratively strip trailing `}` until
+    parse succeeds; if still failing, append missing `}` to balance opens.
+    Mirror of code.render.renderer._repair_json_braces — kept here so the
+    text-axis parser benefits even when the renderer is not invoked.
+    """
+    text = text.strip()
+    candidate = text
+    for _ in range(5):
+        try:
+            json.loads(candidate)
+            return candidate
+        except json.JSONDecodeError:
+            if candidate.endswith("}"):
+                candidate = candidate[:-1].rstrip()
+                continue
+            break
+    opens = text.count("{")
+    closes = text.count("}")
+    if opens > closes:
+        return text + "}" * (opens - closes)
+    return text
+
+
 def parse_chartjs(dsl: str) -> Dict[str, Any]:
     try:
         spec = json.loads(dsl)
-    except json.JSONDecodeError as e:
-        return {"kind": "chartjs", "parse_error": str(e), "summary": "chartjs: parse_fail"}
+    except json.JSONDecodeError:
+        repaired = _repair_json_braces(dsl)
+        try:
+            spec = json.loads(repaired)
+        except json.JSONDecodeError as e:
+            return {"kind": "chartjs", "parse_error": str(e), "summary": "chartjs: parse_fail"}
     if not isinstance(spec, dict):
         return {"kind": "chartjs", "parse_error": "top level not an object",
                 "summary": "chartjs: not_object"}

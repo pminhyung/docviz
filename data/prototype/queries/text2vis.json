@@ -1,0 +1,802 @@
+[
+  {
+    "query_id": "text2vis_000_text2vis",
+    "bundle_id": "text2vis_000",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the cumulative changes from 2012 to 2028, what is the compound annual growth rate (CAGR) of the Value (in billion GBP), rounded to…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_001_text2vis",
+    "bundle_id": "text2vis_001",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the observed increase in approval ratings from 70 to 570 units over two consecutive periods, assuming the same rate of increase continues, in…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_002_text2vis",
+    "bundle_id": "text2vis_002",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the net sales data from 2013 to 2019, calculate the compound annual growth rate (CAGR) of net sales. Then, forecast the net sales for…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_003_text2vis",
+    "bundle_id": "text2vis_003",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Given that the values of the categories 'Too Much', 'Don't Know', 'Too Little', and 'Right Amount' are percentages summing up to 100%, calculate the mean…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_004_text2vis",
+    "bundle_id": "text2vis_004",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which market sector exhibits a bimodal distribution in annual returns, indicating two distinct performance groups within the sector based on the distribution shape and spread…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_005_text2vis",
+    "bundle_id": "text2vis_005",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the subscribers data provided, calculate the percentage change in subscribers between each consecutive data point. What is the maximum percentage increase observed between…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_006_text2vis",
+    "bundle_id": "text2vis_006",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the absolute differences in support percentages between Obama and Romney across party affiliations, determine the skewness of the distribution. Is the distribution left-skewed, right-skewed,…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_007_text2vis",
+    "bundle_id": "text2vis_007",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the Total market data, how many years are Domestic market values outliers using the 1.5×IQR rule?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_008_text2vis",
+    "bundle_id": "text2vis_008",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which country experienced a higher percentage change in its values from 1896 to 1996?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_009_text2vis",
+    "bundle_id": "text2vis_009",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "By calculating the net favorability scores (the sum of 'Good chance' and 'Some chance' minus 'No chance') for each candidate and comparing them to the…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_010_text2vis",
+    "bundle_id": "text2vis_010",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Calculate the compound annual growth rate (CAGR) of the number of students from 2010 to 2020.",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_011_text2vis",
+    "bundle_id": "text2vis_011",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data provided, calculate the total percentage of 'Public Approval of U.S. Foreign Policy' over the years and determine in which year this…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_012_text2vis",
+    "bundle_id": "text2vis_012",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the given receiving yards data of players, calculate the cumulative percentages of total receiving yards contributed by the players. Determine the minimum number…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_013_text2vis",
+    "bundle_id": "text2vis_013",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which country experienced a decrease in value between any two consecutive years?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_014_text2vis",
+    "bundle_id": "text2vis_014",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What is the average suicide rate among all age-specific groups, and how does it compare to the overall 'All ages' rate?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_015_text2vis",
+    "bundle_id": "text2vis_015",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Among the five entities, which one experienced the highest percentage increase in value between their minimum and maximum years from 2000 to 2007?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_016_text2vis",
+    "bundle_id": "text2vis_016",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How do the index scores for different workforce characteristics compare, and which characteristics significantly deviate from the overall score?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_017_text2vis",
+    "bundle_id": "text2vis_017",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Identify the year in which the 'Keep same' category exhibits an anomalously high value compared to other years. Provide that year.",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_018_text2vis",
+    "bundle_id": "text2vis_018",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "In which year did the support for 'Control gun ownership' reach its highest point?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_019_text2vis",
+    "bundle_id": "text2vis_019",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the data from 2018 to 2024, compute the interquartile range (IQR) as a proportion of its median value. Determine which category exhibits the smallest…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_020_text2vis",
+    "bundle_id": "text2vis_020",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the 'Mostly bad news' percentages from Dec 2008 to Jan 2011, perform linear regression to model the trend over time (in months since…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_021_text2vis",
+    "bundle_id": "text2vis_021",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the dataset provided, calculate the annual funding increases as a percentage of the total federal budget for each fiscal year, and identify the year…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_022_text2vis",
+    "bundle_id": "text2vis_022",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What patterns are observed in the online purchasing behaviors of males and females across the given characteristics, and how do their percentages compare for each…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_023_text2vis",
+    "bundle_id": "text2vis_023",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the given pea production data for 2009, which country among Morocco, Belgium, Ireland, and Mexico had the highest pea production, and how does…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_024_text2vis",
+    "bundle_id": "text2vis_024",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "By what factor do 'Bad thing' responses exceed 'Don't know' responses?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_025_text2vis",
+    "bundle_id": "text2vis_025",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the test scores data, calculate the skewness of the distribution using Pearson's second coefficient of skewness (3*(Mean - Median)/Standard Deviation). Based on the calculated…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_026_text2vis",
+    "bundle_id": "text2vis_026",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What was the percentage increase in Albania's value from 2006 to 2007?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_027_text2vis",
+    "bundle_id": "text2vis_027",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Considering the urban and rural population distribution in each of the listed countries, analyze how the number of sexual encounters per year varies between urban…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_028_text2vis",
+    "bundle_id": "text2vis_028",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What was the Compound Annual Growth Rate (CAGR) for the United States between 1900 and 1950?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_029_text2vis",
+    "bundle_id": "text2vis_029",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data, predict whether a person from an urban area is more likely to favor 'Smaller and closer to each other' or 'Larger…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_030_text2vis",
+    "bundle_id": "text2vis_030",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data provided, analyze how the distribution of annual turnover rates varies across different company sizes, and determine which company size has the…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_031_text2vis",
+    "bundle_id": "text2vis_031",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Considering the impact of extracurricular activity funding on the average test scores among rural schools, is there a statistically significant non-linear relationship between extracurricular funding…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_032_text2vis",
+    "bundle_id": "text2vis_032",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Calculate the compound annual growth rate (CAGR) of units sold from 2010 to 2012, use it to predict the expected units sold in 2013, compare…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_033_text2vis",
+    "bundle_id": "text2vis_033",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "From the data provided, what is the percentage of Non-Mexican and Mexican immigrants who gained citizenship through the Diversity Immigrant Visa Program, and which group…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_034_text2vis",
+    "bundle_id": "text2vis_034",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What does the distribution of retail sales shares across IKEA's product categories reveal about the company's focus areas, and how might the significant size of…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_035_text2vis",
+    "bundle_id": "text2vis_035",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the ACSI scores from 2006 to 2020, perform the following analyses: 1. Plot the ACSI scores over time to identify any overall trends in…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_036_text2vis",
+    "bundle_id": "text2vis_036",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Assuming that the influence of each website on the market is proportional to the square of its share of natural search voice, which website exerts…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_037_text2vis",
+    "bundle_id": "text2vis_037",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyze the changes in Corruption Perceptions Index scores between 2015 and 2020 for the countries provided, and determine which continent has seen the greatest average…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_038_text2vis",
+    "bundle_id": "text2vis_038",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the provided data, determine which industry has the highest real value added per employee, considering the total number of employees in each industry.",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_039_text2vis",
+    "bundle_id": "text2vis_039",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the revenue data from 2004 to 2018, determine the year in which the company experienced the highest annual percentage increase in revenue, and…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_040_text2vis",
+    "bundle_id": "text2vis_040",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How have the proportions of offline and online sales changed from 2013 to 2018*, and what does this indicate about consumer behavior trends in sales…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_041_text2vis",
+    "bundle_id": "text2vis_041",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Considering the given energy production data, identify the energy source that, when combined with the renewable energy source contributing exactly one-third of the total renewable…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_042_text2vis",
+    "bundle_id": "text2vis_042",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Given the dataset of patient heart rates, calculate the mean and median of the data. Determine whether the distribution is positively skewed, negatively skewed, or…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_043_text2vis",
+    "bundle_id": "text2vis_043",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Given the data table, calculate the percentage of 'Strongly' responses out of the total 'Strongly' responses across all entities. Identify the entity that accounts for…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_044_text2vis",
+    "bundle_id": "text2vis_044",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Calculate the average number of whales killed per species (excluding 'All whale species' and 'Unspecified/Other species') in 1958, and identify the species whose number of…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_045_text2vis",
+    "bundle_id": "text2vis_045",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How has the jersey sponsorship revenue evolved from 2009/10 to 2019/20, and what patterns, trends, or anomalies are observable, particularly concerning the change in sponsors…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_046_text2vis",
+    "bundle_id": "text2vis_046",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Among the decades represented in the dataset, which decade's players collectively account for the highest proportion of total rushing yards among the top 20 leading…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_047_text2vis",
+    "bundle_id": "text2vis_047",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "By how many percentage points does the proportion of those who 'are worn out' by the amount of news exceed those who 'like' the amount…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_048_text2vis",
+    "bundle_id": "text2vis_048",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Given that 'Parties with candidates' spending is overlapping and included in both 'Candidates' and 'Parties' spending totals, adjust the spending amounts by subtracting the overlapping…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_049_text2vis",
+    "bundle_id": "text2vis_049",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Calculate the Gini coefficient to quantify the inequality in population distribution among the English regions provided (excluding 'England'). Round your answer to two decimal places.",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_050_text2vis",
+    "bundle_id": "text2vis_050",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How does the per capita resource availability differ among the listed countries, and what patterns or outliers can be observed in the distribution of these…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_051_text2vis",
+    "bundle_id": "text2vis_051",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which item has the highest positive quartile skewness in price distribution from 2010/11 to 2014/15?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_052_text2vis",
+    "bundle_id": "text2vis_052",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Assuming the same average annual growth rate continues, what would be the projected Total Child Care for Working women in 2013?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_053_text2vis",
+    "bundle_id": "text2vis_053",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How have the usage trends of Bicycles and E-bikes evolved from 2013 to 2020, and at what point did E-bike usage surpass that of traditional…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_054_text2vis",
+    "bundle_id": "text2vis_054",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the revenue forecasts from 2009 to 2014, determine whether the revenue growth rate is increasing or decreasing over the period. Use appropriate charts…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_055_text2vis",
+    "bundle_id": "text2vis_055",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Between 2015 and 2020, which renewable energy source experienced the highest compound annual growth rate (CAGR)?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_056_text2vis",
+    "bundle_id": "text2vis_056",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What was the average annual rate of change in trust from 2006 to 2014?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_057_text2vis",
+    "bundle_id": "text2vis_057",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the dataset provided, determine the year during which the cumulative expenditure from 1980 up to that year reached exactly half of the total cumulative…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_058_text2vis",
+    "bundle_id": "text2vis_058",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the given data, assign numerical values to the political groups from 1 (Democrat/ lean Dem) to 4 (Rep/lean R Agree with Tea Party), with…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_059_text2vis",
+    "bundle_id": "text2vis_059",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using a box plot of the percentages of 'Don't know/no opinion' across all age groups, determine the skewness of the distribution. Is the distribution left-skewed…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_060_text2vis",
+    "bundle_id": "text2vis_060",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the annual expenditure data from 2005 to 2019, and considering the incremental year-over-year changes, what is the total cumulative decrease in expenditure in million…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_061_text2vis",
+    "bundle_id": "text2vis_061",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Considering the dataset of companies and their share of chartered TEUs, determine the difference between the median and the mean share value; what is this…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_062_text2vis",
+    "bundle_id": "text2vis_062",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the funding values for each quarter from Q1 2014 to Q3 2016, determine which quarter had the highest percentage growth in funding compared to…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_063_text2vis",
+    "bundle_id": "text2vis_063",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyze the distribution of payrolls among the players and identify any patterns or outliers. What insights can you derive from the visualization about the payroll…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_064_text2vis",
+    "bundle_id": "text2vis_064",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the dataset provided, determine the interquartile range (IQR) for the annual production values of 'Thermal Insulation Glass' from 2000 to 2020, and identify…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_065_text2vis",
+    "bundle_id": "text2vis_065",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What trends and patterns can be observed in the changes in respondents' interest in soccer over time from January 2015 to June 2019, and are…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_066_text2vis",
+    "bundle_id": "text2vis_066",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the treemap visualization of the YouTube trailers' view counts categorized by genre and subgenre, which subgenre has the highest total views within the…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_067_text2vis",
+    "bundle_id": "text2vis_067",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the military expenditure data of Colombia and Paraguay in 1892, what percentage of the total military expenditure was contributed by Colombia?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_068_text2vis",
+    "bundle_id": "text2vis_068",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which year recorded the highest average US inflation rate from 2010 to 2024?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_069_text2vis",
+    "bundle_id": "text2vis_069",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What significant trends and patterns are evident in the ticket sales data from 2010 to 2019, and are there any anomalies or notable changes in…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_070_text2vis",
+    "bundle_id": "text2vis_070",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the incremental annual changes in the number of shares from 2009 to 2020, during which year did the largest annual decrease in the number…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_071_text2vis",
+    "bundle_id": "text2vis_071",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the annual production data from 2006 to 2020, calculate the year-over-year changes and construct a waterfall chart to visualize these changes over time. Determine…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_072_text2vis",
+    "bundle_id": "text2vis_072",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using linear regression, what is the projected 'Should keep out' response rate for the year 2020?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_073_text2vis",
+    "bundle_id": "text2vis_073",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the provided data, which group has the highest percentage of respondents who did not select 'Mostly bad' or 'Mostly good'? Calculate the missing…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_074_text2vis",
+    "bundle_id": "text2vis_074",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the provided data of homicides per 100,000 inhabitants from 2014 to 2020, calculate the linear trend line and predict the homicide rate for the…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_075_text2vis",
+    "bundle_id": "text2vis_075",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "By calculating the ratio of 'Still have asthma' to 'Ever told had asthma' for each region, analyze the distribution of these ratios using a histogram.…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_076_text2vis",
+    "bundle_id": "text2vis_076",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyze the spending trends from 1995 to 2020. Identify and interpret any patterns, outliers, or anomalies in the data.",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_077_text2vis",
+    "bundle_id": "text2vis_077",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which category among 'Agency', 'All Other', and 'Finance' has the highest positive skewness in its counts over the years 2012 to 2018, as measured by…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_078_text2vis",
+    "bundle_id": "text2vis_078",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the provided data, calculate the average annual growth rate of the number of people living with HIV in each country from 1980 to…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_079_text2vis",
+    "bundle_id": "text2vis_079",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which year had the highest GDP per capita in Canada from 2010 to 2023?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_080_text2vis",
+    "bundle_id": "text2vis_080",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Considering the average monthly active users data from 2012 Q4 to 2021 Q1, which year experienced the highest annual percentage increase in average MAUs?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_081_text2vis",
+    "bundle_id": "text2vis_081",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data from 2009 to 2013, calculate the average annual percentage change for each entity. Then, compare these averages to the corresponding data…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_082_text2vis",
+    "bundle_id": "text2vis_082",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the data provided, perform a linear regression analysis of 'Better' percentages across the different age groups to determine the relationship between age and optimism.…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_083_text2vis",
+    "bundle_id": "text2vis_083",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Between Mali and Sri Lanka, which country had a higher average annual growth rate over the period 2004 to 2013?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_084_text2vis",
+    "bundle_id": "text2vis_084",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What trends and patterns can be observed in the Load factor percentages from 2010 to 2020*, and what might explain the significant drop in Load…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_085_text2vis",
+    "bundle_id": "text2vis_085",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Identify and list the sectors that together contribute to 80% of the total Gross Value Added (GVA). How is the GVA distributed across all sectors,…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_086_text2vis",
+    "bundle_id": "text2vis_086",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data, which app demonstrates a significant inverse correlation between its annual user growth rate and user churn rate, and what is the…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_087_text2vis",
+    "bundle_id": "text2vis_087",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the provided wholesale sales data from 2007 to 2020, construct a waterfall chart to illustrate the incremental yearly changes in sales. Analyze the data…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_088_text2vis",
+    "bundle_id": "text2vis_088",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the hierarchical distribution of oil reserves among Central American and Caribbean countries listed in the dataset, and including significant producers in the region not…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_089_text2vis",
+    "bundle_id": "text2vis_089",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "During the period from 2001/02 to 2020/21, what was the maximum year-over-year percentage decrease in tax receipts?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_090_text2vis",
+    "bundle_id": "text2vis_090",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "What is the percentage difference in days off between Spain and the average days off among all countries listed?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_091_text2vis",
+    "bundle_id": "text2vis_091",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Among the portfolios, which one exhibits the highest volatility as measured by the standard deviation of daily returns, and also has a mean daily return…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_092_text2vis",
+    "bundle_id": "text2vis_092",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which region experienced the largest increase in its share of the total value across all regions from 2013 to 2015?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_093_text2vis",
+    "bundle_id": "text2vis_093",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the incremental changes in unemployment rates from 1992 to 2020, in which year did the unemployment rate experience the largest single-year increase?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_094_text2vis",
+    "bundle_id": "text2vis_094",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Which country had the highest share of electricity from low-carbon sources in 1997?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_095_text2vis",
+    "bundle_id": "text2vis_095",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "How has the annual percentage growth rate of in-store per store sales in the U.S. changed from 2014 to 2019, and what trends can be…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_096_text2vis",
+    "bundle_id": "text2vis_096",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the provided data set of the number of arrivals from 2006 to 2018, determine which type of trend model (linear, exponential, or quadratic)…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_097_text2vis",
+    "bundle_id": "text2vis_097",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Analyzing the year-over-year percentage change in expenditure from 2005 to 2020, determine the average percentage change over this period, and identify the year in which…",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_098_text2vis",
+    "bundle_id": "text2vis_098",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Based on the data provided, what is the average annual population growth rate (in percent) projected from 2015 to 2060?",
+    "filter_passed": true
+  },
+  {
+    "query_id": "text2vis_099_text2vis",
+    "bundle_id": "text2vis_099",
+    "source": "text2vis",
+    "query_type": "external",
+    "query": "Using the expenditure data from 2005 to 2020, determine whether the expenditure growth over time is better modeled by a linear or exponential function. Which…",
+    "filter_passed": true
+  }
+]

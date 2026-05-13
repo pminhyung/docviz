@@ -28,7 +28,7 @@ from code.utils.bundle_io import validate_bundle, write_bundles_json
 
 
 SEED = 42
-N_BUNDLES = 10
+N_BUNDLES = 50
 MIN_ARTICLES = 2
 MAX_ARTICLES = 5
 SPLIT = "validation"

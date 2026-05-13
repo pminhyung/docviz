@@ -30,6 +30,7 @@ import json
 import os
 import tempfile
 import threading
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -152,7 +153,7 @@ class S4AgenticTMG(Pipeline):
         query_type: str | None = None,
         query_id: str | None = None,
     ) -> VizOutput:
-        doc_path, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
+        doc_paths, page_to_doc_id = write_bundle_as_docai(bundle, out_dir=self._work_dir)
         bundle.metadata.setdefault("page_to_doc_id", page_to_doc_id)
 
         # Mode dispatch — V0/V1 inject custom_rules with rule routing;
@@ -202,24 +203,46 @@ class S4AgenticTMG(Pipeline):
                     ],
                 )
 
-            response = client.run_paper_default(
-                doc_json_path=doc_path,
-                user_query=query,
-                n_steps_max=self._n_steps_max,
-                return_trace=True,
-                return_train_sample=False,
-                reasoner_max_length=self._reasoner_max_length,
-                reasoner_base_url=self._reasoner_base_url,
-                custom_rules=tmg_rule if tmg_rule else None,
-                custom_tools_path=custom_tools_path,
-                extra_overrides=extra_overrides,
-                # V4 owns the output contract via rule 17/18 (sidecar +
-                # ack final_answer). Suppress the default JSON-only rule
-                # which conflicts with that contract.
-                omit_default_dsl_rule=(self.mode in ("v4_pool", "v4_consolidated")),
-            )
+            def _do_run(reasoner_url: str):
+                return client.run_paper_default(
+                    doc_json_paths=doc_paths,
+                    user_query=query,
+                    n_steps_max=self._n_steps_max,
+                    return_trace=True,
+                    return_train_sample=False,
+                    reasoner_max_length=self._reasoner_max_length,
+                    reasoner_base_url=reasoner_url,
+                    custom_rules=tmg_rule if tmg_rule else None,
+                    custom_tools_path=custom_tools_path,
+                    extra_overrides=extra_overrides,
+                    # V4 owns the output contract via rule 17/18 (sidecar +
+                    # ack final_answer). Suppress the default JSON-only rule
+                    # which conflicts with that contract.
+                    omit_default_dsl_rule=(self.mode in ("v4_pool", "v4_consolidated")),
+                )
 
-        vo = map_agent_response(response, bundle, concat_doc_path=doc_path)
+            response = _do_run(self._reasoner_base_url)
+
+            # Mode A recovery: agent server silently masks upstream LLM
+            # ConnectError / 401 as 200 OK with empty final_answer (see
+            # agent/run_agent_v2.py:459 silent except). Empty final_answer
+            # + 0 tokens + <5s duration is almost certainly a transient
+            # upstream failure on the sticky reasoner host. Retry once on a
+            # different round-robin host with 3s backoff.
+            # Preflight result (2026-05-13, n=5): 4/5 recovered.
+            # Applies to ALL modes (v0/v1/v4_pool/v4_consolidated) — Mode A
+            # is an agent-server symptom, not V4-specific.
+            # Root cause: docs/analysis/v4_cons_fail_root_cause.md.
+            if (
+                not response.final_answer
+                and response.total_tokens == 0
+                and response.total_duration_seconds < 5.0
+            ):
+                time.sleep(3.0)
+                retry_url = _next_reasoner_url()
+                response = _do_run(retry_url)
+
+        vo = map_agent_response(response, bundle, concat_doc_path=doc_paths[0] if doc_paths else None)
 
         # V4 modes: the generate_viz tool persisted the viz to a sidecar
         # file. Override the (likely empty / ack-only) viz from the agent's

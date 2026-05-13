@@ -27,8 +27,33 @@ from code.pipelines.base import Bundle, Doc
 from code.utils.bundle_io import validate_bundle, write_bundles_json
 
 
-N_BUNDLES = 5
-TICKERS = ["AAPL", "MSFT", "TSLA", "NVDA", "META"]
+N_BUNDLES = 15  # v0.3 D1.1: target 50 but EDGAR fetch is rate-limited
+                # and the large financial filings (JPM 62MB, BAC 60MB,
+                # WFC 55MB) take ~30-40min each to parse via the regex
+                # item-extraction path. For v0.3 prototype we use the
+                # first 15 tickers (all tech sector, filings ≤32MB,
+                # ~1-2min parse each, total ~20-25min). Q-axis target
+                # distribution: Q=15, R=60, T=60, H=70, C=60 = 265.
+                # Paper §5.1 documents this as a prototype-scale coverage
+                # caveat; Week-1 work writes a parallel-fetch wrapper
+                # and faster non-regex item extraction to handle the
+                # 50-ticker SP500 set including financial filings.
+# Top SP500 by market cap, sector-balanced. Order = expansion order; we
+# fill bundles in this order and stop at N_BUNDLES.
+# Preflight: first 10. Bulk: first 50.
+TICKERS = [
+    # ── Tech (15) ───────────────────────────────────────────────────
+    "AAPL", "MSFT", "NVDA", "GOOG", "META", "AMZN", "TSLA", "AVGO",
+    "ORCL", "ADBE", "CRM", "AMD", "INTC", "IBM", "QCOM",
+    # ── Finance (10) ────────────────────────────────────────────────
+    "JPM", "BAC", "WFC", "GS", "MS", "V", "MA", "AXP", "BLK", "C",
+    # ── Healthcare (8) ──────────────────────────────────────────────
+    "JNJ", "UNH", "PFE", "MRK", "ABBV", "LLY", "TMO", "ABT",
+    # ── Consumer (7) ────────────────────────────────────────────────
+    "WMT", "COST", "KO", "PEP", "MCD", "NKE", "DIS",
+    # ── Industrial / Energy / Comm / Utility (10) ───────────────────
+    "BA", "CAT", "HON", "GE", "XOM", "CVX", "T", "VZ", "AMT", "NEE",
+]
 ITEM7_CAP = 15_000
 ITEM7A_CAP = 5_000
 
@@ -102,8 +127,36 @@ def _read_filing_text(filing_path: Path) -> str:
     return raw
 
 
+def _pick_html_in_folder(folder: Path) -> Path | None:
+    """Return the most likely 10-K HTML/text file in a downloaded folder."""
+    for fn in ("primary-document.html", "full-submission.txt"):
+        path = folder / fn
+        if path.exists():
+            return path
+    htmls = list(folder.glob("*.htm")) + list(folder.glob("*.html"))
+    return htmls[0] if htmls else None
+
+
 def _ensure_filing(ticker: str) -> Path | None:
-    """Ensure the latest 10-K is downloaded; return path to its text/HTML."""
+    """Ensure the latest 10-K is downloaded; return path to its text/HTML.
+
+    Fast-path: if the ticker is already in our cache, skip the EDGAR
+    re-validation call (which is rate-limited at ~20 min/ticker in this
+    environment). The cache is considered authoritative for the v0.3
+    prototype scale; Week-1 work re-runs with fresh fetches via parallel
+    workers.
+    """
+    base = RAW_DIR / "sec-edgar-filings" / ticker / "10-K"
+    if base.is_dir() and any(base.iterdir()):
+        # Cached: skip the EDGAR API call entirely
+        candidates = sorted(base.iterdir(), reverse=True)
+        for cand in candidates:
+            html = _pick_html_in_folder(cand)
+            if html is not None:
+                return html
+        return None
+
+    # Not cached: fetch from EDGAR (slow path)
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     dl = Downloader(
         company_name="docviz-research",
@@ -116,19 +169,12 @@ def _ensure_filing(ticker: str) -> Path | None:
         print(f"  [{ticker}] download failed: {type(e).__name__}: {e}")
         return None
 
-    base = RAW_DIR / "sec-edgar-filings" / ticker / "10-K"
     if not base.is_dir():
         return None
     candidates = sorted(base.iterdir(), reverse=True)
     if not candidates:
         return None
-    folder = candidates[0]
-    for fn in ("primary-document.html", "full-submission.txt"):
-        path = folder / fn
-        if path.exists():
-            return path
-    htmls = list(folder.glob("*.htm")) + list(folder.glob("*.html"))
-    return htmls[0] if htmls else None
+    return _pick_html_in_folder(candidates[0])
 
 
 def _build_bundle(idx: int, ticker: str, item7: str, item7a: str) -> Bundle:

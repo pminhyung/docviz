@@ -4,31 +4,15 @@
     "bundle_id": "hotpot_00",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Map the connection between Iqbal F. Qadir and Dwarka during the 1971 war.",
-    "word_count": 13,
+    "query": "Show a diagram linking Vice-Admiral Iqbal F. Qadir to the city of Dwarka based on their historical interaction.",
+    "word_count": 18,
     "entity_hits": [
       "dwarka",
-      "qadir",
-      "iqbal"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_00_comparative",
-    "bundle_id": "hotpot_00",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Dwarka's population and religious status with Vice-Admiral Iqbal F. Qadir's military role in a visual chart.",
-    "word_count": 17,
-    "entity_hits": [
-      "dwarka",
-      "qadir",
       "vice-admiral",
+      "qadir",
       "iqbal"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -37,32 +21,15 @@
     "bundle_id": "hotpot_01",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show the relationship between Wilmslow High School and the Wilmslow Show.",
-    "word_count": 11,
+    "query": "Show the relationship between Wilmslow High School and the Wilmslow Show in a diagram.",
+    "word_count": 14,
     "entity_hits": [
-      "school",
-      "wilmslow",
       "high",
-      "show"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_01_comparative",
-    "bundle_id": "hotpot_01",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Wilmslow High School's history and the Wilmslow Show's schedule in a timeline.",
-    "word_count": 13,
-    "entity_hits": [
       "school",
-      "wilmslow",
-      "high",
-      "show"
+      "show",
+      "wilmslow"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -71,34 +38,16 @@
     "bundle_id": "hotpot_02",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Map the connection between Billy Howle and On Chesil Beach.",
-    "word_count": 10,
-    "entity_hits": [
-      "billy",
-      "beach",
-      "chesil",
-      "howle"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_02_comparative",
-    "bundle_id": "hotpot_02",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Billy Howle's film roles in Dunkirk and On Chesil Beach with a timeline.",
+    "query": "Show a timeline of Billy Howle's film roles leading up to On Chesil Beach.",
     "word_count": 14,
     "entity_hits": [
-      "billy",
-      "film",
-      "beach",
       "chesil",
       "howle",
-      "dunkirk"
+      "billy",
+      "film",
+      "beach"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -107,32 +56,15 @@
     "bundle_id": "hotpot_03",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Map the connection between Kool Kojak and The Lorax film.",
-    "word_count": 10,
+    "query": "Show a diagram linking Kool Kojak to The Lorax film and its voice cast.",
+    "word_count": 14,
     "entity_hits": [
+      "kool",
       "kojak",
       "lorax",
-      "kool",
       "film"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_03_comparative",
-    "bundle_id": "hotpot_03",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Kool Kojak's production credits with the voice cast of The Lorax film.",
-    "word_count": 13,
-    "entity_hits": [
-      "kojak",
-      "lorax",
-      "kool",
-      "film"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -141,36 +73,18 @@
     "bundle_id": "hotpot_04",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show a timeline of Universal Soldier films highlighting the transition from Van Damme to Scott Adkins.",
-    "word_count": 16,
+    "query": "Show a timeline of Scott Adkins' role as John in the Universal Soldier franchise.",
+    "word_count": 14,
     "entity_hits": [
-      "scott",
-      "damme",
-      "universal",
+      "soldier",
+      "role",
       "adkins",
-      "soldier"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_04_comparative",
-    "bundle_id": "hotpot_04",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare the film roles of Jean-Claude Van Damme and Scott Adkins in the Universal Soldier franchise.",
-    "word_count": 16,
-    "entity_hits": [
-      "scott",
-      "franchise",
-      "damme",
       "universal",
-      "adkins",
-      "jean-claude",
-      "soldier"
+      "john",
+      "scott",
+      "franchise"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -179,32 +93,15 @@
     "bundle_id": "hotpot_05",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show a relationship diagram connecting Jack Lowden, Tommy's Honour, and Old Tom Morris.",
-    "word_count": 13,
+    "query": "Show a diagram linking Jack Lowden to his role in Tommy's Honour.",
+    "word_count": 12,
     "entity_hits": [
-      "tommy's",
-      "morris",
+      "lowden",
+      "jack",
       "honour",
-      "jack",
-      "lowden"
+      "tommy's"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_05_comparative",
-    "bundle_id": "hotpot_05",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare the career milestones of Old Tom Morris and Jack Lowden in a timeline.",
-    "word_count": 14,
-    "entity_hits": [
-      "morris",
-      "jack",
-      "lowden"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -213,29 +110,14 @@
     "bundle_id": "hotpot_06",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show a timeline comparing when Switchfoot formed versus when Farm became Midnight Oil.",
+    "query": "Show a comparison chart of the band members for Switchfoot and Midnight Oil.",
     "word_count": 13,
     "entity_hits": [
+      "switchfoot",
       "midnight",
-      "farm",
-      "switchfoot"
+      "band"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_06_comparative",
-    "bundle_id": "hotpot_06",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare the formation timelines of Switchfoot and Midnight Oil in a chart.",
-    "word_count": 12,
-    "entity_hits": [
-      "midnight",
-      "switchfoot"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -244,30 +126,14 @@
     "bundle_id": "hotpot_07",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Map the relationship between Daler Mehndi, his 1998 hit, and the green screen technology used.",
-    "word_count": 15,
+    "query": "Show a diagram linking Daler Mehndi to the entities and locations featured in the \"Tunak Tunak Tun\" music video.",
+    "word_count": 19,
     "entity_hits": [
-      "daler",
-      "mehndi"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_07_comparative",
-    "bundle_id": "hotpot_07",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Daler Mehndi's career milestones with the release and tech features of Tunak Tunak Tun.",
-    "word_count": 15,
-    "entity_hits": [
-      "daler",
-      "mehndi's",
       "mehndi",
+      "daler",
       "tunak"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -276,37 +142,17 @@
     "bundle_id": "hotpot_08",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show a timeline linking Kieft's War, the Pound Ridge massacre, and Willem Kieft's recall.",
-    "word_count": 14,
+    "query": "Show a timeline of key events linking Willem Kieft to the Pound Ridge massacre during Kieft's War.",
+    "word_count": 17,
     "entity_hits": [
-      "massacre",
-      "kieft",
-      "pound",
+      "kieft's",
+      "ridge",
       "willem",
-      "kieft's",
-      "ridge"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "hotpot_08_comparative",
-    "bundle_id": "hotpot_08",
-    "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare casualties in the Pound Ridge massacre versus other Kieft's War incidents using a chart.",
-    "word_count": 15,
-    "entity_hits": [
-      "other",
-      "casualties",
-      "massacre",
       "kieft",
       "pound",
-      "kieft's",
-      "ridge"
+      "massacre"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -315,33 +161,715 @@
     "bundle_id": "hotpot_09",
     "source": "hotpotqa",
     "query_type": "relational",
-    "query": "Show a timeline of Emilio Estevez's 1983 film roles, including Nightmares.",
-    "word_count": 11,
+    "query": "Show a diagram linking Emilio Estevez to the films he starred in during 1983.",
+    "word_count": 14,
     "entity_hits": [
       "emilio",
-      "film",
-      "estevez",
-      "nightmares"
+      "estevez"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
   {
-    "query_id": "hotpot_09_comparative",
-    "bundle_id": "hotpot_09",
+    "query_id": "hotpot_10_relational",
+    "bundle_id": "hotpot_10",
     "source": "hotpotqa",
-    "query_type": "comparative",
-    "query": "Compare Emilio Estevez's roles in Nightmares and The Breakfast Club using a timeline.",
+    "query_type": "relational",
+    "query": "Show a diagram linking Eric S. Pistorius to the Seventh Circuit of Illinois and his former legal specializations.",
+    "word_count": 18,
+    "entity_hits": [
+      "eric",
+      "illinois",
+      "circuit",
+      "pistorius",
+      "seventh"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_11_relational",
+    "bundle_id": "hotpot_11",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking the Lingnan Fine Arts Museum to its parent organization and city location.",
+    "word_count": 16,
+    "entity_hits": [
+      "museum",
+      "lingnan",
+      "arts",
+      "city",
+      "fine"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_12_relational",
+    "bundle_id": "hotpot_12",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of the coaching partnership between Stefan Edberg and Roger Federer.",
     "word_count": 13,
     "entity_hits": [
-      "emilio",
-      "breakfast",
-      "estevez",
-      "club",
-      "nightmares"
+      "edberg",
+      "federer",
+      "stefan",
+      "roger"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_13_relational",
+    "bundle_id": "hotpot_13",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline connecting the release of \"Fix You\" to the first large-scale use of Xylobands on the Mylo Xyloto tour.",
+    "word_count": 21,
+    "entity_hits": [
+      "mylo",
+      "xyloto",
+      "xylobands"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_14_relational",
+    "bundle_id": "hotpot_14",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking The Soul of Buddha to Fort Lee, New Jersey, and its role in the film industry.",
+    "word_count": 20,
+    "entity_hits": [
+      "fort",
+      "jersey",
+      "buddha",
+      "film",
+      "soul"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_15_relational",
+    "bundle_id": "hotpot_15",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Vitor Belfort to the Blackzilians and his UFC titles.",
+    "word_count": 13,
+    "entity_hits": [
+      "blackzilians",
+      "vitor",
+      "belfort"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_16_relational",
+    "bundle_id": "hotpot_16",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Tugurt language to its related Zenati varieties like Tumzabt and Teggargrent.",
+    "word_count": 15,
+    "entity_hits": [
+      "tugurt",
+      "zenati",
+      "tumzabt",
+      "related",
+      "language",
+      "teggargrent"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_17_relational",
+    "bundle_id": "hotpot_17",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Charles Fraser-Smith to the fictional character Q and their shared inspiration from Q-ships.",
+    "word_count": 17,
+    "entity_hits": [
+      "fraser-smith",
+      "q-ships",
+      "fictional",
+      "inspiration",
+      "charles"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_18_relational",
+    "bundle_id": "hotpot_18",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline linking the 1995 publication of Northern Lights to its 2002 BBC audiobook release.",
+    "word_count": 16,
+    "entity_hits": [
+      "northern",
+      "lights"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_19_relational",
+    "bundle_id": "hotpot_19",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of the Johnny English film series including release years and titles.",
+    "word_count": 14,
+    "entity_hits": [
+      "series",
+      "johnny",
+      "film",
+      "english"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_20_relational",
+    "bundle_id": "hotpot_20",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline comparing the world title reigns of Rafael Márquez and Juan Manuel Márquez.",
+    "word_count": 15,
+    "entity_hits": [
+      "rafael",
+      "manuel",
+      "juan"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_21_relational",
+    "bundle_id": "hotpot_21",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Kim Jong-kook to the Running Man Brothers duo and his role in Running Man.",
+    "word_count": 18,
+    "entity_hits": [
+      "jong-kook",
+      "brothers",
+      "running"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_22_relational",
+    "bundle_id": "hotpot_22",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of Matt Groening's career milestones alongside Lisa Simpson's debut dates.",
+    "word_count": 13,
+    "entity_hits": [
+      "groening",
+      "simpson",
+      "show",
+      "matt",
+      "lisa"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_23_relational",
+    "bundle_id": "hotpot_23",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Eagle Aviation France to its operational base at Charles de Gaulle Airport.",
+    "word_count": 16,
+    "entity_hits": [
+      "eagle",
+      "france",
+      "gaulle",
+      "aviation",
+      "airport",
+      "charles"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_24_relational",
+    "bundle_id": "hotpot_24",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline connecting the Definitely Maybe Tour to the release of Don't Look Back in Anger.",
+    "word_count": 17,
+    "entity_hits": [
+      "back",
+      "maybe",
+      "definitely",
+      "anger",
+      "don't",
+      "tour",
+      "look"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_25_relational",
+    "bundle_id": "hotpot_25",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking St. John's College, Belize to the core subjects of the liberal arts tradition.",
+    "word_count": 17,
+    "entity_hits": [
+      "subjects",
+      "arts",
+      "john's",
+      "college",
+      "belize",
+      "core",
+      "liberal",
+      "tradition"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_26_relational",
+    "bundle_id": "hotpot_26",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a timeline of Robert Holding's ownership of Sinclair Oil Corporation and his ski resorts.",
+    "word_count": 15,
+    "entity_hits": [
+      "robert",
+      "corporation",
+      "holding",
+      "sinclair"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_27_relational",
+    "bundle_id": "hotpot_27",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Macy Gray's \"Kissed It\" to the specific Velvet Revolver members who performed on it.",
+    "word_count": 18,
+    "entity_hits": [
+      "kissed",
+      "gray's",
+      "macy",
+      "velvet",
+      "revolver",
+      "gray"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_28_relational",
+    "bundle_id": "hotpot_28",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking Linda Ronstadt and J.D. Souther based on their songwriting collaborations.",
+    "word_count": 14,
+    "entity_hits": [
+      "linda",
+      "souther",
+      "ronstadt"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_29_relational",
+    "bundle_id": "hotpot_29",
+    "source": "hotpotqa",
+    "query_type": "relational",
+    "query": "Show a diagram linking the Pan Celtic Festival to the six Celtic nations it promotes.",
+    "word_count": 15,
+    "entity_hits": [
+      "celtic",
+      "festival",
+      "nations"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_30_comparative",
+    "bundle_id": "hotpot_30",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the release timeline of the film Awake and Samuel Sim's soundtrack for Home Fires.",
+    "word_count": 15,
+    "entity_hits": [
+      "home",
+      "fires",
+      "film",
+      "samuel",
+      "awake"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_31_comparative",
+    "bundle_id": "hotpot_31",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the Nathan's Hot Dog Eating Contest rankings of Carlene and Rich LeFevre from 2003 to 2005 using a line chart.",
+    "word_count": 21,
+    "entity_hits": [
+      "carlene",
+      "eating",
+      "contest",
+      "rich",
+      "nathan's",
+      "lefevre"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_32_comparative",
+    "bundle_id": "hotpot_32",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the Olympic medal achievements of Juan Martín del Potro and Michaël Llodra using a side-by-side chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "llodra",
+      "olympic",
+      "juan",
+      "potro"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_33_comparative",
+    "bundle_id": "hotpot_33",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Create a timeline comparing Charles Tazewell's lifespan with the production and release dates of The Small One.",
+    "word_count": 17,
+    "entity_hits": [
+      "small",
+      "tazewell",
+      "charles"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_34_comparative",
+    "bundle_id": "hotpot_34",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the enrollment of Topeka High School with Chris Barnes' years on Team USA using a bar chart.",
+    "word_count": 18,
+    "entity_hits": [
+      "high",
+      "school",
+      "chris",
+      "team",
+      "topeka",
+      "barnes"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_35_comparative",
+    "bundle_id": "hotpot_35",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the construction timelines and primary purposes of the Dundee Canal and the Miami Canal using a side-by-side chart.",
+    "word_count": 19,
+    "entity_hits": [
+      "dundee",
+      "miami",
+      "canal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_36_comparative",
+    "bundle_id": "hotpot_36",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the recording timelines of \"Would You Like to Take a Walk?\" by Rudy Vallee, Bing Crosby, and Ella Fitzgerald.",
+    "word_count": 20,
+    "entity_hits": [
+      "like",
+      "crosby",
+      "rudy",
+      "take",
+      "vallee",
+      "bing",
+      "ella",
+      "fitzgerald"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_37_comparative",
+    "bundle_id": "hotpot_37",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the publication dates and formats of \"A Friend of Napoleon\" and \"The Most Dangerous Game\" using a timeline.",
+    "word_count": 19,
+    "entity_hits": [
+      "game",
+      "napoleon",
+      "dangerous",
+      "most",
+      "friend"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_38_comparative",
+    "bundle_id": "hotpot_38",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the time spans covered in The Stone Book Quartet against Alan Garner's birth year on a timeline.",
+    "word_count": 18,
+    "entity_hits": [
+      "alan",
+      "book",
+      "garner",
+      "stone",
+      "garner's",
+      "quartet"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_39_comparative",
+    "bundle_id": "hotpot_39",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the career-high ATP rankings of Jonathan Marray and Wayne Black using a bar chart.",
+    "word_count": 15,
+    "entity_hits": [
+      "black",
+      "wayne",
+      "marray",
+      "jonathan"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_40_comparative",
+    "bundle_id": "hotpot_40",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the birth years and primary bands of Brett Scallions and Mick Jagger in a side-by-side chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "brett",
+      "jagger",
+      "scallions",
+      "mick"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_41_comparative",
+    "bundle_id": "hotpot_41",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the lifespans of John F. Fitzgerald and the establishment date of Doyle's Cafe on a timeline.",
+    "word_count": 17,
+    "entity_hits": [
+      "john",
+      "doyle's",
+      "fitzgerald",
+      "cafe"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_42_comparative",
+    "bundle_id": "hotpot_42",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the timeline of Diamond White's role in The Color Purple with her X Factor appearance.",
+    "word_count": 16,
+    "entity_hits": [
+      "purple",
+      "diamond",
+      "color",
+      "white",
+      "factor"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_43_comparative",
+    "bundle_id": "hotpot_43",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Create a timeline comparing the album release years of DC Talk against the member departure dates for Manchester Orchestra.",
+    "word_count": 19,
+    "entity_hits": [
+      "talk",
+      "orchestra",
+      "manchester"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_44_comparative",
+    "bundle_id": "hotpot_44",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the episode counts and run dates for Family Matters and The Jeffersons using a bar chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "matters",
+      "family",
+      "jeffersons"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_45_comparative",
+    "bundle_id": "hotpot_45",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the scale of casualties at Livesey Hall against total World War II military deaths using a bar chart.",
+    "word_count": 19,
+    "entity_hits": [
+      "casualties",
+      "livesey",
+      "military",
+      "world",
+      "hall"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_46_comparative",
+    "bundle_id": "hotpot_46",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the armament specifications of HMAS Narani against the standard Vickers machine gun in a table.",
+    "word_count": 16,
+    "entity_hits": [
+      "narani",
+      "machine",
+      "hmas",
+      "vickers"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_47_comparative",
+    "bundle_id": "hotpot_47",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Create a timeline comparing the ruling years and outcomes of Gravel v. United States and Minersville School District v. Gobitis.",
+    "word_count": 20,
+    "entity_hits": [
+      "district",
+      "states",
+      "gobitis",
+      "school",
+      "united",
+      "gravel",
+      "minersville"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_48_comparative",
+    "bundle_id": "hotpot_48",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare the release timelines and platforms for Yakuza Kiwami and its predecessor Yakuza.",
+    "word_count": 13,
+    "entity_hits": [
+      "kiwami",
+      "yakuza"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "hotpot_49_comparative",
+    "bundle_id": "hotpot_49",
+    "source": "hotpotqa",
+    "query_type": "comparative",
+    "query": "Compare Theodore G. Bilbo's terms as Mississippi Governor with the 1919 election timeline.",
+    "word_count": 13,
+    "entity_hits": [
+      "governor",
+      "mississippi",
+      "election",
+      "bilbo",
+      "theodore"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -350,37 +878,17 @@
     "bundle_id": "multinews_00",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Show a timeline of DEA cash seizures and DOJ oversight actions from 2007 to the March 29 report release.",
+    "query": "Show a timeline of DEA cash seizures and key policy changes regarding civil asset forfeiture from 2007 to 2017.",
     "word_count": 19,
     "entity_hits": [
+      "cash",
       "from",
-      "cash",
-      "report",
-      "seizures",
-      "march"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_00_comparative",
-    "bundle_id": "multinews_00",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the DEA's cash seizure statistics with the total Asset Forfeiture Fund growth since 2007.",
-    "word_count": 15,
-    "entity_hits": [
-      "with",
-      "total",
-      "seizure",
-      "dea's",
-      "asset",
       "forfeiture",
-      "cash",
-      "since"
+      "seizures",
+      "asset",
+      "civil"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -389,31 +897,13 @@
     "bundle_id": "multinews_01",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Timeline of major archaeological discoveries: Roman shipwreck, Ötzi, Nazca Lines, Rosetta Stone, Dead Sea Scrolls, and Jerusalem Aqueduct.",
-    "word_count": 18,
-    "entity_hits": [
-      "aqueduct",
-      "jerusalem",
-      "major",
-      "archaeological",
-      "roman"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_01_comparative",
-    "bundle_id": "multinews_01",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the discovery methods and dates of the Roman shipwreck, Ötzi, and the Nazca Lines in a timeline.",
-    "word_count": 18,
+    "query": "Create a timeline showing the discovery dates of the Roman shipwreck, Ötzi, and the Dead Sea Scrolls.",
+    "word_count": 17,
     "entity_hits": [
       "roman",
       "discovery"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -422,36 +912,18 @@
     "bundle_id": "multinews_02",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Show a timeline of the Turin Shroud's history, from its alleged origin to the 1980s radiocarbon dating and recent DNA study.",
-    "word_count": 21,
+    "query": "Show a timeline of the Turin Shroud's journey from Judea to Turin based on the historical dates and DNA findings.",
+    "word_count": 20,
     "entity_hits": [
+      "shroud",
       "from",
-      "study",
-      "shroud'",
-      "shroud",
-      "origin",
+      "turin",
+      "journey",
       "show",
-      "turin",
-      "alleged"
+      "judea",
+      "shroud'"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_02_comparative",
-    "bundle_id": "multinews_02",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the geographic origins of human DNA and pollen found on the Turin Shroud.",
-    "word_count": 14,
-    "entity_hits": [
-      "shroud",
-      "origins",
-      "turin",
-      "pollen"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -460,34 +932,17 @@
     "bundle_id": "multinews_03",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Create a timeline of the Costa Concordia incident, showing key events from Schettino's dinner to the ship grounding.",
-    "word_count": 18,
+    "query": "Create a timeline of key events involving Captain Francesco Schettino and Domnica Cermotan on the night of the Costa Concordia disaster.",
+    "word_count": 21,
     "entity_hits": [
-      "from",
-      "schettino",
-      "concordia",
+      "francesco",
+      "domnica",
+      "captain",
       "costa",
-      "ship"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_03_comparative",
-    "bundle_id": "multinews_03",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the timeline of Schettino's dinner with Cermotan versus the Costa Concordia collision and evacuation events.",
-    "word_count": 16,
-    "entity_hits": [
-      "with",
-      "schettino",
       "concordia",
-      "costa",
-      "evacuation"
+      "schettino"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -496,38 +951,17 @@
     "bundle_id": "multinews_04",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Create a timeline of Gigi Hadid and Joe Jonas's relationship milestones from the GRAMMYs to Milan Fashion Week.",
-    "word_count": 18,
+    "query": "Show a timeline of Gigi Hadid's response to body shaming and Joe Jonas's support in September 2015.",
+    "word_count": 17,
     "entity_hits": [
-      "jonas",
-      "from",
-      "week",
-      "gigi",
-      "hadid",
-      "milan",
-      "fashion"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_04_comparative",
-    "bundle_id": "multinews_04",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare Gigi Hadid's body shaming response with Kris Jenner's support using a timeline.",
-    "word_count": 13,
-    "entity_hits": [
-      "body",
-      "with",
+      "september",
       "hadid's",
-      "kris",
-      "gigi",
+      "jonas",
+      "body",
       "hadid",
-      "jenner"
+      "gigi"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -536,35 +970,17 @@
     "bundle_id": "multinews_05",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Show a timeline of Target CEO Gregg Steinhafel's apology and subsequent actions regarding the MN Forward donation controversy.",
-    "word_count": 18,
+    "query": "Show a timeline of events surrounding Target CEO Gregg Steinhafel's apology for the MN Forward donation in August 2010.",
+    "word_count": 19,
     "entity_hits": [
+      "target",
       "steinhafel",
+      "forward",
+      "donation",
       "gregg",
-      "forward",
-      "target",
-      "donation"
+      "august"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_05_comparative",
-    "bundle_id": "multinews_05",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare Target CEO Steinhafel's stated intent for the MN Forward donation against the actual political impact described in the articles.",
-    "word_count": 20,
-    "entity_hits": [
-      "intent",
-      "steinhafel",
-      "forward",
-      "political",
-      "target",
-      "donation"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -573,40 +989,14 @@
     "bundle_id": "multinews_06",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Timeline of Supreme Court cases: Evenwel v. Abbott, same-sex marriage, and lethal injection decisions.",
-    "word_count": 14,
+    "query": "Show a timeline of key events in the Evenwel v. Abbott redistricting case from the 2001 dissent to the fall argument.",
+    "word_count": 21,
     "entity_hits": [
-      "marriage",
-      "same-sex",
-      "cases",
-      "supreme",
-      "injection",
-      "lethal",
-      "court",
-      "decisions"
+      "case",
+      "fall",
+      "redistricting"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_06_comparative",
-    "bundle_id": "multinews_06",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the key legal questions and potential impacts of the Supreme Court cases on same-sex marriage, redistricting, and lethal injection.",
-    "word_count": 20,
-    "entity_hits": [
-      "marriage",
-      "redistricting",
-      "same-sex",
-      "cases",
-      "supreme",
-      "injection",
-      "lethal",
-      "court"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -615,34 +1005,16 @@
     "bundle_id": "multinews_07",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Create a timeline of Chris Martin and Dakota Johnson's relationship milestones from 2017 to present.",
-    "word_count": 15,
+    "query": "Show a timeline of Chris Martin and Dakota Johnson's relationship milestones from 2017 to her birthday celebration.",
+    "word_count": 17,
     "entity_hits": [
-      "dakota",
-      "chris",
-      "martin",
+      "johnson",
       "relationship",
-      "johnson"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_07_comparative",
-    "bundle_id": "multinews_07",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare Chris Martin's relationships with Gwyneth Paltrow and Dakota Johnson in a timeline.",
-    "word_count": 13,
-    "entity_hits": [
-      "with",
       "dakota",
-      "chris",
       "martin",
-      "johnson"
+      "chris"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -651,37 +1023,18 @@
     "bundle_id": "multinews_08",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Create a timeline of Carlesha Freeland-Gaither's abduction, including the incident, ATM usage, and press conference dates.",
-    "word_count": 16,
+    "query": "Create a timeline of Carlesha Freeland-Gaither's abduction from the 9:40 p.m. incident to the 6 a.m. ATM use in Aberdeen.",
+    "word_count": 20,
     "entity_hits": [
-      "carlesha",
       "gaither",
-      "freeland-gaither's",
-      "freeland",
       "freeland-gaither",
-      "press"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "multinews_08_comparative",
-    "bundle_id": "multinews_08",
-    "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare the timeline of Carlesha Freeland-Gaither's abduction with the ATM usage in Maryland.",
-    "word_count": 13,
-    "entity_hits": [
-      "maryland",
-      "carlesha",
-      "with",
-      "gaither",
+      "from",
+      "aberdeen",
       "freeland-gaither's",
-      "freeland",
-      "freeland-gaither"
+      "carlesha",
+      "freeland"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -690,40 +1043,748 @@
     "bundle_id": "multinews_09",
     "source": "multinews",
     "query_type": "temporal",
-    "query": "Chart Warren Buffett's annual Berkshire Hathaway donations to the Gates Foundation over the years.",
-    "word_count": 14,
+    "query": "Show a timeline of Warren Buffett's annual Berkshire Hathaway donations to the Gates Foundation since 2006.",
+    "word_count": 16,
     "entity_hits": [
-      "donations",
-      "buffett",
-      "berkshire",
-      "warren",
       "hathaway",
-      "gates",
       "foundation",
-      "buffett's"
+      "gates",
+      "warren",
+      "berkshire",
+      "donations",
+      "annual",
+      "since"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
   {
-    "query_id": "multinews_09_comparative",
-    "bundle_id": "multinews_09",
+    "query_id": "multinews_10_temporal",
+    "bundle_id": "multinews_10",
     "source": "multinews",
-    "query_type": "comparative",
-    "query": "Compare Warren Buffett's annual Berkshire Hathaway share donations to the Gates Foundation over the last three years.",
+    "query_type": "temporal",
+    "query": "Show a timeline of Dr. Hirsch's Sensa research studies and product launches from the 1990s to 2005.",
     "word_count": 17,
     "entity_hits": [
-      "donations",
-      "buffett",
-      "berkshire",
-      "warren",
-      "hathaway",
-      "last",
-      "gates",
-      "foundation"
+      "sensa",
+      "product"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_11_temporal",
+    "bundle_id": "multinews_11",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of T.J. Lane's case from the February 2012 shooting to his 2013 sentencing.",
+    "word_count": 16,
+    "entity_hits": [
+      "shooting",
+      "lane",
+      "sentencing",
+      "february",
+      "lane's"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_12_temporal",
+    "bundle_id": "multinews_12",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of key events from John Wilkes Booth's 1865 assassination to the 1995 failed exhumation attempt.",
+    "word_count": 18,
+    "entity_hits": [
+      "booth",
+      "john",
+      "from",
+      "wilkes",
+      "booth's"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_13_temporal",
+    "bundle_id": "multinews_13",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Mark Lane's career milestones from his 1960 election to his 2011 book \"Last Word\".",
+    "word_count": 18,
+    "entity_hits": [
+      "lane",
+      "book",
+      "mark",
+      "lane's"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_14_temporal",
+    "bundle_id": "multinews_14",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of celebrity business launches from 2013, including Drew Barrymore's Flower and Halle Berry's Scandale Paris.",
+    "word_count": 18,
+    "entity_hits": [
+      "berry",
+      "barrymore",
+      "including",
+      "drew",
+      "scandale",
+      "business",
+      "paris",
+      "flower"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_15_temporal",
+    "bundle_id": "multinews_15",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the 1944 Ascq massacre and the 2016 raids on the 12th SS Panzer Division suspects.",
+    "word_count": 19,
+    "entity_hits": [
+      "division",
+      "raids",
+      "ascq",
+      "massacre",
+      "panzer"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_16_temporal",
+    "bundle_id": "multinews_16",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Jessica Biel's style evolution leading up to her August InStyle cover.",
+    "word_count": 15,
+    "entity_hits": [
+      "cover",
+      "biel",
+      "jessica",
+      "instyle",
+      "august"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_17_temporal",
+    "bundle_id": "multinews_17",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the Maker's Mark proof reduction controversy from the February announcement to the reversal.",
+    "word_count": 17,
+    "entity_hits": [
+      "maker",
+      "february",
+      "mark",
+      "maker's"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_18_temporal",
+    "bundle_id": "multinews_18",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Create a timeline of key dates for the Fare Thee Well shows, from the January announcement to the August MLBAM replay deadline.",
+    "word_count": 22,
+    "entity_hits": [
+      "shows",
+      "thee",
+      "well",
+      "announcement",
+      "mlbam",
+      "fare",
+      "august"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_19_temporal",
+    "bundle_id": "multinews_19",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the FDA's decision on renaming high fructose corn syrup to corn sugar.",
+    "word_count": 16,
+    "entity_hits": [
+      "fructose",
+      "syrup",
+      "high",
+      "sugar",
+      "corn"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_20_temporal",
+    "bundle_id": "multinews_20",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the FGM case involving Dr. Jumana Nagarwala from the alleged start 12 years ago to the recent bond hearing.",
+    "word_count": 23,
+    "entity_hits": [
+      "years",
+      "alleged",
+      "nagarwala",
+      "from",
+      "case",
+      "jumana"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_21_temporal",
+    "bundle_id": "multinews_21",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the RNC's suspension of the NBC News partnership following the CNBC debate.",
+    "word_count": 16,
+    "entity_hits": [
+      "cnbc",
+      "news",
+      "debate"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_22_temporal",
+    "bundle_id": "multinews_22",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the Ahvaz military parade attack on September 22, 2018, from the initial gunfire to the confirmation of the gunmen's deaths.",
+    "word_count": 24,
+    "entity_hits": [
+      "parade",
+      "gunfire",
+      "from",
+      "attack",
+      "ahvaz",
+      "gunmen",
+      "military"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_23_temporal",
+    "bundle_id": "multinews_23",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of how the \"47%\" video and \"Binders full of women\" meme unfolded during the 2012 election.",
+    "word_count": 19,
+    "entity_hits": [
+      "full",
+      "binders",
+      "election",
+      "video"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_24_temporal",
+    "bundle_id": "multinews_24",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of France's retirement age changes from 1982 to the new Socialist decree.",
+    "word_count": 15,
+    "entity_hits": [
+      "socialist",
+      "from",
+      "france's",
+      "france",
+      "retirement"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_25_temporal",
+    "bundle_id": "multinews_25",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Obama's marijuana-related comments from his autobiography to the VICE interview.",
+    "word_count": 14,
+    "entity_hits": [
+      "interview",
+      "from",
+      "obama",
+      "marijuana",
+      "vice"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_26_temporal",
+    "bundle_id": "multinews_26",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of the Western Wall shooting incident starting from when the man emerged from the toilet.",
+    "word_count": 18,
+    "entity_hits": [
+      "shooting",
+      "western",
+      "wall"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_27_temporal",
+    "bundle_id": "multinews_27",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Google's Dragonfly project and its history in China from 2006 to 2018.",
+    "word_count": 16,
+    "entity_hits": [
+      "google's",
+      "google",
+      "china",
+      "from",
+      "dragonfly"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_28_temporal",
+    "bundle_id": "multinews_28",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of events for Daniel Joseph Steele from the shooting to his May 11 court appearance.",
+    "word_count": 18,
+    "entity_hits": [
+      "steele",
+      "daniel",
+      "joseph"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_29_temporal",
+    "bundle_id": "multinews_29",
+    "source": "multinews",
+    "query_type": "temporal",
+    "query": "Show a timeline of Mitt Romney's \"apology tour\" claims from his 2010 book to his 2012 convention speech.",
+    "word_count": 18,
+    "entity_hits": [
+      "convention",
+      "mitt",
+      "tour",
+      "from",
+      "romney's",
+      "romney",
+      "speech",
+      "apology"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_30_comparative",
+    "bundle_id": "multinews_30",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the 2017 and 2013 Fourth of July weekend shooting statistics in Chicago using a bar chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "fourth",
+      "chicago",
+      "july",
+      "weekend"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_31_comparative",
+    "bundle_id": "multinews_31",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the number of staff involved in the Louvre strikes of 2001, 2009, and this week using a bar chart.",
+    "word_count": 20,
+    "entity_hits": [
+      "louvre",
+      "staff"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_32_comparative",
+    "bundle_id": "multinews_32",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the initial mockery by Bob Brenly and Steve Berthiaume against the Alpha Chi Omega sorority's charitable response.",
+    "word_count": 18,
+    "entity_hits": [
+      "sorority",
+      "alpha",
+      "steve",
+      "response",
+      "berthiaume",
+      "omega",
+      "brenly"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_33_comparative",
+    "bundle_id": "multinews_33",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the size, impact probability, and primary mission goals for asteroid Bennu and the OSIRIS-REx spacecraft.",
+    "word_count": 16,
+    "entity_hits": [
+      "impact",
+      "mission",
+      "bennu",
+      "probability",
+      "asteroid",
+      "osiris-rex"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_34_comparative",
+    "bundle_id": "multinews_34",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the total Olympic scores of Virtue/Moir, Papadakis/Cizeron, and the Shibutanis using a bar chart.",
+    "word_count": 15,
+    "entity_hits": [
+      "olympic",
+      "shibutanis",
+      "cizeron",
+      "virtue",
+      "papadakis",
+      "moir",
+      "total"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_35_comparative",
+    "bundle_id": "multinews_35",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the criminal history timeline of Marcus Polk with Kevin Epps' filmmaking career milestones.",
+    "word_count": 14,
+    "entity_hits": [
+      "epps",
+      "kevin",
+      "marcus",
+      "polk",
+      "with"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_36_comparative",
+    "bundle_id": "multinews_36",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the career timelines and conflict zones covered by David Gilkey and Sergeant Hunter using a timeline chart.",
+    "word_count": 18,
+    "entity_hits": [
+      "david",
+      "hunter",
+      "gilkey",
+      "sergeant",
+      "conflict"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_37_comparative",
+    "bundle_id": "multinews_37",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the conflicting statements from Metrojet, Russian officials, and US intelligence regarding the cause of the Sinai crash.",
+    "word_count": 18,
+    "entity_hits": [
+      "officials",
+      "russian",
+      "metrojet",
+      "crash",
+      "sinai",
+      "cause"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_38_comparative",
+    "bundle_id": "multinews_38",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the favorability ratings of Jerry Sandusky, Joe Paterno, and Penn State in a bar chart.",
+    "word_count": 16,
+    "entity_hits": [
+      "penn",
+      "sandusky",
+      "paterno",
+      "state",
+      "jerry"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_39_comparative",
+    "bundle_id": "multinews_39",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the types of plaster-coated remains found at Khonkho Wankane versus the artifacts depicted in the stone pillar carvings.",
+    "word_count": 19,
+    "entity_hits": [
+      "khonkho",
+      "wankane"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_40_comparative",
+    "bundle_id": "multinews_40",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the separation durations for dolphin pairs Allie/Bailey and Kai/D.J. using a timeline.",
+    "word_count": 13,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "multinews_41_comparative",
+    "bundle_id": "multinews_41",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the discussion topics in the May 2 calls between Putin-Trump and the meeting between Putin-Merkel.",
+    "word_count": 16,
+    "entity_hits": [
+      "trump",
+      "discussion",
+      "putin",
+      "meeting",
+      "merkel",
+      "putin-merkel"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_42_comparative",
+    "bundle_id": "multinews_42",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the alcohol percentages of pure vanilla, peppermint, and lemon extracts mentioned by Ron Holdracker in a bar chart.",
+    "word_count": 19,
+    "entity_hits": [
+      "vanilla",
+      "peppermint",
+      "alcohol",
+      "extracts",
+      "pure",
+      "holdracker"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_43_comparative",
+    "bundle_id": "multinews_43",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the specific safety failures cited by Rosemarie Arnold against the NYC agencies sued in the Drake estate claim.",
+    "word_count": 19,
+    "entity_hits": [
+      "estate",
+      "agencies",
+      "arnold",
+      "rosemarie",
+      "drake"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_44_comparative",
+    "bundle_id": "multinews_44",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the timelines of Prince Harry's relationship with Chelsy Davy against the events of the royal wedding reception.",
+    "word_count": 18,
+    "entity_hits": [
+      "royal",
+      "harry",
+      "wedding",
+      "relationship",
+      "reception",
+      "davy",
+      "chelsy",
+      "prince"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_45_comparative",
+    "bundle_id": "multinews_45",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the specific bronze artifacts found by divers Ran Feinstein and Ofer Raanan versus those recovered by the IAA team.",
+    "word_count": 20,
+    "entity_hits": [
+      "feinstein",
+      "bronze",
+      "artifacts",
+      "raanan",
+      "divers",
+      "found",
+      "recovered",
+      "ofer"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_46_comparative",
+    "bundle_id": "multinews_46",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the rental costs and property features of Bristol Palin's Arizona home versus Ricki Lake's Malibu residence.",
+    "word_count": 17,
+    "entity_hits": [
+      "bristol",
+      "malibu",
+      "ricki",
+      "arizona",
+      "palin's",
+      "home",
+      "lake",
+      "palin"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_47_comparative",
+    "bundle_id": "multinews_47",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the timeline of events involving Harry Reid, James Comey, and the Trump-Russia dossier across these three articles.",
+    "word_count": 18,
+    "entity_hits": [
+      "harry",
+      "trump",
+      "comey",
+      "these",
+      "james",
+      "reid",
+      "russia"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_48_comparative",
+    "bundle_id": "multinews_48",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare the fatality rates of Vibrio vulnificus, Salmonella, and Listeria using a bar chart.",
+    "word_count": 14,
+    "entity_hits": [
+      "fatality",
+      "rates",
+      "vulnificus",
+      "listeria",
+      "vibrio",
+      "salmonella"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "multinews_49_comparative",
+    "bundle_id": "multinews_49",
+    "source": "multinews",
+    "query_type": "comparative",
+    "query": "Compare Jimmy Page and Robert Plant's contrasting reflections on the unreleased \"Whole Lotta Love\" recording.",
+    "word_count": 15,
+    "entity_hits": [
+      "plant",
+      "whole",
+      "unreleased",
+      "lotta",
+      "robert",
+      "page",
+      "love",
+      "jimmy"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -732,31 +1793,15 @@
     "bundle_id": "arxiv_00",
     "source": "arxiv",
     "query_type": "hierarchical",
-    "query": "Group In-Place TTT, TPO, and Churn Flow papers by their core methodological approach.",
-    "word_count": 13,
+    "query": "Map the hierarchical components of the flying-focus laser wakefield accelerator experimental setup described in the paper.",
+    "word_count": 16,
     "entity_hits": [
-      "churn",
-      "in-place",
-      "flow"
+      "accelerator",
+      "wakefield",
+      "laser",
+      "flying-focus"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "arxiv_00_comparative",
-    "bundle_id": "arxiv_00",
-    "source": "arxiv",
-    "query_type": "comparative",
-    "query": "Compare the parameter update mechanisms of In-Place TTT and Target Policy Optimization.",
-    "word_count": 12,
-    "entity_hits": [
-      "optimization",
-      "in-place",
-      "policy",
-      "target"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -765,32 +1810,18 @@
     "bundle_id": "arxiv_01",
     "source": "arxiv",
     "query_type": "hierarchical",
-    "query": "Group the papers by their primary ML challenge: temporal imbalance, intersectional fairness, or genomic entropy.",
-    "word_count": 15,
+    "query": "Map the 1-calibration failure rates of MCAT, SurvPath, and MMP across TCGA cancer types to compare fusion architectures.",
+    "word_count": 18,
     "entity_hits": [
-      "entropy",
-      "intersectional",
-      "fairness"
+      "tcga",
+      "architectures",
+      "calibration",
+      "survpath",
+      "across",
+      "cancer",
+      "mcat"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "arxiv_01_comparative",
-    "bundle_id": "arxiv_01",
-    "source": "arxiv",
-    "query_type": "comparative",
-    "query": "Compare Transformer Hawkes, FairLogue, and Genomic Foundation Models: visualize their core architectures, data types, and primary challenges in a comparative diagram.",
-    "word_count": 21,
-    "entity_hits": [
-      "fairlogue",
-      "hawkes",
-      "models",
-      "transformer",
-      "foundation"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -799,32 +1830,14 @@
     "bundle_id": "arxiv_02",
     "source": "arxiv",
     "query_type": "hierarchical",
-    "query": "Group Action Images, HaloProbe, and DiffHDR by their core generative modeling approach.",
-    "word_count": 12,
+    "query": "Map the structural hierarchy of the chiral semiconductor microcavity described in Figure 1, detailing layers from the AlAs/AlGaAs mirrors to the GaAs quantum wells.",
+    "word_count": 24,
     "entity_hits": [
-      "diffhdr",
-      "haloprobe",
-      "images",
-      "action"
+      "semiconductor",
+      "chiral",
+      "microcavity"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "arxiv_02_comparative",
-    "bundle_id": "arxiv_02",
-    "source": "arxiv",
-    "query_type": "comparative",
-    "query": "Compare the core mechanisms of Action Images, HaloProbe, and DiffHDR in a mindmap.",
-    "word_count": 13,
-    "entity_hits": [
-      "diffhdr",
-      "haloprobe",
-      "images",
-      "action"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -833,35 +1846,17 @@
     "bundle_id": "arxiv_03",
     "source": "arxiv",
     "query_type": "hierarchical",
-    "query": "Map the agent roles in Paper Circle’s multi-agent framework to a hierarchical taxonomy.",
-    "word_count": 13,
+    "query": "Map the hierarchical components of the Graph MFG-IV initial value optimization problem defined in Section 3.",
+    "word_count": 16,
     "entity_hits": [
-      "paper",
-      "framework",
-      "agent",
-      "circle",
-      "multi-agent"
+      "graph",
+      "value",
+      "optimization",
+      "mfg-iv",
+      "initial",
+      "section"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "arxiv_03_comparative",
-    "bundle_id": "arxiv_03",
-    "source": "arxiv",
-    "query_type": "comparative",
-    "query": "Compare the multi-agent architectures of Paper Circle, Exclusive Unlearning, and the LLM collective study in a diagram.",
-    "word_count": 17,
-    "entity_hits": [
-      "paper",
-      "unlearning",
-      "agent",
-      "circle",
-      "multi-agent",
-      "exclusive"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -870,30 +1865,750 @@
     "bundle_id": "arxiv_04",
     "source": "arxiv",
     "query_type": "hierarchical",
-    "query": "Map the hierarchical structure of Claw-Eval's 300 tasks across its three main groups and nine categories.",
-    "word_count": 16,
+    "query": "Map the hierarchical spatial domains in kidney cancer samples, showing how TLS and INFL regions subdivide into distinct immune cell types.",
+    "word_count": 21,
     "entity_hits": [
-      "claw-eval",
-      "structure"
+      "spatial"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
   {
-    "query_id": "arxiv_04_comparative",
-    "bundle_id": "arxiv_04",
+    "query_id": "arxiv_05_hierarchical",
+    "bundle_id": "arxiv_05",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of transferability measures like LEEP and LogME used to construct the Generalized Bayes Valuation loss function.",
+    "word_count": 19,
+    "entity_hits": [
+      "generalized",
+      "loss",
+      "leep",
+      "transferability",
+      "valuation",
+      "bayes"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_06_hierarchical",
+    "bundle_id": "arxiv_06",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the three failure regimes of the Geometric Alignment Tax to their corresponding model examples and geometric signatures.",
+    "word_count": 18,
+    "entity_hits": [
+      "alignment",
+      "three",
+      "geometric"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_07_hierarchical",
+    "bundle_id": "arxiv_07",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the two-stage LLM training pipeline described in \"Debiasing LLMs by Fine-tuning\" to show where LoRA intervention occurs.",
+    "word_count": 18,
+    "entity_hits": [
+      "lora",
+      "fine-tuning",
+      "debiasing",
+      "llms"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_08_hierarchical",
+    "bundle_id": "arxiv_08",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical structure of the CNAR model instance, detailing how latent counts generate Beta-type fuzzy reports in the RNA-seq application.",
+    "word_count": 21,
+    "entity_hits": [
+      "cnar",
+      "counts",
+      "rna-seq",
+      "rna-"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_09_hierarchical",
+    "bundle_id": "arxiv_09",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical workflow of the HTC-Claw platform from intent understanding to result analysis as a flowchart.",
+    "word_count": 17,
+    "entity_hits": [
+      "platform",
+      "htc-claw"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_10_hierarchical",
+    "bundle_id": "arxiv_10",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical structure of the HWPPs dataset construction pipeline described in SemLink.",
+    "word_count": 13,
+    "entity_hits": [
+      "construction",
+      "dataset",
+      "semlink",
+      "hwpps"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_11_hierarchical",
+    "bundle_id": "arxiv_11",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of voltage losses in the (Ag,Cu)(In,Ga)Se2 cells, distinguishing between radiative, non-radiative, and optical components.",
+    "word_count": 17,
+    "entity_hits": [
+      "cells"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_12_hierarchical",
+    "bundle_id": "arxiv_12",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Create a hierarchical diagram categorizing the types of coherent dissipative structures, such as Turing rolls and DKS, described in the review.",
+    "word_count": 21,
+    "entity_hits": [
+      "coherent",
+      "structures",
+      "dissipative",
+      "such"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_13_hierarchical",
+    "bundle_id": "arxiv_13",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the four-stage validation pipeline for Compiled AI from YAML spec to Temporal activity.",
+    "word_count": 14,
+    "entity_hits": [
+      "compiled",
+      "four",
+      "validation",
+      "yaml"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_14_hierarchical",
+    "bundle_id": "arxiv_14",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical biological pathways linking GDF15, NEFL, and MMP12 to their specific fitness domains and dementia mechanisms.",
+    "word_count": 18,
+    "entity_hits": [
+      "pathways",
+      "mmp12",
+      "dementia",
+      "fitness",
+      "gdf15"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_15_hierarchical",
+    "bundle_id": "arxiv_15",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the five WADI dimensions and their sub-components into a hierarchical tree structure based on the framework described.",
+    "word_count": 18,
+    "entity_hits": [
+      "dimensions",
+      "framework",
+      "five",
+      "their"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_16_hierarchical",
+    "bundle_id": "arxiv_16",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical relationship between pluralistic ignorance, social assurance contracts, and their applications like corporate whistleblowing.",
+    "word_count": 16,
+    "entity_hits": [
+      "social",
+      "pluralistic",
+      "ignorance",
+      "contracts",
+      "assurance"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_17_hierarchical",
+    "bundle_id": "arxiv_17",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of structural observables used to align the Trp-cage protein in the ADA framework.",
+    "word_count": 16,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "arxiv_18_hierarchical",
+    "bundle_id": "arxiv_18",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical workflow of the US Large Cap agent from macro input to CMA judge output.",
+    "word_count": 17,
+    "entity_hits": [
+      "agent"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_19_hierarchical",
+    "bundle_id": "arxiv_19",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical structure of the universal proof hypergraph U and its relation to the structural hypergraph S as a mindmap.",
+    "word_count": 21,
+    "entity_hits": [
+      "structure"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_20_hierarchical",
+    "bundle_id": "arxiv_20",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the Transformer Hawkes Process architecture components used to model patient care trajectories into a hierarchical diagram.",
+    "word_count": 17,
+    "entity_hits": [
+      "trajectories",
+      "hawkes",
+      "transformer",
+      "process",
+      "patient",
+      "model",
+      "care"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_21_hierarchical",
+    "bundle_id": "arxiv_21",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical components of the ULS estimator formula and its robustified variant from the text.",
+    "word_count": 16,
+    "entity_hits": [
+      "estimator",
+      "from"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_22_hierarchical",
+    "bundle_id": "arxiv_22",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the co-occurrence network between the five learning themes identified in the Brazilian software engineering study.",
+    "word_count": 16,
+    "entity_hits": [
+      "study",
+      "software",
+      "five",
+      "engineering",
+      "learning",
+      "brazilian"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_23_hierarchical",
+    "bundle_id": "arxiv_23",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Organize the Symetra case study findings into a hierarchy of analytical tasks and their corresponding visualization views.",
+    "word_count": 17,
+    "entity_hits": [
+      "symetra",
+      "visualization"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_24_hierarchical",
+    "bundle_id": "arxiv_24",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Visualize the hierarchical classification of level-3 to level-1 cross-level sinking types shown in Figure 10.",
+    "word_count": 15,
+    "entity_hits": [
+      "sinking",
+      "hierarchical",
+      "figure"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_25_hierarchical",
+    "bundle_id": "arxiv_25",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the five-tier selection taxonomy used to curate the 200 software applications in CUA-World.",
+    "word_count": 14,
+    "entity_hits": [
+      "software",
+      "cua-world"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_26_hierarchical",
+    "bundle_id": "arxiv_26",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical causal pathway from SNPs to cognitive outcomes via cortical thickness in the MMM mediation model.",
+    "word_count": 18,
+    "entity_hits": [
+      "mediation",
+      "snps"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_27_hierarchical",
+    "bundle_id": "arxiv_27",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of economic cost components in the Retrospective Economic Evaluation model, distinguishing between deterministic costs and income-based losses.",
+    "word_count": 20,
+    "entity_hits": [
+      "cost",
+      "retrospective",
+      "income",
+      "evaluation",
+      "economic"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_28_hierarchical",
+    "bundle_id": "arxiv_28",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Visualize the JZ-TREE plane-based hierarchy as a diagram showing how splitting points create nodes with at most Nmax points.",
+    "word_count": 19,
+    "entity_hits": [
+      "based",
+      "plane",
+      "with",
+      "jz-tree",
+      "tree"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_29_hierarchical",
+    "bundle_id": "arxiv_29",
+    "source": "arxiv",
+    "query_type": "hierarchical",
+    "query": "Map the four-stage FixAudit training pipeline, detailing how the Fixer and Auditor roles interact across Stages A through D.",
+    "word_count": 19,
+    "entity_hits": [
+      "fixer",
+      "fixaudit",
+      "auditor",
+      "stage"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_30_comparative",
+    "bundle_id": "arxiv_30",
     "source": "arxiv",
     "query_type": "comparative",
-    "query": "Compare Claw-Eval and ACE-Bench evaluation metrics and environment designs in a table.",
-    "word_count": 12,
+    "query": "Compare the time-singularity rates of velocity field Lipschitz constants in this work versus Gao et al. (2024) using a table.",
+    "word_count": 20,
     "entity_hits": [
-      "evaluation",
-      "environment",
-      "claw-eval",
-      "ace-bench"
+      "lipschitz",
+      "this",
+      "rates",
+      "velocity"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_31_comparative",
+    "bundle_id": "arxiv_31",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the pre-2000 and post-2000 average inflation rates in Colombia using the data from Figure 1.",
+    "word_count": 16,
+    "entity_hits": [
+      "inflation"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_32_comparative",
+    "bundle_id": "arxiv_32",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the match rates of Prompt-AI, Data-AI, and AutoPrompt-AI in a bar chart.",
+    "word_count": 13,
+    "entity_hits": [
+      "prompt-ai",
+      "autoprompt-",
+      "data-ai",
+      "autoprompt-ai"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_33_comparative",
+    "bundle_id": "arxiv_33",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the data fitting loss and optimality regularization terms used in the surrogate learning problem.",
+    "word_count": 15,
+    "entity_hits": [
+      "surrogate",
+      "problem",
+      "learning"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_34_comparative",
+    "bundle_id": "arxiv_34",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the smoking reduction effects of price versus tax increases across age groups using a bar chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "price",
+      "increases",
+      "smoking"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_35_comparative",
+    "bundle_id": "arxiv_35",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the AUROC scores of RDMDL-FD, SLOPE, and RECI on the Tübingen dataset using a bar chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "rdmdl",
+      "using",
+      "slope",
+      "auroc",
+      "rdmdl-fd",
+      "reci"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_36_comparative",
+    "bundle_id": "arxiv_36",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the focal position stability of the dielectric metalens versus a refractive lens across varying refractive indices using a line chart.",
+    "word_count": 21,
+    "entity_hits": [
+      "refractive"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_37_comparative",
+    "bundle_id": "arxiv_37",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the performance index J of the proposed distributed algorithm against the centralized controller and method [9] across all noise cases in Table II.",
+    "word_count": 24,
+    "entity_hits": [
+      "index",
+      "distributed"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_38_comparative",
+    "bundle_id": "arxiv_38",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the performance index of the proposed distributed algorithm against the consensus protocol in [29] using a bar chart.",
+    "word_count": 19,
+    "entity_hits": [
+      "distributed",
+      "consensus",
+      "algorithm"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_39_comparative",
+    "bundle_id": "arxiv_39",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the D1–D4 score evolution for Grok-4 Fast and GPT-5.2 across iterations using a line chart.",
+    "word_count": 16,
+    "entity_hits": [
+      "gpt-5",
+      "grok-4",
+      "fast"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_40_comparative",
+    "bundle_id": "arxiv_40",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the F1 scores of HaloProbe, DIML, and EAZY on LLaVA-1.5 using a bar chart.",
+    "word_count": 15,
+    "entity_hits": [
+      "llava-1",
+      "haloprobe",
+      "diml",
+      "eazy"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_41_comparative",
+    "bundle_id": "arxiv_41",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the Mini-ImageNet test accuracy and parameter counts of Gated-SwinRMT-SWAT, Gated-SwinRMT-Retention, and RMT in a bar chart.",
+    "word_count": 17,
+    "entity_hits": [
+      "gated-swinrmt-swat",
+      "swinrmt",
+      "imagenet",
+      "mini-imagenet",
+      "mini-",
+      "swat",
+      "gated-swinrmt-retention",
+      "gated-swinrmt"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_42_comparative",
+    "bundle_id": "arxiv_42",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the noise modeling assumptions of SINDy, Gaussian Processes, and the proposed hybrid framework using a feature matrix.",
+    "word_count": 18,
+    "entity_hits": [
+      "framework",
+      "modeling",
+      "gaussian"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_43_comparative",
+    "bundle_id": "arxiv_43",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the Abundance Distributions and P∞(g) shapes for the four SDE types listed in Table 1 using a chart.",
+    "word_count": 19,
+    "entity_hits": [
+      "table",
+      "distributions",
+      "abundance"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_44_comparative",
+    "bundle_id": "arxiv_44",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the inference times of the 3D-CNN model versus the NEB method using a bar chart.",
+    "word_count": 16,
+    "entity_hits": [
+      "times",
+      "model"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_45_comparative",
+    "bundle_id": "arxiv_45",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the token budget distributions for rule-based versus LLM-based file retrieval using a box plot.",
+    "word_count": 15,
+    "entity_hits": [
+      "rule",
+      "llm-based",
+      "rule-based"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_46_comparative",
+    "bundle_id": "arxiv_46",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the NIH and RULER performance of phase-wise scaled RoPE against fixed 10k and 500k configurations using a bar chart.",
+    "word_count": 20,
+    "entity_hits": [
+      "rope",
+      "using",
+      "scaled",
+      "phase-wise",
+      "phase"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_47_comparative",
+    "bundle_id": "arxiv_47",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the 3DErr and FVD scores of Action Images, TesserAct, and Cosmos-Policy in a bar chart.",
+    "word_count": 16,
+    "entity_hits": [
+      "tesseract",
+      "action",
+      "policy",
+      "cosmos-policy",
+      "images"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_48_comparative",
+    "bundle_id": "arxiv_48",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the correlation scores of CalM, POCO, and TCN on held-out datasets using a bar chart.",
+    "word_count": 16,
+    "entity_hits": [
+      "poco",
+      "held-out",
+      "calm"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "arxiv_49_comparative",
+    "bundle_id": "arxiv_49",
+    "source": "arxiv",
+    "query_type": "comparative",
+    "query": "Compare the verification procedures for token airdrops versus multi-signature smart contracts using a side-by-side chart.",
+    "word_count": 15,
+    "entity_hits": [
+      "multi-",
+      "multi-signature"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -902,34 +2617,17 @@
     "bundle_id": "10k_00",
     "source": "10k",
     "query_type": "quantitative",
-    "query": "Chart Apple's 2024 vs 2025 potential interest rate impacts on investment portfolio fair value and term debt expense.",
-    "word_count": 18,
+    "query": "Show a bar chart comparing AAPL's potential investment portfolio fair value decline from a 100 basis point rate increase in 2024 versus 2025.",
+    "word_count": 23,
     "entity_hits": [
+      "decline",
+      "potential",
       "investment",
-      "term",
+      "aapl",
       "rate",
-      "interest",
-      "apple",
-      "potential"
+      "increase"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "10k_00_temporal",
-    "bundle_id": "10k_00",
-    "source": "10k",
-    "query_type": "temporal",
-    "query": "Timeline of Apple's 2025 product announcements by quarter.",
-    "word_count": 8,
-    "entity_hits": [
-      "product",
-      "apple",
-      "announcements",
-      "quarter"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -938,26 +2636,14 @@
     "bundle_id": "10k_01",
     "source": "10k",
     "query_type": "quantitative",
-    "query": "Show a bar chart of Microsoft's FY2025 revenue growth percentages for Cloud, M365, Azure, and LinkedIn.",
-    "word_count": 16,
+    "query": "Show a bar chart comparing the potential earnings impact of a 10% foreign currency decrease versus a 10% equity price drop for MSFT in 2025.",
+    "word_count": 25,
     "entity_hits": [
-      "microsoft"
+      "foreign",
+      "msft",
+      "equity"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "10k_01_temporal",
-    "bundle_id": "10k_01",
-    "source": "10k",
-    "query_type": "temporal",
-    "query": "Show a timeline of Microsoft's fiscal year 2025 revenue growth highlights compared to 2024.",
-    "word_count": 14,
-    "entity_hits": [
-      "microsoft"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -966,61 +2652,26 @@
     "bundle_id": "10k_02",
     "source": "10k",
     "query_type": "quantitative",
-    "query": "Chart TSLA's 2024 vs 2025 foreign currency risk exposure in billions.",
-    "word_count": 11,
-    "entity_hits": [
-      "tsla",
-      "currency",
-      "risk",
-      "foreign"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "10k_02_temporal",
-    "bundle_id": "10k_02",
-    "source": "10k",
-    "query_type": "temporal",
-    "query": "Show TSLA's 2024 vs 2025 net income and FX risk exposure in a timeline.",
-    "word_count": 14,
-    "entity_hits": [
-      "tsla",
-      "risk"
-    ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
+    "query": "Compare the $4.5 billion H20 charge against the $180 million FX impact using a bar chart.",
+    "word_count": 16,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
   },
   {
     "query_id": "10k_03_quantitative",
     "bundle_id": "10k_03",
     "source": "10k",
     "query_type": "quantitative",
-    "query": "Chart NVIDIA's FY26 vs FY25 FX risk impact on OCI and pre-tax income.",
-    "word_count": 13,
+    "query": "Show a bar chart comparing Google Services and Google Cloud revenue growth from 2024 to 2025.",
+    "word_count": 16,
     "entity_hits": [
-      "nvidia",
-      "risk"
+      "cloud",
+      "services",
+      "google"
     ],
-    "model": "Qwen3.6-27B",
-    "retries_used": 0,
-    "filter_passed": true
-  },
-  {
-    "query_id": "10k_03_temporal",
-    "bundle_id": "10k_03",
-    "source": "10k",
-    "query_type": "temporal",
-    "query": "Timeline of NVIDIA's H20 export license developments and related financial impacts in fiscal 2026.",
-    "word_count": 14,
-    "entity_hits": [
-      "financial",
-      "nvidia",
-      "developments"
-    ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
@@ -1029,29 +2680,1724 @@
     "bundle_id": "10k_04",
     "source": "10k",
     "query_type": "quantitative",
-    "query": "Chart Meta's 2025 vs 2024 foreign currency transaction gains/losses and fixed-rate senior notes outstanding.",
-    "word_count": 14,
+    "query": "Show a bar chart comparing Meta's 2024 and 2025 income from operations for the Family of Apps and Reality Labs segments.",
+    "word_count": 21,
     "entity_hits": [
-      "currency",
+      "family",
       "meta",
-      "foreign"
+      "operations"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   },
   {
-    "query_id": "10k_04_temporal",
-    "bundle_id": "10k_04",
+    "query_id": "10k_05_quantitative",
+    "bundle_id": "10k_05",
     "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart of Amazon's 2025 marketable debt securities by maturity year and weighted average interest rate.",
+    "word_count": 18,
+    "entity_hits": [
+      "amazon",
+      "interest",
+      "marketable",
+      "rate",
+      "securities"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_06_quantitative",
+    "bundle_id": "10k_06",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Chart the year-over-year change in TSLA's total revenue and net income for 2025 compared to the prior year.",
+    "word_count": 18,
+    "entity_hits": [
+      "tsla"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_07_quantitative",
+    "bundle_id": "10k_07",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing the fair value of AVGO's fixed-rate borrowings for fiscal years 2024 and 2025.",
+    "word_count": 18,
+    "entity_hits": [
+      "avgo",
+      "rate"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_08_quantitative",
+    "bundle_id": "10k_08",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a line chart of Oracle's cloud services revenue percentage for fiscal years 2023 through 2025.",
+    "word_count": 16,
+    "entity_hits": [
+      "cloud",
+      "services",
+      "oracle"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_09_quantitative",
+    "bundle_id": "10k_09",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing ADBE's Euro, Yen, and Pound revenue exposures from 2023 to 2025.",
+    "word_count": 16,
+    "entity_hits": [
+      "euro",
+      "adbe",
+      "exposures"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_10_quantitative",
+    "bundle_id": "10k_10",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing the impact of foreign currency fluctuations on CRM's fiscal 2026 revenue versus remaining performance obligation growth.",
+    "word_count": 21,
+    "entity_hits": [
+      "foreign",
+      "currency"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_11_quantitative",
+    "bundle_id": "10k_11",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing AMD's 2024 and 2025 net revenue by segment: Data Center, Client and Gaming, and Embedded.",
+    "word_count": 20,
+    "entity_hits": [
+      "client",
+      "gaming",
+      "data"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_12_quantitative",
+    "bundle_id": "10k_12",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing Intel's segment operating income trends from the Results of Operations section.",
+    "word_count": 16,
+    "entity_hits": [
+      "operations",
+      "results"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_13_quantitative",
+    "bundle_id": "10k_13",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a line chart of IBM's market risk exposure trends from Item 7A compared to MD&A financial metrics.",
+    "word_count": 18,
+    "entity_hits": [
+      "market",
+      "risk",
+      "item",
+      "financial"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "10k_14_quantitative",
+    "bundle_id": "10k_14",
+    "source": "10k",
+    "query_type": "quantitative",
+    "query": "Show a bar chart comparing QCOM's interest rate swap notional amounts for 2024 and 2025.",
+    "word_count": 15,
+    "entity_hits": [
+      "interest",
+      "qcom",
+      "rate"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_00_temporal",
+    "bundle_id": "govreport_00",
+    "source": "govreport",
     "query_type": "temporal",
-    "query": "Plot META's total revenue and operating income growth from 2023 to 2025.",
+    "query": "Show a timeline of key Healthcare.gov development milestones and oversight issues from 2006 through the October 2013 open enrollment.",
+    "word_count": 19,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "govreport_01_temporal",
+    "bundle_id": "govreport_01",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of when each military service implemented the new sustainment and restoration programs between 1999 and 2003.",
+    "word_count": 19,
+    "entity_hits": [
+      "military"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_02_temporal",
+    "bundle_id": "govreport_02",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the eight DATA Act implementation steps from the Treasury Playbook between 2015 and 2017.",
+    "word_count": 18,
+    "entity_hits": [
+      "data",
+      "treasury"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_03_temporal",
+    "bundle_id": "govreport_03",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key milestones for the OHRS first increment and NPOESS program from 2009.",
+    "word_count": 16,
+    "entity_hits": [
+      "ohrs",
+      "increment",
+      "first"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_04_temporal",
+    "bundle_id": "govreport_04",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show the timeline of ASC and OCIO shifting responsibility for supercomputer disaster recovery planning.",
+    "word_count": 14,
+    "entity_hits": [
+      "ocio"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_05_temporal",
+    "bundle_id": "govreport_05",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key milestones for the National Strategy for Information Sharing from 2003 to 2014.",
+    "word_count": 17,
+    "entity_hits": [
+      "information",
+      "sharing",
+      "strategy",
+      "national"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_06_temporal",
+    "bundle_id": "govreport_06",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key H1N1 pandemic events from the WHO declaration in June to President Obama's national emergency in October.",
+    "word_count": 21,
+    "entity_hits": [
+      "october",
+      "h1n1",
+      "june"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_07_temporal",
+    "bundle_id": "govreport_07",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of DOD's original classification decisions from fiscal year 2002 to 2004.",
+    "word_count": 14,
+    "entity_hits": [
+      "classification"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_08_temporal",
+    "bundle_id": "govreport_08",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show the timeline for acquiring high-value GSA leases, from prospectus drafting to final occupancy agreement execution.",
+    "word_count": 16,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "govreport_09_temporal",
+    "bundle_id": "govreport_09",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key EIV system milestones and mandatory adoption dates for HUD program administrators.",
+    "word_count": 16,
+    "entity_hits": [
+      "program"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_10_temporal",
+    "bundle_id": "govreport_10",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of TECS system upgrades for public health alerts from 2006 to 2008.",
+    "word_count": 15,
+    "entity_hits": [
+      "tecs"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_11_temporal",
+    "bundle_id": "govreport_11",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of FDA inspection shortfalls for foodborne biological hazards in fiscal years 1996 and 1997.",
+    "word_count": 17,
+    "entity_hits": [
+      "foodborne"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 1,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_12_temporal",
+    "bundle_id": "govreport_12",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of U.S. Additional Protocol implementation starting from the 1940 executive orders on classified information.",
+    "word_count": 17,
+    "entity_hits": [
+      "information",
+      "protocol",
+      "additional"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_13_temporal",
+    "bundle_id": "govreport_13",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of Customs' organizational restructuring events from 1993 to 1996, including the creation of CMCs and the new performance management system.",
+    "word_count": 23,
+    "entity_hits": [
+      "performance",
+      "management",
+      "customs",
+      "from"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_14_temporal",
+    "bundle_id": "govreport_14",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show the timeline of the five-step AD/CV duty collection process from Commerce's initial order to CBP's final liquidation.",
+    "word_count": 18,
+    "entity_hits": [
+      "commerce",
+      "process"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_15_temporal",
+    "bundle_id": "govreport_15",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the CMS medical review process from claim suspension to final payment decision.",
+    "word_count": 16,
+    "entity_hits": [
+      "review",
+      "medical"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_16_temporal",
+    "bundle_id": "govreport_16",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the FCC's information retention periods from 1 year to indefinite as reported by bureaus.",
+    "word_count": 18,
+    "entity_hits": [
+      "reported"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_17_temporal",
+    "bundle_id": "govreport_17",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show the timeline for establishing short-rotation woody crops like willow from planting to first commercial harvest.",
+    "word_count": 16,
+    "entity_hits": [
+      "short-rotation"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_18_temporal",
+    "bundle_id": "govreport_18",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the 2007 survey and testing phases for the 24 federal agencies' encryption implementation.",
+    "word_count": 17,
+    "entity_hits": [
+      "agencies",
+      "federal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_19_temporal",
+    "bundle_id": "govreport_19",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the August to September 2012 international sex offender notifications by USNCB and ICE.",
+    "word_count": 17,
+    "entity_hits": [
+      "usncb"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_20_temporal",
+    "bundle_id": "govreport_20",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the Corps' project study phases before and after the WRRDA 2014 eliminated the reconnaissance phase.",
+    "word_count": 19,
+    "entity_hits": [
+      "corps"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_21_temporal",
+    "bundle_id": "govreport_21",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the 2009 L-HHS-ED funding legislation from the FY2009 CR to the signing of ARRA.",
+    "word_count": 18,
+    "entity_hits": [
+      "fy2009",
+      "funding",
+      "from",
+      "l-hhs-ed",
+      "arra"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_22_temporal",
+    "bundle_id": "govreport_22",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of the 2014 QHSR phases from the 2012 initiation to the final report release.",
+    "word_count": 17,
+    "entity_hits": [
+      "qhsr"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_23_temporal",
+    "bundle_id": "govreport_23",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of CCDBG funding changes and legislative actions from the 1990 Act through the FY2015 budget request.",
+    "word_count": 19,
+    "entity_hits": [
+      "ccdbg",
+      "budget",
+      "fy2015"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_24_temporal",
+    "bundle_id": "govreport_24",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of MMRP cleanup phases from fiscal year 2001 to 2009 highlighting when DOD implemented new quality assurance processes.",
+    "word_count": 21,
+    "entity_hits": [
+      "fiscal",
+      "mmrp",
+      "year"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_25_temporal",
+    "bundle_id": "govreport_25",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key events in the Service Center's development from the initial IEED concept to the 2016 budget justification.",
+    "word_count": 21,
+    "entity_hits": [
+      "budget",
+      "service",
+      "ieed",
+      "center",
+      "justification"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_26_temporal",
+    "bundle_id": "govreport_26",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Create a timeline of FARC hostage releases and leadership changes from 2010 to late 2012.",
+    "word_count": 15,
+    "entity_hits": [
+      "farc"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_27_temporal",
+    "bundle_id": "govreport_27",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of key immigration policy milestones from the 1986 IRCA through the 2013 Congress discussions on unauthorized aliens.",
+    "word_count": 20,
+    "entity_hits": [
+      "congress",
+      "unauthorized"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_28_temporal",
+    "bundle_id": "govreport_28",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of CMS IT investment management milestones from 2001 to 2006.",
+    "word_count": 13,
+    "entity_hits": [
+      "management",
+      "investment"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_29_temporal",
+    "bundle_id": "govreport_29",
+    "source": "govreport",
+    "query_type": "temporal",
+    "query": "Show a timeline of missed deadlines for the National Invasive Species Council's management plan actions from 2001 to 2003.",
+    "word_count": 19,
+    "entity_hits": [
+      "species",
+      "national",
+      "council",
+      "invasive"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_30_hierarchical",
+    "bundle_id": "govreport_30",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the administrative hierarchy of the Food Stamp Program from USDA down to local eligibility workers.",
+    "word_count": 16,
+    "entity_hits": [
+      "eligibility",
+      "program",
+      "stamp",
+      "food",
+      "usda"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_31_hierarchical",
+    "bundle_id": "govreport_31",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the 77 open IRS recommendations to their corresponding internal control activities using a hierarchical tree diagram.",
+    "word_count": 17,
+    "entity_hits": [
+      "control",
+      "internal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_32_hierarchical",
+    "bundle_id": "govreport_32",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Create a hierarchical diagram categorizing the three types of retirement plans for small employers and their specific sub-types mentioned in the text.",
+    "word_count": 22,
+    "entity_hits": [
+      "employers",
+      "small",
+      "retirement"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_33_hierarchical",
+    "bundle_id": "govreport_33",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical factors identified by the NAS panel for achieving long-term viability at Chrysler and GM.",
+    "word_count": 17,
+    "entity_hits": [
+      "chrysler",
+      "identified",
+      "achieving"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_34_hierarchical",
+    "bundle_id": "govreport_34",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the required components of a FISMA information security program and their relationship to contractor oversight procedures.",
+    "word_count": 17,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "govreport_35_hierarchical",
+    "bundle_id": "govreport_35",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Break down the $116 million HCTC administration cost by activity phase and contractor versus IRS staffing levels.",
+    "word_count": 17,
+    "entity_hits": [
+      "hctc"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_36_hierarchical",
+    "bundle_id": "govreport_36",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Show a hierarchy of TSA screening officer roles from TSO to TSM with their specific responsibilities.",
+    "word_count": 16,
+    "entity_hits": [
+      "with"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 1,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_37_hierarchical",
+    "bundle_id": "govreport_37",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the legal hierarchy of statutes prohibiting discrimination, including Title VI and the Fourteenth Amendment, by enforcement scope.",
+    "word_count": 18,
+    "entity_hits": [
+      "enforcement",
+      "title",
+      "amendment",
+      "fourteenth"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_38_hierarchical",
+    "bundle_id": "govreport_38",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the regulatory hierarchy showing how the SEC, Treasury, and Federal Reserve oversee SFTI participants and clearing organizations.",
+    "word_count": 18,
+    "entity_hits": [
+      "sfti",
+      "reserve",
+      "federal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 1,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_39_hierarchical",
+    "bundle_id": "govreport_39",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the legislative hierarchy of the 112th Congress by grouping enacted immigration bills like P.L. 112-176 under their primary policy categories.",
+    "word_count": 21,
+    "entity_hits": [
+      "congress",
+      "immigration"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_40_hierarchical",
+    "bundle_id": "govreport_40",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Create a taxonomy of international tax reduction activities distinguishing between avoidance and evasion for individuals and corporations.",
+    "word_count": 17,
+    "entity_hits": [
+      "international"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_41_hierarchical",
+    "bundle_id": "govreport_41",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the 23 areas of concentration for JPME research institutions to show their categorical distribution.",
+    "word_count": 15,
+    "entity_hits": [
+      "jpme"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_42_hierarchical",
+    "bundle_id": "govreport_42",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Create a hierarchical diagram showing the federal agencies overseeing the 12 low-income programs like Medicaid and WIC.",
+    "word_count": 17,
+    "entity_hits": [
+      "programs",
+      "medicaid",
+      "federal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_43_hierarchical",
+    "bundle_id": "govreport_43",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the NIST cloud service models to their corresponding levels of consumer control as described in Figure 1.",
+    "word_count": 18,
+    "entity_hits": [
+      "nist"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_44_hierarchical",
+    "bundle_id": "govreport_44",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the proposed migration of items from the USML to the CCL under the Strategic Trade Authorization exception.",
+    "word_count": 18,
+    "entity_hits": [
+      "usml",
+      "items",
+      "proposed"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_45_hierarchical",
+    "bundle_id": "govreport_45",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical regulatory structure for OCS air emissions under DOI and EPA jurisdictions.",
+    "word_count": 14,
+    "entity_hits": [
+      "emissions"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_46_hierarchical",
+    "bundle_id": "govreport_46",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the three primary protection categories for U.S. seaports and their associated agency responsibilities.",
+    "word_count": 14,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "govreport_47_hierarchical",
+    "bundle_id": "govreport_47",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of internal control deficiencies found across the nine lockbox locations by category.",
+    "word_count": 15,
+    "entity_hits": [
+      "nine"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_48_hierarchical",
+    "bundle_id": "govreport_48",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical structure of U.S.S.G. § 2D1.1 showing how drug quantities determine base offense levels and sentencing ranges.",
+    "word_count": 19,
+    "entity_hits": [
+      "drug",
+      "sentencing",
+      "levels"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "govreport_49_hierarchical",
+    "bundle_id": "govreport_49",
+    "source": "govreport",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of threats to gas transmission pipelines, distinguishing between time-dependent and time-independent failures.",
+    "word_count": 15,
+    "entity_hits": [
+      "pipelines"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_00_relational",
+    "bundle_id": "tech_docs_00",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of when VMware, Docker, and AWS announced native Kubernetes support.",
+    "word_count": 13,
+    "entity_hits": [
+      "docker",
+      "kubernetes",
+      "native",
+      "timeline",
+      "vmware"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_01_relational",
+    "bundle_id": "tech_docs_01",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram linking MongoDB and Couchbase to their shared NoSQL types like Document store and Key-value cache.",
+    "word_count": 18,
+    "entity_hits": [
+      "couchbase",
+      "document",
+      "mongodb",
+      "types",
+      "nosql"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_02_relational",
+    "bundle_id": "tech_docs_02",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the dependencies between Apache Kafka and MQTT within the publish-subscribe pattern.",
     "word_count": 12,
     "entity_hits": [
-      "meta",
-      "revenue"
+      "publish",
+      "apache",
+      "subscribe",
+      "pattern",
+      "kafka",
+      "mqtt"
     ],
-    "model": "Qwen3.6-27B",
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_03_relational",
+    "bundle_id": "tech_docs_03",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of how the Transmission Control Program evolved into TCP and IP between 1974 and 1980.",
+    "word_count": 18,
+    "entity_hits": [
+      "program",
+      "transmission",
+      "control"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_04_relational",
+    "bundle_id": "tech_docs_04",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram of how Route Reflectors connect client and non-client peers to avoid a full iBGP mesh.",
+    "word_count": 18,
+    "entity_hits": [
+      "route"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_05_relational",
+    "bundle_id": "tech_docs_05",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram comparing how ACID and BASE handle consistency versus availability in SQL and NoSQL databases.",
+    "word_count": 17,
+    "entity_hits": [
+      "base",
+      "consistency",
+      "acid"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_06_relational",
+    "bundle_id": "tech_docs_06",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram of how an Aggregate Root interacts with a Repository and a Factory in Domain-driven design.",
+    "word_count": 18,
+    "entity_hits": [
+      "design",
+      "domain-driven"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_07_relational",
+    "bundle_id": "tech_docs_07",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the interaction between the producer, consumer, and useQueue semaphore in the producer-consumer problem.",
+    "word_count": 14,
+    "entity_hits": [
+      "semaphore",
+      "producer"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_08_relational",
+    "bundle_id": "tech_docs_08",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of TLS protocol versions and their publication years from SSL 2.0 to TLS 1.3.",
+    "word_count": 17,
+    "entity_hits": [
+      "from",
+      "protocol"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_09_relational",
+    "bundle_id": "tech_docs_09",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram linking the loss function C, activation a^L, and error term δ^L in the backpropagation chain.",
+    "word_count": 18,
+    "entity_hits": [
+      "backpropagation"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_10_relational",
+    "bundle_id": "tech_docs_10",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the dependency between the generator and discriminator strategies within the original GAN zero-sum game framework.",
+    "word_count": 16,
+    "entity_hits": [],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 2,
+    "filter_passed": false
+  },
+  {
+    "query_id": "tech_docs_11_relational",
+    "bundle_id": "tech_docs_11",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram of how Let's Encrypt and Certificate Authorities interact to validate an HTTPS connection.",
+    "word_count": 16,
+    "entity_hits": [
+      "https"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_12_relational",
+    "bundle_id": "tech_docs_12",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of key events linking Paul Mockapetris, Jon Postel, and the release of RFC 1034.",
+    "word_count": 17,
+    "entity_hits": [
+      "postel"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 1,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_13_relational",
+    "bundle_id": "tech_docs_13",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of key events involving Eran Hammer and David Recordon in the development of OAuth.",
+    "word_count": 17,
+    "entity_hits": [
+      "eran",
+      "david",
+      "oauth",
+      "hammer",
+      "recordon"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_14_relational",
+    "bundle_id": "tech_docs_14",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of how NSA's Suite B evolved into CNSA 2.0 due to quantum computing concerns.",
+    "word_count": 17,
+    "entity_hits": [
+      "quantum",
+      "cnsa",
+      "suite"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_15_relational",
+    "bundle_id": "tech_docs_15",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline linking the Cocktail party effect to the 2017 Transformer architecture and its key-value mechanism.",
+    "word_count": 17,
+    "entity_hits": [
+      "transformer",
+      "cocktail"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_16_relational",
+    "bundle_id": "tech_docs_16",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the relationship between algorithms like DDPG and their supported action spaces.",
+    "word_count": 12,
+    "entity_hits": [
+      "action",
+      "ddpg",
+      "algorithms"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_17_relational",
+    "bundle_id": "tech_docs_17",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of NIST and NSA milestones in the AES standardization and approval process.",
+    "word_count": 15,
+    "entity_hits": [
+      "nist"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_18_relational",
+    "bundle_id": "tech_docs_18",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the mathematical equivalence between DDPM's noise prediction and the score function in NCSN.",
+    "word_count": 14,
+    "entity_hits": [
+      "ncsn",
+      "ddpm",
+      "equivalence",
+      "score"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_19_relational",
+    "bundle_id": "tech_docs_19",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the relationship between Unix-like mount points and removable media types like CD-ROMs and USB drives.",
+    "word_count": 16,
+    "entity_hits": [
+      "unix-like",
+      "unix",
+      "types",
+      "mount"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_20_relational",
+    "bundle_id": "tech_docs_20",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the relationship between kernel threads, user threads, and processes across 1:1, M:1, and M:N threading models.",
+    "word_count": 17,
+    "entity_hits": [
+      "user",
+      "processes",
+      "kernel",
+      "threads"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_21_relational",
+    "bundle_id": "tech_docs_21",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the dependency between the Merkle–Damgård construction and vulnerabilities like length-extension attacks.",
+    "word_count": 12,
+    "entity_hits": [
+      "merkle"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_22_relational",
+    "bundle_id": "tech_docs_22",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram of the state transitions between waiting, running, and blocked for a process.",
+    "word_count": 15,
+    "entity_hits": [
+      "process"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_23_relational",
+    "bundle_id": "tech_docs_23",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the interaction flow between Peggy and Victor in the Ali Baba cave protocol.",
+    "word_count": 14,
+    "entity_hits": [
+      "peggy",
+      "victor"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_24_relational",
+    "bundle_id": "tech_docs_24",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline linking Hubel and Wiesel's receptive fields to Fukushima's Neocognitron architecture.",
+    "word_count": 13,
+    "entity_hits": [
+      "hubel",
+      "fukushima",
+      "receptive",
+      "wiesel",
+      "fukushima's",
+      "architecture"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_25_relational",
+    "bundle_id": "tech_docs_25",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram linking Knuth's leaf definition to Bayer and McCreight's terminology differences in B-trees.",
+    "word_count": 15,
+    "entity_hits": [
+      "definition",
+      "knuth's",
+      "b-trees"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_26_relational",
+    "bundle_id": "tech_docs_26",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a diagram linking Neal Ford's integrator and disintegrator factors to their impact on service granularity.",
+    "word_count": 16,
+    "entity_hits": [
+      "ford",
+      "granularity",
+      "integrator",
+      "neal"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_27_relational",
+    "bundle_id": "tech_docs_27",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of how Elman networks and LSTMs evolved to address the vanishing gradient problem.",
+    "word_count": 16,
+    "entity_hits": [
+      "elman"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_28_relational",
+    "bundle_id": "tech_docs_28",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Map the relationship between sharding and horizontal partitioning, highlighting how Vitess and MongoDB implement these architectures.",
+    "word_count": 16,
+    "entity_hits": [
+      "partitioning",
+      "mongodb",
+      "horizontal",
+      "sharding"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_29_relational",
+    "bundle_id": "tech_docs_29",
+    "source": "tech_docs",
+    "query_type": "relational",
+    "query": "Show a timeline of TCP version evolution from IEN #5 to RFC 9293.",
+    "word_count": 13,
+    "entity_hits": [
+      "version"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_30_hierarchical",
+    "bundle_id": "tech_docs_30",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Show a timeline of SQL standard revisions from SQL-86 to SQL:1999 with their key features.",
+    "word_count": 15,
+    "entity_hits": [
+      "standard"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_31_hierarchical",
+    "bundle_id": "tech_docs_31",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical components of the RSA key generation process described in the Operation section.",
+    "word_count": 15,
+    "entity_hits": [
+      "operation"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_32_hierarchical",
+    "bundle_id": "tech_docs_32",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Show a flowchart of the MapReduce dataflow architecture, detailing how the Input Reader, Map, Partition, Shuffle, Reduce, and Output Writer connect.",
+    "word_count": 21,
+    "entity_hits": [
+      "dataflow",
+      "shuffle",
+      "input",
+      "mapreduce",
+      "reduce",
+      "partition"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_33_hierarchical",
+    "bundle_id": "tech_docs_33",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical components of the original Transformer architecture, from tokenizers to the un-embedding layer.",
+    "word_count": 15,
+    "entity_hits": [
+      "embedding",
+      "un-embedding",
+      "architecture",
+      "transformer",
+      "tokenizers"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_34_hierarchical",
+    "bundle_id": "tech_docs_34",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a timeline showing the discovery of public-key cryptography, including Ellis, Cocks, Diffie, Hellman, and RSA.",
+    "word_count": 16,
+    "entity_hits": [
+      "public-key",
+      "ellis",
+      "hellman",
+      "public",
+      "diffie",
+      "cocks",
+      "cryptography"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_35_hierarchical",
+    "bundle_id": "tech_docs_35",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical components of an MVCC Record struct alongside its timestamp-based versioning workflow.",
+    "word_count": 14,
+    "entity_hits": [
+      "timestamp",
+      "mvcc"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_36_hierarchical",
+    "bundle_id": "tech_docs_36",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the compositional structure of MVC components across Smalltalk-80, WebObjects, Rails, and Django.",
+    "word_count": 13,
+    "entity_hits": [
+      "webobjects",
+      "components",
+      "django",
+      "smalltalk-80",
+      "rails",
+      "smalltalk"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_37_hierarchical",
+    "bundle_id": "tech_docs_37",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the OpenID Foundation's board structure by listing its community and corporate members.",
+    "word_count": 13,
+    "entity_hits": [
+      "foundation",
+      "openid",
+      "corporate",
+      "community",
+      "foundation's"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_38_hierarchical",
+    "bundle_id": "tech_docs_38",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a taxonomy diagram categorizing MongoDB, Cassandra, and Redis by their CAP theorem trade-offs.",
+    "word_count": 14,
+    "entity_hits": [
+      "cassandra",
+      "mongodb",
+      "redis",
+      "theorem"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_39_hierarchical",
+    "bundle_id": "tech_docs_39",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a hierarchical diagram showing the three levels of ER model abstraction: Conceptual, Logical, and Physical.",
+    "word_count": 16,
+    "entity_hits": [
+      "model",
+      "three"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_40_hierarchical",
+    "bundle_id": "tech_docs_40",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical design structure of Substitution–Permutation Networks, detailing how S-boxes and P-boxes interact within each round.",
+    "word_count": 17,
+    "entity_hits": [
+      "design",
+      "substitution",
+      "each"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_41_hierarchical",
+    "bundle_id": "tech_docs_41",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the seven OSI model layers into a hierarchical diagram showing their order from Physical to Application.",
+    "word_count": 17,
+    "entity_hits": [
+      "physical",
+      "model",
+      "application"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_42_hierarchical",
+    "bundle_id": "tech_docs_42",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical components of the Burroughs B5500 segmented virtual memory system, including master descriptors and presence bits.",
+    "word_count": 18,
+    "entity_hits": [
+      "segmented",
+      "b5500",
+      "memory",
+      "descriptors",
+      "burroughs",
+      "virtual"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_43_hierarchical",
+    "bundle_id": "tech_docs_43",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a timeline showing the evolution of FIPS PUB 180 standards and the addition of each SHA-2 variant from 2001 to 2023.",
+    "word_count": 22,
+    "entity_hits": [
+      "standards",
+      "sha-2",
+      "fips"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_44_hierarchical",
+    "bundle_id": "tech_docs_44",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a taxonomy diagram classifying Mutex types by blocking behavior and granularity levels mentioned in the text.",
+    "word_count": 17,
+    "entity_hits": [
+      "types",
+      "granularity",
+      "mutex"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_45_hierarchical",
+    "bundle_id": "tech_docs_45",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a timeline showing the introduction years and key transport layer changes for HTTP versions 0.9 through 3.",
+    "word_count": 18,
+    "entity_hits": [
+      "http",
+      "introduction",
+      "transport",
+      "versions"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_46_hierarchical",
+    "bundle_id": "tech_docs_46",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the three algorithms of a digital signature scheme to their inputs and outputs in a flowchart.",
+    "word_count": 17,
+    "entity_hits": [
+      "signature",
+      "digital"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_47_hierarchical",
+    "bundle_id": "tech_docs_47",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchical architecture of BERTBASE, detailing its embedding components and encoder stack parameters.",
+    "word_count": 14,
+    "entity_hits": [
+      "embedding",
+      "bertbase",
+      "encoder",
+      "architecture"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_48_hierarchical",
+    "bundle_id": "tech_docs_48",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Map the hierarchy of database normal forms from UNF to 6NF defined by Codd and Fagin.",
+    "word_count": 16,
+    "entity_hits": [
+      "fagin",
+      "codd",
+      "normal",
+      "forms",
+      "database"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true
+  },
+  {
+    "query_id": "tech_docs_49_hierarchical",
+    "bundle_id": "tech_docs_49",
+    "source": "tech_docs",
+    "query_type": "hierarchical",
+    "query": "Create a timeline of Linux kernel releases from version 0.01 to 2.4.0, highlighting key features like SMP and USB support.",
+    "word_count": 20,
+    "entity_hits": [
+      "linux",
+      "features",
+      "kernel",
+      "version"
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
     "retries_used": 0,
     "filter_passed": true
   }

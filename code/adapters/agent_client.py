@@ -149,7 +149,8 @@ class AgentClient:
     def run_paper_default(
         self,
         *,
-        doc_json_path: str,
+        doc_json_path: Optional[str] = None,
+        doc_json_paths: Optional[List[str]] = None,
         user_query: str,
         custom_tools_path: Optional[str] = None,
         custom_rules: Optional[str] = None,
@@ -222,11 +223,30 @@ class AgentClient:
             rules.append(custom_rules.strip())
         merged_rules = "\n".join(rules)
 
+        # N-way multi-doc takes precedence; falls back to legacy single-path.
+        # When doc_json_paths is provided, the agent server forces
+        # single_doc=False so each path is loaded as its own document,
+        # preserving the per-doc title + snippet structure expected by
+        # DOC_STEP_PROMPT and the action loop's filelist conventions.
+        if doc_json_paths:
+            primary_path = doc_json_paths[0]
+            multi_doc_active = True
+        elif doc_json_path:
+            primary_path = doc_json_path
+            multi_doc_active = False
+        else:
+            raise ValueError(
+                "run_paper_default: either doc_json_paths (multi) or "
+                "doc_json_path (single) must be provided"
+            )
+
         body: Dict[str, Any] = {
-            "doc_json_path": doc_json_path,
+            "doc_json_path": primary_path,
             "user_query": user_query,
             "lang": "en",
-            "single_doc": True,            # bundle is concat-serialized → one doc
+            # When multi_doc_active, the agent ignores single_doc and uses
+            # doc_json_paths directly (handlers.py + run_agent_v2.py).
+            "single_doc": not multi_doc_active,
             "n_steps_max": n_steps_max,
             "return_trace": return_trace,
             "return_train_sample": return_train_sample,
@@ -235,7 +255,14 @@ class AgentClient:
             "reasoner_base_url": reasoner_base_url,
             "reasoner_api_key": reasoner_api_key,
             "custom_rules": merged_rules,
+            # We are both producer and consumer of the trace (orchestrator →
+            # viz_output_mapper → judge). Disable trace redaction so the
+            # downstream judge can see the actual search.query array and
+            # ReadFullDocument.goal text for the retrieval-query-quality axis.
+            "redact_args": False,
         }
+        if multi_doc_active:
+            body["doc_json_paths"] = list(doc_json_paths)
         if reasoner_max_length is not None:
             body["reasoner_model_max_length"] = reasoner_max_length
         if custom_tools_path:
@@ -308,13 +335,35 @@ class AgentClient:
 
 class QwenDirectClient:
     """OpenAI-compatible client targeting the Qwen3.5-397B-A17B-FP8 vLLM
-    cluster (10.1.211.163-170:8000 by default). Used by S1 Direct and any
-    other strategy that bypasses the agent loop.
+    cluster (10.1.211.148/163-170:8000 by default). Used by S1 Direct, S7
+    SelfRefine, judge scorer, and any other strategy that bypasses the
+    agent loop.
 
     Host selection honors DOCVIZ_HOST_MODE:
       - "single" → only the first host in QWEN_HOSTS (sequential calls);
       - "multi"  → round-robin across all hosts.
+
+    Multi-host queue + retry semantics (v0.3 amendment §16 / cost-efficiency):
+      - ConnectionRefusedError / httpx.ConnectError on a host → that host
+        is marked unhealthy for `_HOST_COOLDOWN_SECONDS` (30s) and the
+        request immediately re-routes to the next healthy host. The retry
+        counter does NOT increment for refused-connection failures, so
+        cluster-wide outages are still surfaced.
+      - Non-refused failure (httpx.ReadTimeout, 5xx, RemoteProtocolError,
+        decode errors): wait 3s and retry the SAME host once (handles
+        transient host overload). If still failing, fall through to the
+        next healthy host with the retry counter incremented.
+      - If all hosts are in cooldown simultaneously, raises after a brief
+        wait for at least one to recover.
+
+    This is the production client for ALL Qwen access points across the
+    codebase except (a) the agent-server's own sticky reasoner URL and
+    (b) generate_viz tool, which uses its own caller-supplied URL.
     """
+
+    _HOST_COOLDOWN_SECONDS = 30.0
+    _RETRY_SLEEP_SECONDS = 3.0
+    _MAX_NON_REFUSED_RETRIES = 1  # per request, applied per host
 
     def __init__(
         self,
@@ -327,39 +376,85 @@ class QwenDirectClient:
         if not chosen:
             chosen = ["10.1.211.148:8000"]
         self._bases = [f"http://{h}/v1" for h in chosen]
+        # Round-robin cursor + per-host cooldown registry. The cursor is
+        # protected by a lock so concurrent callers (ThreadPoolExecutor)
+        # distribute evenly across hosts.
+        import threading
         self._idx = 0
+        self._idx_lock = threading.Lock()
+        self._cooldown_until: Dict[str, float] = {b: 0.0 for b in self._bases}
+        self._cooldown_lock = threading.Lock()
         self._timeout = timeout_seconds
 
     def _next_base(self) -> str:
-        base = self._bases[self._idx % len(self._bases)]
-        self._idx += 1
-        return base
+        """Round-robin advance. Does NOT honor cooldown — that's the
+        caller's job via `_next_healthy_base()`. Kept for back-compat
+        with any external direct callers."""
+        with self._idx_lock:
+            base = self._bases[self._idx % len(self._bases)]
+            self._idx += 1
+            return base
 
-    def chat(
+    def _next_healthy_base(
+        self,
+        skip: Optional[set] = None,
+    ) -> Optional[str]:
+        """Round-robin advance that skips hosts in cooldown and any host
+        in `skip`. Returns None if no healthy host is available right now.
+        """
+        import time as _t
+        skip = skip or set()
+        now = _t.time()
+        with self._idx_lock:
+            n = len(self._bases)
+            for _ in range(n):
+                base = self._bases[self._idx % n]
+                self._idx += 1
+                if base in skip:
+                    continue
+                if self._cooldown_until.get(base, 0.0) <= now:
+                    return base
+            return None
+
+    def _mark_cooldown(self, base: str) -> None:
+        import time as _t
+        with self._cooldown_lock:
+            self._cooldown_until[base] = _t.time() + self._HOST_COOLDOWN_SECONDS
+
+    def _build_body(
         self,
         messages: List[Dict[str, str]],
-        *,
-        model: str = QWEN_MODEL,
-        temperature: float = PAPER_DEFAULT_TEMPERATURE,
-        seed: int = PAPER_DEFAULT_SEED,
-        max_tokens: Optional[int] = None,
-        response_format: Optional[Dict[str, Any]] = None,
-        extra_body: Optional[Dict[str, Any]] = None,
+        model: str,
+        temperature: float,
+        top_p: Optional[float],
+        seed: int,
+        max_tokens: Optional[int],
+        response_format: Optional[Dict[str, Any]],
+        extra_body: Optional[Dict[str, Any]],
     ) -> Dict[str, Any]:
-        """Issue one chat.completion request. Returns the raw OpenAI-style payload."""
-        base = self._next_base()
         body: Dict[str, Any] = {
             "model": model,
             "messages": messages,
             "temperature": temperature,
             "seed": seed,
         }
+        if top_p is not None:
+            body["top_p"] = top_p
         if max_tokens is not None:
             body["max_tokens"] = max_tokens
         if response_format is not None:
             body["response_format"] = response_format
         if extra_body:
             body.update(extra_body)
+        return body
+
+    def _post_once(
+        self,
+        base: str,
+        body: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Single POST, no retry. Raises any exception unchanged. Returns
+        parsed JSON."""
         with httpx.Client(timeout=self._timeout) as c:
             resp = c.post(
                 f"{base}/chat/completions",
@@ -368,3 +463,107 @@ class QwenDirectClient:
             )
             resp.raise_for_status()
             return resp.json()
+
+    @staticmethod
+    def _is_connection_refused(exc: BaseException) -> bool:
+        """Detect "host refused / unreachable" — i.e. transport could not
+        be established. We treat these as host-level outages (cooldown +
+        re-queue without consuming retry budget). Everything else is
+        treated as a transient that the same host may recover from."""
+        # httpx.ConnectError covers refused, name-resolution, etc.
+        if isinstance(exc, httpx.ConnectError):
+            return True
+        # Belt-and-suspenders for non-httpx callers
+        if isinstance(exc, ConnectionRefusedError):
+            return True
+        # Walk __cause__/__context__ chain for nested transport errors
+        cause = getattr(exc, "__cause__", None) or getattr(exc, "__context__", None)
+        if cause is not None and cause is not exc:
+            try:
+                return QwenDirectClient._is_connection_refused(cause)
+            except RecursionError:
+                return False
+        return False
+
+    def chat(
+        self,
+        messages: List[Dict[str, str]],
+        *,
+        model: str = QWEN_MODEL,
+        temperature: float = PAPER_DEFAULT_TEMPERATURE,
+        top_p: Optional[float] = None,
+        seed: int = PAPER_DEFAULT_SEED,
+        max_tokens: Optional[int] = None,
+        response_format: Optional[Dict[str, Any]] = None,
+        extra_body: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Issue one chat.completion request with multi-host queue + retry.
+
+        Returns the raw OpenAI-style payload. Raises on persistent
+        failure across all healthy hosts (after retries).
+        """
+        import time as _t
+
+        body = self._build_body(
+            messages, model, temperature, top_p, seed, max_tokens,
+            response_format, extra_body,
+        )
+
+        attempted: set = set()
+        non_refused_retries = 0
+        # The hard upper bound prevents an infinite loop if every host
+        # repeatedly fails with non-refused errors. We try each host at
+        # most twice (one same-host retry + one fallback attempt).
+        max_total_attempts = 2 * len(self._bases) + 2
+
+        for _attempt in range(max_total_attempts):
+            base = self._next_healthy_base(skip=attempted)
+            if base is None:
+                # All hosts either tried or in cooldown — wait briefly
+                # for soonest cooldown to expire, then retry.
+                now = _t.time()
+                with self._cooldown_lock:
+                    soonest = min(
+                        (t for b, t in self._cooldown_until.items()
+                         if t > now and b not in attempted),
+                        default=None,
+                    )
+                if soonest is None:
+                    # No remaining hosts at all — surface the failure.
+                    raise RuntimeError(
+                        "QwenDirectClient: all hosts exhausted/cooldown; "
+                        f"attempted={sorted(attempted)}"
+                    )
+                wait = max(soonest - now, 0.1)
+                _t.sleep(min(wait, 5.0))
+                continue
+
+            try:
+                return self._post_once(base, body)
+            except Exception as e:
+                refused = self._is_connection_refused(e)
+                if refused:
+                    # Cooldown the host + re-queue (don't count as retry)
+                    self._mark_cooldown(base)
+                    attempted.add(base)
+                    continue
+                # Non-refused error: retry same host once after a 3s
+                # sleep to ride out transient load/timeout.
+                if non_refused_retries < self._MAX_NON_REFUSED_RETRIES:
+                    non_refused_retries += 1
+                    _t.sleep(self._RETRY_SLEEP_SECONDS)
+                    try:
+                        return self._post_once(base, body)
+                    except Exception as e2:
+                        if self._is_connection_refused(e2):
+                            self._mark_cooldown(base)
+                        attempted.add(base)
+                        continue
+                # Already retried once — drop this host from this request
+                attempted.add(base)
+                continue
+
+        raise RuntimeError(
+            "QwenDirectClient: exhausted retries across all hosts; "
+            f"attempted={sorted(attempted)}"
+        )

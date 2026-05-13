@@ -29,9 +29,36 @@ from code.utils.bundle_io import read_bundles_json
 from code.utils.cost_tracker import CostTracker
 from code.utils.query_gen_prompt import (
     QUERY_GEN_PROMPT,
+    SOURCE_TYPE_SPLIT,
     TYPE_ASSIGNMENT,
     TYPE_DEFS,
 )
+
+
+def _bundle_type_for(bundle) -> str:
+    """v0.3 amendment §3.5 — assign exactly one query_type per bundle
+    based on SOURCE_TYPE_SPLIT (e.g., for hotpotqa: first 30 → relational,
+    remaining 20 → comparative). Uses bundle_id suffix index to ensure
+    deterministic, contiguous-by-source assignment.
+    """
+    split = SOURCE_TYPE_SPLIT.get(bundle.source)
+    if not split:
+        raise ValueError(
+            f"{bundle.bundle_id}: source '{bundle.source}' has no §3.5 type split"
+        )
+    # bundle_id format: f"{source}_{idx:02d}" → extract idx
+    try:
+        idx = int(bundle.bundle_id.rsplit("_", 1)[1])
+    except (IndexError, ValueError):
+        idx = 0
+    # Walk the cumulative split to find which type this idx falls into.
+    cursor = 0
+    for qtype, count in split:
+        if idx < cursor + count:
+            return qtype
+        cursor += count
+    # Beyond split — fall back to last (extra-bundle safety).
+    return split[-1][0]
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -200,7 +227,8 @@ def generate_queries(
     client: QwenDirectClient,
     raw_log_path: Path,
 ) -> Tuple[List[Dict], Dict]:
-    """Generate 2 queries per bundle. Returns (queries, audit_summary)."""
+    """Generate 1 query per bundle per v0.3 amendment §3.5 / D1.2.
+    Returns (queries, audit_summary)."""
     raw_log_path.parent.mkdir(parents=True, exist_ok=True)
     tracker = CostTracker()
 
@@ -210,40 +238,35 @@ def generate_queries(
 
     with open(raw_log_path, "w", encoding="utf-8") as raw_log:
         for bundle in bundles:
-            assignment = TYPE_ASSIGNMENT.get(bundle.source)
-            if not assignment:
-                raise ValueError(
-                    f"{bundle.bundle_id}: source '{bundle.source}' has no §5.2 type assignment"
-                )
+            qtype = _bundle_type_for(bundle)
             vocab = _collect_entity_vocab(bundle)
             docs_concat = _build_docs_concat(bundle)
-            for qtype in assignment:
-                query, hits, attempts, record = _generate_one(
-                    client, bundle, qtype, docs_concat, vocab, tracker, raw_log,
-                )
-                wc = _word_count(query)
-                ok = (1 <= wc <= WORD_LIMIT) and bool(hits)
-                entry = {
-                    "query_id": f"{bundle.bundle_id}_{qtype}",
-                    "bundle_id": bundle.bundle_id,
-                    "source": bundle.source,
-                    "query_type": qtype,
-                    "query": query,
-                    "word_count": wc,
-                    "entity_hits": hits[:8],
-                    "model": QWEN_MODEL,
-                    "retries_used": attempts,
-                    "filter_passed": ok,
-                }
-                queries.append(entry)
-                if attempts > 0:
-                    retried += 1
-                if not ok:
-                    failed.append(entry)
-                print(
-                    f"  {entry['query_id']:<28s} wc={wc:>2d} hits={len(hits):>2d} "
-                    f"attempts={attempts} {'OK' if ok else 'FAIL'} :: {query}"
-                )
+            query, hits, attempts, record = _generate_one(
+                client, bundle, qtype, docs_concat, vocab, tracker, raw_log,
+            )
+            wc = _word_count(query)
+            ok = (1 <= wc <= WORD_LIMIT) and bool(hits)
+            entry = {
+                "query_id": f"{bundle.bundle_id}_{qtype}",
+                "bundle_id": bundle.bundle_id,
+                "source": bundle.source,
+                "query_type": qtype,
+                "query": query,
+                "word_count": wc,
+                "entity_hits": hits[:8],
+                "model": QWEN_MODEL,
+                "retries_used": attempts,
+                "filter_passed": ok,
+            }
+            queries.append(entry)
+            if attempts > 0:
+                retried += 1
+            if not ok:
+                failed.append(entry)
+            print(
+                f"  {entry['query_id']:<28s} wc={wc:>2d} hits={len(hits):>2d} "
+                f"attempts={attempts} {'OK' if ok else 'FAIL'} :: {query}"
+            )
 
     summary = {
         "n_queries": len(queries),
