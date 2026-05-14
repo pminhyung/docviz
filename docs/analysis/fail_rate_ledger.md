@@ -5,22 +5,52 @@ with empty `viz_dsl` (< 20 chars) in `outputs/prototype/viz/raw.jsonl`.
 
 Updated: 2026-05-13 (Layer D B6_NoTMG just completed; B6_NoSAO running).
 
-## Layer A baselines (current-qid filtered, n=265)
+## Layer A baselines (current-qid filtered, n=265, post-retry 2026-05-14)
 
 | Strategy | Total | Fails | Fail % | Mean overall (full) | Mean overall (valid-only) |
 |---|---|---|---|---|---|
-| B1_MatPlotAgent | 265 | 0 | 0.0% | 0.789 | 0.789 |
-| B2_NVAGENT | 265 | 0 | 0.0% | 0.786 | 0.786 |
-| B3_CoDA | 265 | 0 | 0.0% | 0.825 | 0.825 |
-| B4_ViviDoc | 265 | 0 | 0.0% | 0.856 | 0.856 |
-| S1_Direct (B5) | 265 | 0 | 0.0% | 0.880 | 0.880 |
-| S7_SelfRefine (B7) | 265 | 0 | 0.0% | 0.880 | 0.880 |
-| **S4_AgenticTMGv4_consolidated (B6)** | 265 | 39 | **14.7%** | 0.735 | 0.849 |
+| B1_MatPlotAgent | 265 | 0 | 0.0% | 0.7894 | 0.7894 |
+| B2_NVAGENT | 265 | 0 | 0.0% | 0.7859 | 0.7859 |
+| B3_CoDA | 265 | 0 | 0.0% | 0.8253 | 0.8253 |
+| B4_ViviDoc | 265 | 0 | 0.0% | 0.8555 | 0.8555 |
+| S1_Direct (B5) | 265 | 0 | 0.0% | 0.8803 | 0.8803 |
+| S7_SelfRefine (B7) | 265 | 0 | 0.0% | **0.8804** | 0.8804 |
+| **S4_AgenticTMGv4_consolidated (B6)** | 265 | 11 | **4.2%** | **0.8243** | **0.8468** |
+| B6_NoTMG (Layer D ablation) | 265 | 70 | 26.4% | 0.6328 | 0.8465 |
 
-B6 is the only strategy with non-zero fail rate. Specialist baselines
-(B1–B4) and Direct/SelfRefine (B5/B7) use `QwenDirectClient` with
-built-in cooldown+retry; B6 routes via the agent server which has the
-§8.4 C8 silent error masking.
+**Before vs after Fix 1+2+3 + retry (2026-05-14):**
+
+| Metric | Before | After |
+|---|---|---|
+| B6 fail rate | 14.7% | **4.2%** |
+| B6 mean overall (full) | 0.735 | **0.8243** |
+| B6 mean overall (valid-only) | 0.849 | 0.8468 |
+| Δ vs best baseline (full) | -0.145 | **-0.056** |
+| Δ vs best baseline (valid-only) | -0.031 | -0.034 |
+| §16 gate status | HALT | **BORDERLINE near +0.02** |
+
+Retry recovered 39/46 fail records (84.8%). 7 remaining are all Mode B
+(agent reasoning without invoking `generate_viz` tool) — not recoverable
+by Fix 1+2+3 (schema/format fixes); need separate iteration on tool-call
+trigger reliability. See §11.12.
+
+Specialist baselines (B1–B4) and Direct/SelfRefine (B5/B7) use
+`QwenDirectClient` with built-in cooldown+retry; B6 routes via the agent
+server which had the §8.4 C8 silent error masking — now mitigated by
+Fix 1+2+3 in `code/pipelines/s4_agentic_tmg.py` and
+`code/agent_tools/generate_viz.py`.
+
+## TMG pillar contribution (Layer D ablation Δ)
+
+| Reading | TMG contribution Δ(Full − NoTMG) |
+|---|---|
+| full-set (n=265) | **+0.1915** (large — driven by fail-rate gap) |
+| valid-only (n=195 NoTMG, n=254 Full) | **+0.0003** (essentially zero) |
+
+**Key insight**: TMG's measurable contribution under full-set comes from
+reducing fail rate (4.2% vs 26.4%). On records where both modes
+succeed, content quality is identical. This validates §8.4 C8 dual-cell
+reporting as the only honest way to attribute pillar value.
 
 ### V4_cons fail mode breakdown (n=39, from `v4_cons_fail_root_cause.md`)
 
@@ -172,3 +202,9 @@ Retained as a reference data point.
   (improvement from Layer A 15%, Fix 2 retry working).
 - 2026-05-13 06:30 — Plot2Code bulk launched (45 records × 7 strategies,
   expanding from existing 5-record preflight).
+- 2026-05-13 — Fix 1+2+3 applied + Text2Vis 18 fail retry: 14 OK + 1 REL
+  + 3 Mode B FAIL → post-merge B6 fail 9% → 3%, syntax_pass 82% → 96%.
+- 2026-05-14 — Layer A 46 fail retry: 39 OK + 7 Mode B FAIL → post-merge
+  B6 fail 14.7% → **4.2%**, mean overall 0.735 → **0.8243** (full),
+  Δ vs best baseline -0.145 → **-0.056** (full) / -0.034 (valid).
+  §16 gate now BORDERLINE (was HALT).

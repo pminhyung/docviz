@@ -298,24 +298,47 @@ class GenerateVizTool:
 
         # Parse the LLM output to extract (viz_type, viz_dsl).
         # Mapper strategy 1a equivalent — whole-text JSON parse.
+        # Auto-repair handles known truncation patterns from
+        # vLLM's response_format=json_object + max_tokens cap:
+        #   Mode G (chartjs): inner DSL truncated one `}` short
+        #   Mode H: invalid `\\'` escape → unescape to `'`
         viz_dsl = ""
         out_viz_type = viz_type
-        try:
-            stripped = raw.lstrip()
-            if stripped.startswith("{"):
-                obj, _ = json.JSONDecoder().raw_decode(stripped)
-                if isinstance(obj, dict):
-                    parsed_type = obj.get("viz_type", "")
-                    parsed_dsl = obj.get("viz_dsl", "")
-                    if parsed_type:
-                        out_viz_type = parsed_type
-                    if isinstance(parsed_dsl, str):
-                        viz_dsl = parsed_dsl
-                    elif isinstance(parsed_dsl, (dict, list)):
-                        # Re-serialize nested object → string (chartjs case)
-                        viz_dsl = json.dumps(parsed_dsl, ensure_ascii=False)
-        except Exception:
-            pass
+
+        def _try_parse(text: str):
+            stripped = text.lstrip()
+            if not stripped.startswith("{"):
+                return None
+            obj, _ = json.JSONDecoder().raw_decode(stripped)
+            if not isinstance(obj, dict):
+                return None
+            return obj
+
+        repair_candidates = [
+            raw,
+            raw + "}",                     # Mode G: trailing brace
+            raw + "}}",                    # Mode G: deeper close
+            raw.replace("\\'", "'"),       # Mode H: invalid escape
+            raw.replace("\\'", "'") + "}", # combo
+        ]
+
+        for candidate in repair_candidates:
+            try:
+                obj = _try_parse(candidate)
+                if obj is None:
+                    continue
+                parsed_type = obj.get("viz_type", "")
+                parsed_dsl = obj.get("viz_dsl", "")
+                if parsed_type:
+                    out_viz_type = parsed_type
+                if isinstance(parsed_dsl, str) and parsed_dsl.strip():
+                    viz_dsl = parsed_dsl
+                elif isinstance(parsed_dsl, (dict, list)):
+                    viz_dsl = json.dumps(parsed_dsl, ensure_ascii=False)
+                if viz_dsl:
+                    break
+            except Exception:
+                continue
 
         if not viz_dsl:
             # LLM didn't produce parseable JSON. Return raw + error status

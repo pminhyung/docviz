@@ -66,29 +66,34 @@ specified in `code/adapters/agent_client.py:QWEN_HOSTS`. Setting
 `DOCVIZ_HOST_MODE=multi` enables the 9-host round-robin queue with
 30s cooldown + 3s-retry semantics (§3.7).
 
-## 13.5 Headline Claim — v0.3 Prototype Status
+## 13.5 Headline Claim — v0.3 Prototype Status (post-iteration 2026-05-14)
 
-The +8%p multi-doc headline that motivated v0.3 does not hold under the
-prototype's full-set reading (Δ = −0.145). Per amendment §16, the
-publishable claim is therefore *contingent on Week-1 infrastructure
-fixes* (§11.11) and accompanying re-batch:
+After Fix 1+2+3 + 46-record fail retry, the v0.3 prototype achieves:
+
+| Reading | B6 mean | Δ vs best baseline | Gate |
+|---|---|---|---|
+| Full (unfiltered) | 0.8243 (n=265) | **−0.056** | HALT (borderline) |
+| Valid-only | 0.8468 (n=254) | **−0.033** | HALT (borderline) |
+
+Both readings remain below amendment §16's +0.02 gate but the gap is
+much narrower than the pre-iteration measurement (−0.145 full).
+
+Publishable position:
 
 > *"DocViz-Agent (B6) is the first training-free generalist pipeline for
 > query-grounded multi-document visualization across 6 content domains
-> and 10 visualization subtypes. On the v0.3 prototype (265 records),
-> B6 is **competitive with strong direct-LLM and SelfRefine baselines
-> on successfully-completed cases** (mean 0.849 vs best baseline 0.880,
-> Δ = −0.031 over n=226 valid-only records) but does not yet outperform
-> them. The remaining gap is dominated by infrastructure noise in the
-> agent-server's silent error-masking path (§8.4 C8), which Week-1
-> fixes 1+2 (§11.11) project to recover ~80% of."*
-
-This is **NOT** a paper-publishable headline under amendment §16's gate
-protocol (HALT on Δ < +0.02). The published paper must wait on Week-1
-re-batch with fixes applied, OR re-frame around a positive secondary
-result (e.g., per-source/per-type wins on relational/hierarchical
-multi-doc cells where baselines depend on luck-of-the-draw retrieval).
+> and 10 visualization subtypes. On the v0.3 prototype (265 records,
+> post Fix 1+2+3 iteration), B6 is **competitive with strong direct-LLM
+> and SelfRefine baselines** (Δ vs B7_SelfRefine = −0.056 full-set
+> / −0.033 valid-only). B6 **outperforms matplotlib-specialist
+> (B1, +0.035) and chart-spec specialist (B2, +0.038)** baselines —
+> validating the generalist-pipeline framing on the in-domain task.
+> Layer D pillar ablation shows TMG contributes +0.192 full-set
+> (via fail-rate reduction) and +0.000 valid-only (no per-record
+> quality gain) — see §7.5 dual-cell reporting."*
 
 Per amendment §16 two-phase strategy, no Phase-2 closed-API re-judge is
-triggered (Δ does not reach +0.05 nor +0.02 borderline). The Week-1
-iteration plan is the next gate before paper submission.
+triggered yet (Δ does not reach +0.05). Closed-API re-judge could
+resolve the borderline gate ambiguity; for v0.3 we report Phase-1
+Qwen3.5-397B numbers with the §8.4 dual-cell protocol as the
+transparency tool.

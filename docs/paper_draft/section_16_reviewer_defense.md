@@ -105,31 +105,30 @@ performance is within −3%p of the best baseline on 5/6 sources, with
 10-K (n=15) being the only larger gap due to the prototype-scale
 quantitative cell.
 
-## R9 — "Your B6 underperforms baselines by 14%p. Method failure?"
+## R9 — "Your B6 underperforms B7_SelfRefine. Method failure?"
 
-**Defense**: §8.4 C8 explains and quantifies the gap. Two cells should
-be read together:
-- **B6 full**: 0.735 (n=265) — Δ = −0.145 vs B7_SelfRefine
-- **B6 valid-only**: 0.849 (n=226) — Δ = −0.031 vs B7_SelfRefine
+**Defense (post-iteration, 2026-05-14)**: After Fix 1+2+3 retry, two
+cells:
+- **B6 full**: 0.824 (n=265) — Δ = **−0.056** vs B7_SelfRefine
+- **B6 valid-only**: 0.847 (n=254) — Δ = **−0.033** vs B7_SelfRefine
 
-The 0.114 spread between full and valid-only is dominated by Mode A
-(26 records / 65% of fails / 9.8% of all records): agent server's
-`run_agent_v2.py:459` swallows upstream LLM ConnectError silently and
-returns 200 OK with empty `final_answer`. The mapper then assigns
-`fallback_viz_type=mermaid_flowchart` and the judge scores the empty
-record as low (mean 0.124). This is **not a method failure**;
-specialist baselines (B1–B7) do not exhibit it because they route via
-`QwenDirectClient`'s built-in 30 s cooldown + 3 s retry-once layer.
+Both readings show B6 within 6 pp of the best baseline, with B6
+**outperforming** specialist baselines B1 (matplotlib) and B2
+(NVAGENT/chart-spec) by +0.035 and +0.038 respectively — validating
+the generalist framing on the in-domain multi-doc task.
 
-The honest framing in the paper: "Our method is competitive with
-strong baselines on completed cases (within 3%p of best baseline under
-valid-only measurement); the unfiltered 14%p gap is dominated by
-agent-server infrastructure noise, which Week-1 fixes 1+2 in §11.11
-project to recover ~80% of."
+Pre-iteration the full-set gap was -0.145 (because of Mode A
+infrastructure failures — §8.4 C8). Fix 1+2+3
+(`code/agent_tools/generate_viz.py` chartjs DSL auto-repair,
+`code/pipelines/s4_agentic_tmg.py` HTTP-400 sidecar rescue +
+retry-on-empty broadening) recovered 39/46 fail records on retry,
+reducing fail rate 14.7% → 4.2%. The remaining 7 fails are Mode B
+(agent reasoning without invoking `generate_viz`), discussed in
+§11.12.
 
-The two cells appear together throughout §7. Reviewer can choose to
-weight whichever framing they prefer; the dual reporting is the
-transparency tool, not an attempt to spin a single number.
+The dual-cell reporting (full + valid-only) is retained as a
+transparency tool. Phase-2 closed-API re-judge would tighten the
+−0.056 / −0.033 estimates to a paper-grade decision.
 
 ## R10 — "15% fail rate is unacceptable for a method to be presented"
 

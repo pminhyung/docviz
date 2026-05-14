@@ -221,26 +221,59 @@ class S4AgenticTMG(Pipeline):
                     omit_default_dsl_rule=(self.mode in ("v4_pool", "v4_consolidated")),
                 )
 
-            response = _do_run(self._reasoner_base_url)
+            # Wrap in try/except so HTTP 400 (after the tool already wrote a
+            # sidecar) doesn't bypass the sidecar-rescue path below.
+            # Plot2Code/Text2Vis subagent analysis identified Mode D/I:
+            # generate_viz writes valid sidecar → envelope-validation 400 →
+            # raise_for_status throws → orchestrator never reads the sidecar.
+            # See docs/analysis/{text2vis,plot2code}_v4_cons_fail_analysis.md.
+            response = None
+            http_error: Optional[Exception] = None
+            try:
+                response = _do_run(self._reasoner_base_url)
+            except Exception as e:
+                http_error = e
 
             # Mode A recovery: agent server silently masks upstream LLM
             # ConnectError / 401 as 200 OK with empty final_answer (see
             # agent/run_agent_v2.py:459 silent except). Empty final_answer
-            # + 0 tokens + <5s duration is almost certainly a transient
-            # upstream failure on the sticky reasoner host. Retry once on a
-            # different round-robin host with 3s backoff.
-            # Preflight result (2026-05-13, n=5): 4/5 recovered.
-            # Applies to ALL modes (v0/v1/v4_pool/v4_consolidated) — Mode A
-            # is an agent-server symptom, not V4-specific.
+            # + 0 tokens is almost certainly a transient upstream failure on
+            # the sticky reasoner host. Retry once on a different
+            # round-robin host with 3s backoff.
+            # Preflight (2026-05-13, n=5): 4/5 recovered.
+            # Applies to ALL modes — Mode A is an agent-server symptom.
+            # Note: <5s duration gate REMOVED (Fix 3) — server [Setup] time
+            # can push duration past 5s even when the reasoner crashed
+            # immediately. Tokens=0 + empty final_answer is the load-bearing
+            # signal.
             # Root cause: docs/analysis/v4_cons_fail_root_cause.md.
-            if (
+            if response is not None and (
                 not response.final_answer
                 and response.total_tokens == 0
-                and response.total_duration_seconds < 5.0
             ):
                 time.sleep(3.0)
                 retry_url = _next_reasoner_url()
-                response = _do_run(retry_url)
+                try:
+                    response = _do_run(retry_url)
+                except Exception as e:
+                    http_error = e
+
+            # If the call raised (HTTP 400 / ConnectError / etc.) build a
+            # placeholder response so the sidecar-rescue path can run.
+            if response is None:
+                from code.adapters.agent_client import AgentRunResponse
+                response = AgentRunResponse(
+                    final_answer="",
+                    steps_reasoning=[],
+                    inputs_used=0,
+                    train_sample=None,
+                    trace=None,
+                    warnings=[f"agent call raised: {type(http_error).__name__}: {http_error}"[:300]],
+                    session_id="",
+                    total_tokens=0,
+                    total_duration_seconds=0.0,
+                    raw=None,
+                )
 
         vo = map_agent_response(response, bundle, concat_doc_path=doc_paths[0] if doc_paths else None)
 

@@ -34633,5 +34633,1625 @@
     "tokens_in": 3591,
     "tokens_out": 854,
     "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is version 0.01 correctly dated to 17 September 1991 and noted as non-executable?\",\n      \"evidence_hint\": \"Check 'History' section for 0.01 release date and Minix dependency.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is version 0.02 identified as the first 'official' release announced on 5 October 1991?\",\n      \"evidence_hint\": \"Verify 'History' text regarding the 5 October 1991 announcement of 0.02.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is SMP support explicitly attributed to the Version 2.0.0 release in June 1996?\",\n      \"evidence_hint\": \"Locate 'History' mention of SMP features in the June 1996 2.0.0 release.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the timeline stop at version 2.4.0 without inventing dates or features absent from sources?\",\n      \"evidence_hint\": \"Confirm sources end detailed feature lists before 2.4.0; check for hallucinations.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization cover the full requested range from version 0.01 to 2.4.0?\",\n      \"evidence_hint\": \"Check timeline start (0.01) and end (2.4.0) points against query constraints.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are key features like SMP and USB support highlighted at their correct release points?\",\n      \"evidence_hint\": \"Verify SMP (2.0) and USB mentions are visually emphasized in the timeline.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output include major intermediate versions like 1.0.0 and 2.0.0 mentioned in sources?\",\n      \"evidence_hint\": \"Ensure 1.0.0 (1994) and 2.0.0 (1996) are present as key milestones.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline format used to effectively display the chronological progression of kernel releases?\",\n      \"evidence_hint\": \"Assess if the visual structure represents time sequentially as requested.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Are hierarchical relationships between major versions and specific features clearly distinguished?\",\n      \"evidence_hint\": \"Check if features are nested or linked correctly to their parent versions.\"\n    },\n    {\n      \"axis\": \"search_query_quality\",\n      \"question\": \"Did the agent query specifically for 'Linux kernel version 0.01 release date' to retrieve precise start data?\",\n      \"evidence_hint\": \"Review sub-queries for specific version number and date intent matching 'History'.\"\n    },\n    {\n      \"axis\": \"search_query_quality\",\n      \"question\": \"Was a targeted search issued for 'Linux 2.0 SMP support' to locate the specific feature claim?\",\n      \"evidence_hint\": \"Check if sub-queries combine version 2.0 with 'SMP' keyword for retrieval.\"\n    },\n    {\n      \"axis\": \"search_query_quality\",\n      \"question\": \"Did the agent search for 'Linux kernel USB support version' to address the specific feature requirement?\",\n      \"evidence_hint\": \"Verify sub-queries target 'USB' alongside version history to find missing details.\"\n    }\n  ]\n}"
+  },
+  "hotpot_01_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the timeline state Wilmslow High School began as a grammar school in 1960?",
+        "evidence_hint": "Check source text for 'began in 1960 as a grammar school'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the name change to Wilmslow High School correctly dated to 1991 in the visualization?",
+        "evidence_hint": "Verify 'becoming Wilmslow High School in 1991' in the school source."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the show entry specify the event occurs on the second Sunday in July?",
+        "evidence_hint": "Confirm 'usually the second Sunday in July' in the Wilmslow Show source."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the location of the Wilmslow Show correctly identified as Wilmslow High School?",
+        "evidence_hint": "Check source stating the show 'is held at Wilmslow High School'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the timeline include both the school's historical milestones and the show's schedule?",
+        "evidence_hint": "Ensure both school history dates and show timing are present per query."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are the distinct entities (school evolution vs. recurring event) clearly differentiated in the timeline?",
+        "evidence_hint": "Check if the visual separates the 1960/1991 dates from the annual July event."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization enable a direct comparison of the school's history against the show's timing?",
+        "evidence_hint": "Verify the layout allows viewing both datasets simultaneously on one axis."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format used to effectively display the chronological data requested?",
+        "evidence_hint": "Confirm the visual uses a linear time axis suitable for dates and schedules."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization handle the mix of specific past dates and recurring annual events appropriately?",
+        "evidence_hint": "Check if the timeline format accommodates both one-time history and repeating schedules."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 486,
+    "tokens_out": 478,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the timeline state Wilmslow High School began as a grammar school in 1960?\", \"evidence_hint\": \"Check source text for 'began in 1960 as a grammar school'.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the name change to Wilmslow High School correctly dated to 1991 in the visualization?\", \"evidence_hint\": \"Verify 'becoming Wilmslow High School in 1991' in the school source.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the show entry specify the event occurs on the second Sunday in July?\", \"evidence_hint\": \"Confirm 'usually the second Sunday in July' in the Wilmslow Show source.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the location of the Wilmslow Show correctly identified as Wilmslow High School?\", \"evidence_hint\": \"Check source stating the show 'is held at Wilmslow High School'.\"}, {\"axis\": \"coverage\", \"question\": \"Does the timeline include both the school's historical milestones and the show's schedule?\", \"evidence_hint\": \"Ensure both school history dates and show timing are present per query.\"}, {\"axis\": \"coverage\", \"question\": \"Are the distinct entities (school evolution vs. recurring event) clearly differentiated in the timeline?\", \"evidence_hint\": \"Check if the visual separates the 1960/1991 dates from the annual July event.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization enable a direct comparison of the school's history against the show's timing?\", \"evidence_hint\": \"Verify the layout allows viewing both datasets simultaneously on one axis.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a timeline format used to effectively display the chronological data requested?\", \"evidence_hint\": \"Confirm the visual uses a linear time axis suitable for dates and schedules.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visualization handle the mix of specific past dates and recurring annual events appropriately?\", \"evidence_hint\": \"Check if the timeline format accommodates both one-time history and repeating schedules.\"}]}"
+  },
+  "hotpot_02_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is Billy Howle explicitly listed as a cast member in both Dunkirk and On Chesil Beach?",
+        "evidence_hint": "Check 'Billy Howle' doc for Dunkirk and 'On Chesil Beach' doc for his role."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the release or premiere date for On Chesil Beach correctly stated as September 7, 2017?",
+        "evidence_hint": "Verify date in 'On Chesil Beach' document regarding Toronto International Film Festival."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming Billy Howle starred in The Seagull film based on current text?",
+        "evidence_hint": "Check 'Billy Howle' doc which lists The Seagull as a future or separate project."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the director and lead actress of On Chesil Beach omitted or correctly attributed if mentioned?",
+        "evidence_hint": "Cross-reference Dominic Cooke and Saoirse Ronan in 'On Chesil Beach' document."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include both Dunkirk and On Chesil Beach to satisfy the comparison request?",
+        "evidence_hint": "Ensure both film titles from the query appear in the visual output."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the temporal relationship or sequence between the two film roles clearly presented?",
+        "evidence_hint": "Check if dates or relative timing of the two films are visually represented."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output focus specifically on Billy Howle's roles rather than general film plots?",
+        "evidence_hint": "Verify the visual data points link specifically to the actor named in the query."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline or linear chronological format used to display the film roles?",
+        "evidence_hint": "Confirm the chart type matches the query's explicit request for a timeline."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual format allow for direct side-by-side or sequential comparison of the two films?",
+        "evidence_hint": "Assess if the layout supports the comparative nature of the user query."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 568,
+    "tokens_out": 480,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Is Billy Howle explicitly listed as a cast member in both Dunkirk and On Chesil Beach?\", \"evidence_hint\": \"Check 'Billy Howle' doc for Dunkirk and 'On Chesil Beach' doc for his role.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the release or premiere date for On Chesil Beach correctly stated as September 7, 2017?\", \"evidence_hint\": \"Verify date in 'On Chesil Beach' document regarding Toronto International Film Festival.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the visualization avoid claiming Billy Howle starred in The Seagull film based on current text?\", \"evidence_hint\": \"Check 'Billy Howle' doc which lists The Seagull as a future or separate project.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are the director and lead actress of On Chesil Beach omitted or correctly attributed if mentioned?\", \"evidence_hint\": \"Cross-reference Dominic Cooke and Saoirse Ronan in 'On Chesil Beach' document.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization include both Dunkirk and On Chesil Beach to satisfy the comparison request?\", \"evidence_hint\": \"Ensure both film titles from the query appear in the visual output.\"}, {\"axis\": \"coverage\", \"question\": \"Is the temporal relationship or sequence between the two film roles clearly presented?\", \"evidence_hint\": \"Check if dates or relative timing of the two films are visually represented.\"}, {\"axis\": \"coverage\", \"question\": \"Does the output focus specifically on Billy Howle's roles rather than general film plots?\", \"evidence_hint\": \"Verify the visual data points link specifically to the actor named in the query.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a timeline or linear chronological format used to display the film roles?\", \"evidence_hint\": \"Confirm the chart type matches the query's explicit request for a timeline.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visual format allow for direct side-by-side or sequential comparison of the two films?\", \"evidence_hint\": \"Assess if the layout supports the comparative nature of the user query.\"}]}"
+  },
+  "hotpot_00_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is Dwarka's 2011 population explicitly stated as 38,873 in the chart?",
+        "evidence_hint": "Check source [Dwarka] for the number 38,873 and year 2011."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Dwarka correctly identified as a sacred Hindu pilgrimage site (Chardham)?",
+        "evidence_hint": "Verify 'Chardhams' and 'Hindu pilgrimage' mentions in source [Dwarka]."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Iqbal F. Qadir's rank listed as Vice-Admiral (three-star) in the Pakistan Navy?",
+        "evidence_hint": "Confirm 'Vice-Admiral', 'three-star', and 'Pakistan Navy' in source [Iqbal F. Qadir]."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart link Qadir to the attack on Dwarka's radar station?",
+        "evidence_hint": "Check source [Iqbal F. Qadir] for 'radar station in Dwarka' connection."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization directly compare Dwarka's religious status with Qadir's military role?",
+        "evidence_hint": "Ensure both religious status and military role are presented side-by-side."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the specific population figure for Dwarka included in the comparison?",
+        "evidence_hint": "Verify the number 38,873 is visible in the visual output."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the chart address the implied contrast between a city's status and an individual's role?",
+        "evidence_hint": "Check if the visual structure highlights the entity type difference."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the chosen chart type suitable for comparing categorical attributes of two distinct entities?",
+        "evidence_hint": "Assess if format (e.g., grouped bar) fits non-temporal comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual format avoid implying a temporal trend where none exists?",
+        "evidence_hint": "Ensure no line chart or timeline suggests time-based progression."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 551,
+    "tokens_out": 496,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Is Dwarka's 2011 population explicitly stated as 38,873 in the chart?\", \"evidence_hint\": \"Check source [Dwarka] for the number 38,873 and year 2011.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is Dwarka correctly identified as a sacred Hindu pilgrimage site (Chardham)?\", \"evidence_hint\": \"Verify 'Chardhams' and 'Hindu pilgrimage' mentions in source [Dwarka].\"}, {\"axis\": \"faithfulness\", \"question\": \"Is Iqbal F. Qadir's rank listed as Vice-Admiral (three-star) in the Pakistan Navy?\", \"evidence_hint\": \"Confirm 'Vice-Admiral', 'three-star', and 'Pakistan Navy' in source [Iqbal F. Qadir].\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the chart link Qadir to the attack on Dwarka's radar station?\", \"evidence_hint\": \"Check source [Iqbal F. Qadir] for 'radar station in Dwarka' connection.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization directly compare Dwarka's religious status with Qadir's military role?\", \"evidence_hint\": \"Ensure both religious status and military role are presented side-by-side.\"}, {\"axis\": \"coverage\", \"question\": \"Is the specific population figure for Dwarka included in the comparison?\", \"evidence_hint\": \"Verify the number 38,873 is visible in the visual output.\"}, {\"axis\": \"coverage\", \"question\": \"Does the chart address the implied contrast between a city's status and an individual's role?\", \"evidence_hint\": \"Check if the visual structure highlights the entity type difference.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is the chosen chart type suitable for comparing categorical attributes of two distinct entities?\", \"evidence_hint\": \"Assess if format (e.g., grouped bar) fits non-temporal comparison.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visual format avoid implying a temporal trend where none exists?\", \"evidence_hint\": \"Ensure no line chart or timeline suggests time-based progression.\"}]}"
+  },
+  "hotpot_04_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization state that Jean-Claude Van Damme played Luc Deveraux?",
+        "evidence_hint": "Check Universal Soldier franchise source for Van Damme's role."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Matt Battaglia correctly identified as a later actor for Luc Deveraux?",
+        "evidence_hint": "Verify franchise source mentioning Battaglia replacing Van Damme."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the viz attribute the role of John to Scott Adkins?",
+        "evidence_hint": "Cross-reference franchise source and Scott Adkins source for role."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the franchise start year listed as 1992 without contradiction?",
+        "evidence_hint": "Check franchise source for the specific 1992 start date."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the specific characters played by both actors?",
+        "evidence_hint": "Ensure both Deveraux and John roles are presented side-by-side."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are the distinct protagonists for each actor clearly distinguished in the output?",
+        "evidence_hint": "Check if the shift from Deveraux to John is highlighted."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the response address the Universal Soldier franchise context specifically?",
+        "evidence_hint": "Verify focus remains on Universal Soldier, excluding other Adkins roles."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the format suitable for comparing two distinct entities side-by-side?",
+        "evidence_hint": "Assess if layout allows direct comparison of actor roles."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization avoid temporal timelines given the lack of date overlap?",
+        "evidence_hint": "Confirm format prioritizes categorical comparison over chronological sequencing."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 572,
+    "tokens_out": 406,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the visualization state that Jean-Claude Van Damme played Luc Deveraux?\", \"evidence_hint\": \"Check Universal Soldier franchise source for Van Damme's role.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is Matt Battaglia correctly identified as a later actor for Luc Deveraux?\", \"evidence_hint\": \"Verify franchise source mentioning Battaglia replacing Van Damme.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the viz attribute the role of John to Scott Adkins?\", \"evidence_hint\": \"Cross-reference franchise source and Scott Adkins source for role.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the franchise start year listed as 1992 without contradiction?\", \"evidence_hint\": \"Check franchise source for the specific 1992 start date.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization explicitly compare the specific characters played by both actors?\", \"evidence_hint\": \"Ensure both Deveraux and John roles are presented side-by-side.\"}, {\"axis\": \"coverage\", \"question\": \"Are the distinct protagonists for each actor clearly distinguished in the output?\", \"evidence_hint\": \"Check if the shift from Deveraux to John is highlighted.\"}, {\"axis\": \"coverage\", \"question\": \"Does the response address the Universal Soldier franchise context specifically?\", \"evidence_hint\": \"Verify focus remains on Universal Soldier, excluding other Adkins roles.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is the format suitable for comparing two distinct entities side-by-side?\", \"evidence_hint\": \"Assess if layout allows direct comparison of actor roles.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visualization avoid temporal timelines given the lack of date overlap?\", \"evidence_hint\": \"Confirm format prioritizes categorical comparison over chronological sequencing.\"}]}"
+  },
+  "hotpot_06_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is Switchfoot identified as an American band from San Diego in the visualization?",
+        "evidence_hint": "Check Switchfoot source for location and nationality claims."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Midnight Oil shown originating as the band Farm in 1972?",
+        "evidence_hint": "Verify Midnight Oil source for 1972 Farm formation date."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart reflect Midnight Oil's name change occurring by late 1976?",
+        "evidence_hint": "Check Midnight Oil source for the 1976 name change event."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are all listed band members for Switchfoot present in the source text?",
+        "evidence_hint": "Cross-reference listed names against the Switchfoot member list."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the formation timelines of both bands?",
+        "evidence_hint": "Ensure both Switchfoot and Midnight Oil timelines are displayed side-by-side."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the 1972 start date for Midnight Oil (as Farm) included?",
+        "evidence_hint": "Check if the earliest date from the Midnight Oil source is plotted."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the chart address the query's request for a comparative timeline?",
+        "evidence_hint": "Verify the visual structure allows direct comparison of band histories."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline or chronological chart used to represent the formation dates?",
+        "evidence_hint": "Confirm the chart type suits temporal data comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization format clearly distinguish between the two bands' histories?",
+        "evidence_hint": "Check for clear visual separation or labeling of each band."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 518,
+    "tokens_out": 411,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Is Switchfoot identified as an American band from San Diego in the visualization?\", \"evidence_hint\": \"Check Switchfoot source for location and nationality claims.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is Midnight Oil shown originating as the band Farm in 1972?\", \"evidence_hint\": \"Verify Midnight Oil source for 1972 Farm formation date.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the chart reflect Midnight Oil's name change occurring by late 1976?\", \"evidence_hint\": \"Check Midnight Oil source for the 1976 name change event.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are all listed band members for Switchfoot present in the source text?\", \"evidence_hint\": \"Cross-reference listed names against the Switchfoot member list.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization explicitly compare the formation timelines of both bands?\", \"evidence_hint\": \"Ensure both Switchfoot and Midnight Oil timelines are displayed side-by-side.\"}, {\"axis\": \"coverage\", \"question\": \"Is the 1972 start date for Midnight Oil (as Farm) included?\", \"evidence_hint\": \"Check if the earliest date from the Midnight Oil source is plotted.\"}, {\"axis\": \"coverage\", \"question\": \"Does the chart address the query's request for a comparative timeline?\", \"evidence_hint\": \"Verify the visual structure allows direct comparison of band histories.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a timeline or chronological chart used to represent the formation dates?\", \"evidence_hint\": \"Confirm the chart type suits temporal data comparison.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visualization format clearly distinguish between the two bands' histories?\", \"evidence_hint\": \"Check for clear visual separation or labeling of each band.\"}]}"
+  },
+  "hotpot_03_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly identify Kool Kojak's role on The Lorax as producer rather than voice actor?",
+        "evidence_hint": "Check source stating Kool Kojak produced for Dr. Seuss's The Lorax."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the listed voice cast members for The Lorax limited to those explicitly named in the source text?",
+        "evidence_hint": "Verify names like Danny DeVito, Ed Helms, and Zac Efron against the film source."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid attributing any specific song titles or other artists to The Lorax production?",
+        "evidence_hint": "Ensure no confusion between Kool Kojak's general credits and his specific Lorax work."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the distinction between Kool Kojak's production credit and the cast's voice roles clearly maintained?",
+        "evidence_hint": "Cross-reference Kool Kojak's producer label with the cast's 'voiced by' labels."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly list Kool Kojak's specific production contribution to The Lorax?",
+        "evidence_hint": "Check if Kool Kojak appears in the production section for The Lorax."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include the main voice cast members mentioned for The Lorax film?",
+        "evidence_hint": "Verify presence of key cast like Danny DeVito and Ed Helms in the output."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization facilitate a direct comparison between the single producer and the multiple voice actors?",
+        "evidence_hint": "Assess if the layout allows comparing one production credit against many voice roles."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the visualization format suitable for comparing categorical roles (producer vs. voice cast) rather than trends?",
+        "evidence_hint": "Ensure the chart type fits categorical comparison, not time-series or geospatial data."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual design clearly separate production credits from voice acting credits to avoid confusion?",
+        "evidence_hint": "Check for distinct visual grouping or labeling of production versus casting data."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 783,
+    "tokens_out": 608,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization correctly identify Kool Kojak's role on The Lorax as producer rather than voice actor?\",\n      \"evidence_hint\": \"Check source stating Kool Kojak produced for Dr. Seuss's The Lorax.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the listed voice cast members for The Lorax limited to those explicitly named in the source text?\",\n      \"evidence_hint\": \"Verify names like Danny DeVito, Ed Helms, and Zac Efron against the film source.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid attributing any specific song titles or other artists to The Lorax production?\",\n      \"evidence_hint\": \"Ensure no confusion between Kool Kojak's general credits and his specific Lorax work.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the distinction between Kool Kojak's production credit and the cast's voice roles clearly maintained?\",\n      \"evidence_hint\": \"Cross-reference Kool Kojak's producer label with the cast's 'voiced by' labels.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly list Kool Kojak's specific production contribution to The Lorax?\",\n      \"evidence_hint\": \"Check if Kool Kojak appears in the production section for The Lorax.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization include the main voice cast members mentioned for The Lorax film?\",\n      \"evidence_hint\": \"Verify presence of key cast like Danny DeVito and Ed Helms in the output.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization facilitate a direct comparison between the single producer and the multiple voice actors?\",\n      \"evidence_hint\": \"Assess if the layout allows comparing one production credit against many voice roles.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the visualization format suitable for comparing categorical roles (producer vs. voice cast) rather than trends?\",\n      \"evidence_hint\": \"Ensure the chart type fits categorical comparison, not time-series or geospatial data.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual design clearly separate production credits from voice acting credits to avoid confusion?\",\n      \"evidence_hint\": \"Check for distinct visual grouping or labeling of production versus casting data.\"\n    }\n  ]\n}"
+  },
+  "hotpot_05_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly identify Jack Lowden as an actor portraying Old Tom Morris rather than a golfer?",
+        "evidence_hint": "Check 'Tommy's Honour' source stating Lowden portrayed the champion."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are Old Tom Morris's career milestones derived from historical records instead of the film's release date?",
+        "evidence_hint": "Verify sources do not conflate the 2016 film date with Morris's career."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the timeline avoid attributing golfing achievements to Jack Lowden personally?",
+        "evidence_hint": "Confirm 'Jack Lowden' source lists only acting roles, not golf wins."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the birth date of Jack Lowden (1990) accurately represented if included?",
+        "evidence_hint": "Cross-reference 'Jack Lowden' source for the specific birth date."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization address the user's request to compare career milestones for both individuals?",
+        "evidence_hint": "Check if distinct timelines or data points exist for both Morris and Lowden."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output clarify the relationship between the two subjects (actor vs. role)?",
+        "evidence_hint": "Verify the viz explains Lowden played Morris in 'Tommy's Honour'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are the specific career paths (golf vs. acting) clearly distinguished in the comparison?",
+        "evidence_hint": "Ensure sources' distinct professional domains are visually separated."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format used to effectively display the chronological nature of the requested milestones?",
+        "evidence_hint": "Confirm the visual structure is linear and temporal as requested."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the comparative layout allow side-by-side or overlaid viewing of the two distinct careers?",
+        "evidence_hint": "Check if the design facilitates direct comparison between the two entities."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 479,
+    "tokens_out": 458,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the visualization correctly identify Jack Lowden as an actor portraying Old Tom Morris rather than a golfer?\", \"evidence_hint\": \"Check 'Tommy's Honour' source stating Lowden portrayed the champion.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are Old Tom Morris's career milestones derived from historical records instead of the film's release date?\", \"evidence_hint\": \"Verify sources do not conflate the 2016 film date with Morris's career.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the timeline avoid attributing golfing achievements to Jack Lowden personally?\", \"evidence_hint\": \"Confirm 'Jack Lowden' source lists only acting roles, not golf wins.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the birth date of Jack Lowden (1990) accurately represented if included?\", \"evidence_hint\": \"Cross-reference 'Jack Lowden' source for the specific birth date.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization address the user's request to compare career milestones for both individuals?\", \"evidence_hint\": \"Check if distinct timelines or data points exist for both Morris and Lowden.\"}, {\"axis\": \"coverage\", \"question\": \"Does the output clarify the relationship between the two subjects (actor vs. role)?\", \"evidence_hint\": \"Verify the viz explains Lowden played Morris in 'Tommy's Honour'.\"}, {\"axis\": \"coverage\", \"question\": \"Are the specific career paths (golf vs. acting) clearly distinguished in the comparison?\", \"evidence_hint\": \"Ensure sources' distinct professional domains are visually separated.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a timeline format used to effectively display the chronological nature of the requested milestones?\", \"evidence_hint\": \"Confirm the visual structure is linear and temporal as requested.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the comparative layout allow side-by-side or overlaid viewing of the two distinct careers?\", \"evidence_hint\": \"Check if the design facilitates direct comparison between the two entities.\"}]}"
+  },
+  "hotpot_07_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is the 1998 release date for Tunak Tunak Tun explicitly shown or cited?",
+        "evidence_hint": "Check source text for 'released in 1998' under Tunak Tunak Tun."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization attribute greenscreen technology specifically to the Tunak Tunak Tun video?",
+        "evidence_hint": "Verify source states it was 'first made in India using greenscreen technology'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Daler Mehndi credited with popularizing Bhangra worldwide as a career milestone?",
+        "evidence_hint": "Check Daler Mehndi source for 'credited with making Bhangra popular worldwide'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the video backgrounds (desert, mountains, St. Basil's) listed only if sourced?",
+        "evidence_hint": "Confirm source lists 'desert and mountain landscapes and St. Basil's Cathedral'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization compare specific career milestones against the song's features?",
+        "evidence_hint": "Check if both Daler's general career and specific song details are presented side-by-side."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the motivation for the video (critics claiming reliance on women) included?",
+        "evidence_hint": "Verify inclusion of critics' complaints and Mehndi's response from the Tunak source."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output address the 'comparative' intent by linking milestones to tech features?",
+        "evidence_hint": "Ensure the visual structure connects career achievements with specific song production details."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a comparative layout used to juxtapose career milestones with song attributes?",
+        "evidence_hint": "Check if the chart type supports comparing two distinct categories (career vs. song)."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Are temporal elements like the 1998 date displayed using a time-appropriate format?",
+        "evidence_hint": "Verify dates are shown in a timeline, bar, or clearly labeled temporal context."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 573,
+    "tokens_out": 480,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Is the 1998 release date for Tunak Tunak Tun explicitly shown or cited?\", \"evidence_hint\": \"Check source text for 'released in 1998' under Tunak Tunak Tun.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the visualization attribute greenscreen technology specifically to the Tunak Tunak Tun video?\", \"evidence_hint\": \"Verify source states it was 'first made in India using greenscreen technology'.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is Daler Mehndi credited with popularizing Bhangra worldwide as a career milestone?\", \"evidence_hint\": \"Check Daler Mehndi source for 'credited with making Bhangra popular worldwide'.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are the video backgrounds (desert, mountains, St. Basil's) listed only if sourced?\", \"evidence_hint\": \"Confirm source lists 'desert and mountain landscapes and St. Basil's Cathedral'.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization compare specific career milestones against the song's features?\", \"evidence_hint\": \"Check if both Daler's general career and specific song details are presented side-by-side.\"}, {\"axis\": \"coverage\", \"question\": \"Is the motivation for the video (critics claiming reliance on women) included?\", \"evidence_hint\": \"Verify inclusion of critics' complaints and Mehndi's response from the Tunak source.\"}, {\"axis\": \"coverage\", \"question\": \"Does the output address the 'comparative' intent by linking milestones to tech features?\", \"evidence_hint\": \"Ensure the visual structure connects career achievements with specific song production details.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a comparative layout used to juxtapose career milestones with song attributes?\", \"evidence_hint\": \"Check if the chart type supports comparing two distinct categories (career vs. song).\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Are temporal elements like the 1998 date displayed using a time-appropriate format?\", \"evidence_hint\": \"Verify dates are shown in a timeline, bar, or clearly labeled temporal context.\"}]}"
+  },
+  "hotpot_09_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is Emilio Estevez explicitly listed as a star in the 1983 film Nightmares?",
+        "evidence_hint": "Check Nightmares source text for 'starring Emilio Estevez'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is The Breakfast Club identified as a starring role for Emilio Estevez?",
+        "evidence_hint": "Check Emilio Estevez source for 'starring in The Breakfast Club'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the release year for Nightmares correctly stated as 1983?",
+        "evidence_hint": "Check Nightmares source title 'Nightmares (1983 film)'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is The Breakfast Club associated with the 1980s Brat Pack era?",
+        "evidence_hint": "Check Emilio Estevez source for 'Brat Pack of the 1980s'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include data points for both Nightmares and The Breakfast Club?",
+        "evidence_hint": "Verify both film titles appear in the visual output."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output enable a direct comparison of the two specific roles?",
+        "evidence_hint": "Check if both films are presented side-by-side or sequentially."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the chronological context of the roles clear based on available dates?",
+        "evidence_hint": "Verify 1983 date for Nightmares and 1980s context are shown."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format used to represent the temporal nature of the roles?",
+        "evidence_hint": "Confirm the visual structure is a linear time axis."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the timeline effectively facilitate the requested comparison between the two films?",
+        "evidence_hint": "Assess if relative timing aids the comparative query intent."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 598,
+    "tokens_out": 543,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is Emilio Estevez explicitly listed as a star in the 1983 film Nightmares?\",\n      \"evidence_hint\": \"Check Nightmares source text for 'starring Emilio Estevez'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is The Breakfast Club identified as a starring role for Emilio Estevez?\",\n      \"evidence_hint\": \"Check Emilio Estevez source for 'starring in The Breakfast Club'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the release year for Nightmares correctly stated as 1983?\",\n      \"evidence_hint\": \"Check Nightmares source title 'Nightmares (1983 film)'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is The Breakfast Club associated with the 1980s Brat Pack era?\",\n      \"evidence_hint\": \"Check Emilio Estevez source for 'Brat Pack of the 1980s'.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization include data points for both Nightmares and The Breakfast Club?\",\n      \"evidence_hint\": \"Verify both film titles appear in the visual output.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output enable a direct comparison of the two specific roles?\",\n      \"evidence_hint\": \"Check if both films are presented side-by-side or sequentially.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the chronological context of the roles clear based on available dates?\",\n      \"evidence_hint\": \"Verify 1983 date for Nightmares and 1980s context are shown.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline format used to represent the temporal nature of the roles?\",\n      \"evidence_hint\": \"Confirm the visual structure is a linear time axis.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the timeline effectively facilitate the requested comparison between the two films?\",\n      \"evidence_hint\": \"Assess if relative timing aids the comparative query intent.\"\n    }\n  ]\n}"
+  },
+  "hotpot_08_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart state Pound Ridge casualties as 500 to 700 killed?",
+        "evidence_hint": "Check Pound Ridge source for '500 to 700 members... were killed'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart list New Netherland losses as one killed and fifteen wounded?",
+        "evidence_hint": "Check Pound Ridge source for 'lost one man killed and fifteen wounded'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the event date correctly identified as March 1644?",
+        "evidence_hint": "Check Pound Ridge source for 'took place in March 1644'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid inventing specific casualty numbers for other Kieft's War incidents?",
+        "evidence_hint": "Check Kieft's War source; it mentions 'waves of attacks' but no specific numbers."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the chart explicitly compare Pound Ridge casualties against other war incidents?",
+        "evidence_hint": "Verify if the visual addresses the 'versus other Kieft's War incidents' query intent."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization indicate that Pound Ridge had the highest casualties of any single incident?",
+        "evidence_hint": "Check if the chart reflects the source claim: 'More casualties... than in any other single incident'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the chart clearly distinguish between Native and New Netherland casualty figures?",
+        "evidence_hint": "Verify separation of Wappinger Confederacy losses versus Dutch/English force losses."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a bar or column chart used to effectively compare discrete casualty counts?",
+        "evidence_hint": "Assess if the chosen chart type suits a 'comparative' query involving quantities."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization avoid implying a time-series trend given the lack of sequential data?",
+        "evidence_hint": "Ensure the format does not mislead by suggesting temporal progression where only comparison exists."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 708,
+    "tokens_out": 582,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the chart state Pound Ridge casualties as 500 to 700 killed?\",\n      \"evidence_hint\": \"Check Pound Ridge source for '500 to 700 members... were killed'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the chart list New Netherland losses as one killed and fifteen wounded?\",\n      \"evidence_hint\": \"Check Pound Ridge source for 'lost one man killed and fifteen wounded'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the event date correctly identified as March 1644?\",\n      \"evidence_hint\": \"Check Pound Ridge source for 'took place in March 1644'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid inventing specific casualty numbers for other Kieft's War incidents?\",\n      \"evidence_hint\": \"Check Kieft's War source; it mentions 'waves of attacks' but no specific numbers.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the chart explicitly compare Pound Ridge casualties against other war incidents?\",\n      \"evidence_hint\": \"Verify if the visual addresses the 'versus other Kieft's War incidents' query intent.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization indicate that Pound Ridge had the highest casualties of any single incident?\",\n      \"evidence_hint\": \"Check if the chart reflects the source claim: 'More casualties... than in any other single incident'.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the chart clearly distinguish between Native and New Netherland casualty figures?\",\n      \"evidence_hint\": \"Verify separation of Wappinger Confederacy losses versus Dutch/English force losses.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a bar or column chart used to effectively compare discrete casualty counts?\",\n      \"evidence_hint\": \"Assess if the chosen chart type suits a 'comparative' query involving quantities.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization avoid implying a time-series trend given the lack of sequential data?\",\n      \"evidence_hint\": \"Ensure the format does not mislead by suggesting temporal progression where only comparison exists.\"\n    }\n  ]\n}"
+  },
+  "multinews_01_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is the Roman shipwreck discovery date listed as 1986 and method as divers stumbling upon it?",
+        "evidence_hint": "Article 1 states divers found the shipwreck in 1986 off Grado, Italy."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Ötzi's discovery date listed as 1991 and method as tourists stumbling upon a frozen body?",
+        "evidence_hint": "Article 1 states German tourists found Ötzi in a glacier in 1991."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the Nazca Lines discovery date listed as the 1930s and method as discovery by airplane?",
+        "evidence_hint": "Article 1 states Nazca Lines were only discovered by airplane in the 1930s."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are all dates and methods restricted to the three requested entities without adding unrelated finds?",
+        "evidence_hint": "Verify no data from Rosetta Stone, Dead Sea Scrolls, or Jerusalem Aqueduct is included."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include all three specific entities requested: Roman shipwreck, Ötzi, and Nazca Lines?",
+        "evidence_hint": "Check that the timeline contains entries for all three specific subjects mentioned in the query."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly display both the discovery method and date for each entity?",
+        "evidence_hint": "Verify each timeline entry shows both 'how' (method) and 'when' (date) as requested."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the information presented chronologically to facilitate the requested comparison of dates?",
+        "evidence_hint": "Check if the visual arrangement orders the three events by time to support comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format used to effectively visualize the temporal comparison of discovery dates?",
+        "evidence_hint": "Timeline is the standard format for comparing dates; verify the chart type matches this need."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual design allow for easy side-by-side comparison of the different discovery methods?",
+        "evidence_hint": "Check if text labels or icons for methods are clearly visible and comparable across entries."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 2224,
+    "tokens_out": 616,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the Roman shipwreck discovery date listed as 1986 and method as divers stumbling upon it?\",\n      \"evidence_hint\": \"Article 1 states divers found the shipwreck in 1986 off Grado, Italy.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is Ötzi's discovery date listed as 1991 and method as tourists stumbling upon a frozen body?\",\n      \"evidence_hint\": \"Article 1 states German tourists found Ötzi in a glacier in 1991.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the Nazca Lines discovery date listed as the 1930s and method as discovery by airplane?\",\n      \"evidence_hint\": \"Article 1 states Nazca Lines were only discovered by airplane in the 1930s.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are all dates and methods restricted to the three requested entities without adding unrelated finds?\",\n      \"evidence_hint\": \"Verify no data from Rosetta Stone, Dead Sea Scrolls, or Jerusalem Aqueduct is included.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization include all three specific entities requested: Roman shipwreck, Ötzi, and Nazca Lines?\",\n      \"evidence_hint\": \"Check that the timeline contains entries for all three specific subjects mentioned in the query.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly display both the discovery method and date for each entity?\",\n      \"evidence_hint\": \"Verify each timeline entry shows both 'how' (method) and 'when' (date) as requested.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the information presented chronologically to facilitate the requested comparison of dates?\",\n      \"evidence_hint\": \"Check if the visual arrangement orders the three events by time to support comparison.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline format used to effectively visualize the temporal comparison of discovery dates?\",\n      \"evidence_hint\": \"Timeline is the standard format for comparing dates; verify the chart type matches this need.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual design allow for easy side-by-side comparison of the different discovery methods?\",\n      \"evidence_hint\": \"Check if text labels or icons for methods are clearly visible and comparable across entries.\"\n    }\n  ]\n}"
+  },
+  "multinews_00_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization cite $3.2 billion as the cash seized from uncharged individuals since 2007?",
+        "evidence_hint": "Article 1 and Article 3 state $3.2 billion seized from people not charged."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the total cash seized since 2007 correctly shown as just over $4 billion?",
+        "evidence_hint": "Article 1 and Article 3 state total cash seized was just over $4 billion."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart accurately reflect the Asset Forfeiture Fund growth to $28 billion since 2007?",
+        "evidence_hint": "Article 3 states the fund ballooned to $28 billion since 2007."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the 81% figure for seizures without charges explicitly sourced from the DOJ report?",
+        "evidence_hint": "Article 1 and Article 3 state 81% of money seized came from people with no charge."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization directly compare DEA cash seizure totals against the Asset Forfeiture Fund growth?",
+        "evidence_hint": "Query asks to compare DEA cash seizures with total Asset Forfeiture Fund growth."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the timeline starting from 2007 clearly established for both data series?",
+        "evidence_hint": "Query specifies 'since 2007'; Articles 1 and 3 confirm data starts in 2007."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization distinguish between specific DEA cash seizures and the broader DOJ fund?",
+        "evidence_hint": "Query compares DEA statistics with total Asset Forfeiture Fund; sources distinguish these entities."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a comparative chart type used to visually juxtapose the two distinct financial metrics?",
+        "evidence_hint": "Query type is 'comitative'; requires side-by-side or overlaid comparison of two values."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization use a temporal format like a line or bar chart to show growth since 2007?",
+        "evidence_hint": "Data involves growth 'since 2007'; temporal trends require line or time-series bar charts."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 2170,
+    "tokens_out": 631,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization cite $3.2 billion as the cash seized from uncharged individuals since 2007?\",\n      \"evidence_hint\": \"Article 1 and Article 3 state $3.2 billion seized from people not charged.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the total cash seized since 2007 correctly shown as just over $4 billion?\",\n      \"evidence_hint\": \"Article 1 and Article 3 state total cash seized was just over $4 billion.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the chart accurately reflect the Asset Forfeiture Fund growth to $28 billion since 2007?\",\n      \"evidence_hint\": \"Article 3 states the fund ballooned to $28 billion since 2007.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the 81% figure for seizures without charges explicitly sourced from the DOJ report?\",\n      \"evidence_hint\": \"Article 1 and Article 3 state 81% of money seized came from people with no charge.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization directly compare DEA cash seizure totals against the Asset Forfeiture Fund growth?\",\n      \"evidence_hint\": \"Query asks to compare DEA cash seizures with total Asset Forfeiture Fund growth.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the timeline starting from 2007 clearly established for both data series?\",\n      \"evidence_hint\": \"Query specifies 'since 2007'; Articles 1 and 3 confirm data starts in 2007.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization distinguish between specific DEA cash seizures and the broader DOJ fund?\",\n      \"evidence_hint\": \"Query compares DEA statistics with total Asset Forfeiture Fund; sources distinguish these entities.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a comparative chart type used to visually juxtapose the two distinct financial metrics?\",\n      \"evidence_hint\": \"Query type is 'comitative'; requires side-by-side or overlaid comparison of two values.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization use a temporal format like a line or bar chart to show growth since 2007?\",\n      \"evidence_hint\": \"Data involves growth 'since 2007'; temporal trends require line or time-series bar charts.\"\n    }\n  ]\n}"
+  },
+  "multinews_02_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization list Europe, South Asia, Eastern Africa, and the Middle East as DNA/pollen origins?",
+        "evidence_hint": "Article 1 paragraph 7 lists these specific geographic regions found by authors."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization mention India as a potential manufacturing origin of the shroud?",
+        "evidence_hint": "Article 1 final sentence states the study indicated it may have been manufactured in India."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are sample collection locations limited to hands, face, feet, glutei, and corner area?",
+        "evidence_hint": "Article 2 paragraph 1 identifies filters E, F, G, H, and I corresponding to these body areas."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming the DNA proves the shroud is Jesus's burial cloth?",
+        "evidence_hint": "Article 3 quotes lead author stating 'We cannot say anything more on its origin.'"
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the geographic sources of human DNA versus pollen?",
+        "evidence_hint": "Query asks to compare origins; Article 1 and 3 distinguish between human and plant DNA sources."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization address both the 'historic journey' and 'medieval contamination' origin theories?",
+        "evidence_hint": "Article 1 paragraph 8 outlines these two specific interpretations of the geographic findings."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include specific plant examples like spruce, clover, or black locust?",
+        "evidence_hint": "Article 3 paragraph 9 lists these specific plants to illustrate global pollen diversity."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a map or geographic chart used to effectively display the global distribution of origins?",
+        "evidence_hint": "Comparative geographic data requires spatial representation to show diverse origins like India and Africa."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the format allow side-by-side comparison of human DNA regions versus pollen regions?",
+        "evidence_hint": "Comparative query type requires distinct visual grouping of human versus plant geographic data."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 2260,
+    "tokens_out": 485,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the visualization list Europe, South Asia, Eastern Africa, and the Middle East as DNA/pollen origins?\", \"evidence_hint\": \"Article 1 paragraph 7 lists these specific geographic regions found by authors.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the visualization mention India as a potential manufacturing origin of the shroud?\", \"evidence_hint\": \"Article 1 final sentence states the study indicated it may have been manufactured in India.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are sample collection locations limited to hands, face, feet, glutei, and corner area?\", \"evidence_hint\": \"Article 2 paragraph 1 identifies filters E, F, G, H, and I corresponding to these body areas.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the visualization avoid claiming the DNA proves the shroud is Jesus's burial cloth?\", \"evidence_hint\": \"Article 3 quotes lead author stating 'We cannot say anything more on its origin.'\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization explicitly compare the geographic sources of human DNA versus pollen?\", \"evidence_hint\": \"Query asks to compare origins; Article 1 and 3 distinguish between human and plant DNA sources.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization address both the 'historic journey' and 'medieval contamination' origin theories?\", \"evidence_hint\": \"Article 1 paragraph 8 outlines these two specific interpretations of the geographic findings.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization include specific plant examples like spruce, clover, or black locust?\", \"evidence_hint\": \"Article 3 paragraph 9 lists these specific plants to illustrate global pollen diversity.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a map or geographic chart used to effectively display the global distribution of origins?\", \"evidence_hint\": \"Comparative geographic data requires spatial representation to show diverse origins like India and Africa.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the format allow side-by-side comparison of human DNA regions versus pollen regions?\", \"evidence_hint\": \"Comparative query type requires distinct visual grouping of human versus plant geographic data.\"}]}"
+  },
+  "multinews_04_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is Gigi Hadid's response date correctly cited as Monday, September 28, 2015?",
+        "evidence_hint": "Article 1 states she addressed comments on Monday and tweets are dated September 28, 2015."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization accurately quote Kris Jenner calling Gigi 'sweetest, smartest, and most beautiful'?",
+        "evidence_hint": "Article 1 contains Kris Jenner's tweet with these exact adjectives supporting Gigi."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the sequence correct that Gigi's Instagram statement preceded Kris Jenner's supportive tweet?",
+        "evidence_hint": "Article 1 notes Gigi addressed comments on Monday, then states Kris 'wasted no time' supporting."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the specific celebrities Gigi listed (e.g., Ashley Graham, Serena Williams) accurately named?",
+        "evidence_hint": "Article 1 lists Ashley Graham, Candice Swanepoel, Serena Williams, Beyonce, Rihanna, and Taylor Swift."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the timeline explicitly display Gigi Hadid's specific arguments against body shamers?",
+        "evidence_hint": "Query requires comparing responses; Article 1 details Gigi's 'sample sizes' and 'love my body' arguments."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the timeline explicitly display Kris Jenner's specific arguments supporting Gigi?",
+        "evidence_hint": "Query requires comparing support; Article 1 details Kris's critique of 'angry and bitter' haters."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization clearly juxtapose the timing of Gigi's statement and Kris's support?",
+        "evidence_hint": "Query asks to compare using a timeline; Article 1 provides the sequential relationship between events."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a linear timeline format used to represent the chronological sequence of events?",
+        "evidence_hint": "Query explicitly requests a 'timeline' to compare the temporal sequence of the two responses."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual layout allow for direct side-by-side comparison of the two distinct responses?",
+        "evidence_hint": "Query type is 'comparative'; the visualization must facilitate comparing Gigi's and Kris's distinct messages."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1174,
+    "tokens_out": 622,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is Gigi Hadid's response date correctly cited as Monday, September 28, 2015?\",\n      \"evidence_hint\": \"Article 1 states she addressed comments on Monday and tweets are dated September 28, 2015.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization accurately quote Kris Jenner calling Gigi 'sweetest, smartest, and most beautiful'?\",\n      \"evidence_hint\": \"Article 1 contains Kris Jenner's tweet with these exact adjectives supporting Gigi.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the sequence correct that Gigi's Instagram statement preceded Kris Jenner's supportive tweet?\",\n      \"evidence_hint\": \"Article 1 notes Gigi addressed comments on Monday, then states Kris 'wasted no time' supporting.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the specific celebrities Gigi listed (e.g., Ashley Graham, Serena Williams) accurately named?\",\n      \"evidence_hint\": \"Article 1 lists Ashley Graham, Candice Swanepoel, Serena Williams, Beyonce, Rihanna, and Taylor Swift.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the timeline explicitly display Gigi Hadid's specific arguments against body shamers?\",\n      \"evidence_hint\": \"Query requires comparing responses; Article 1 details Gigi's 'sample sizes' and 'love my body' arguments.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the timeline explicitly display Kris Jenner's specific arguments supporting Gigi?\",\n      \"evidence_hint\": \"Query requires comparing support; Article 1 details Kris's critique of 'angry and bitter' haters.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization clearly juxtapose the timing of Gigi's statement and Kris's support?\",\n      \"evidence_hint\": \"Query asks to compare using a timeline; Article 1 provides the sequential relationship between events.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a linear timeline format used to represent the chronological sequence of events?\",\n      \"evidence_hint\": \"Query explicitly requests a 'timeline' to compare the temporal sequence of the two responses.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual layout allow for direct side-by-side comparison of the two distinct responses?\",\n      \"evidence_hint\": \"Query type is 'comparative'; the visualization must facilitate comparing Gigi's and Kris's distinct messages.\"\n    }\n  ]\n}"
+  },
+  "multinews_03_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization state Schettino dined with Cermotan before the collision based on witness Fabbri?",
+        "evidence_hint": "Article 2 mentions Fabbri saw Schettino with a woman; Article 1 mentions Cermotan as translator."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the dinner departure time shown as 9:05 PM and collision time as 9:45 PM per Article 2?",
+        "evidence_hint": "Article 2 states they left at 9:05 PM and he steered into rocks at 9:45 PM."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming Cermotan was the dinner companion if sources only imply it?",
+        "evidence_hint": "Article 2 says Fabbri saw a woman; Article 1 identifies Cermotan separately without confirming she was the diner."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are evacuation events placed after the 9:45 PM collision time according to the source texts?",
+        "evidence_hint": "Article 2 notes collision at 9:45 PM; Article 1 discusses evacuation instructions occurring after the grounding."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the timeline of the dinner event against the collision event?",
+        "evidence_hint": "Query asks to compare dinner timeline versus collision timeline; sources provide specific times for both."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are evacuation events included in the timeline to satisfy the query's request for evacuation comparison?",
+        "evidence_hint": "Query explicitly requests comparison including evacuation events; Article 1 details evacuation instructions and timing."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization highlight the temporal proximity between dinner ending and the ship collision?",
+        "evidence_hint": "Query implies comparing timelines; Article 2 shows only 40 minutes between dinner exit and collision."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline or chronological chart used to visualize the sequence of dinner, collision, and evacuation?",
+        "evidence_hint": "Query is comparative regarding time; timeline charts are standard for temporal sequence comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization format allow clear side-by-side or sequential comparison of the two event streams?",
+        "evidence_hint": "Comparative query requires visual structure that juxtaposes dinner timeline against collision/evacuation timeline clearly."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1764,
+    "tokens_out": 641,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization state Schettino dined with Cermotan before the collision based on witness Fabbri?\",\n      \"evidence_hint\": \"Article 2 mentions Fabbri saw Schettino with a woman; Article 1 mentions Cermotan as translator.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the dinner departure time shown as 9:05 PM and collision time as 9:45 PM per Article 2?\",\n      \"evidence_hint\": \"Article 2 states they left at 9:05 PM and he steered into rocks at 9:45 PM.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid claiming Cermotan was the dinner companion if sources only imply it?\",\n      \"evidence_hint\": \"Article 2 says Fabbri saw a woman; Article 1 identifies Cermotan separately without confirming she was the diner.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are evacuation events placed after the 9:45 PM collision time according to the source texts?\",\n      \"evidence_hint\": \"Article 2 notes collision at 9:45 PM; Article 1 discusses evacuation instructions occurring after the grounding.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly compare the timeline of the dinner event against the collision event?\",\n      \"evidence_hint\": \"Query asks to compare dinner timeline versus collision timeline; sources provide specific times for both.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are evacuation events included in the timeline to satisfy the query's request for evacuation comparison?\",\n      \"evidence_hint\": \"Query explicitly requests comparison including evacuation events; Article 1 details evacuation instructions and timing.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization highlight the temporal proximity between dinner ending and the ship collision?\",\n      \"evidence_hint\": \"Query implies comparing timelines; Article 2 shows only 40 minutes between dinner exit and collision.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline or chronological chart used to visualize the sequence of dinner, collision, and evacuation?\",\n      \"evidence_hint\": \"Query is comparative regarding time; timeline charts are standard for temporal sequence comparison.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization format allow clear side-by-side or sequential comparison of the two event streams?\",\n      \"evidence_hint\": \"Comparative query requires visual structure that juxtaposes dinner timeline against collision/evacuation timeline clearly.\"\n    }\n  ]\n}"
+  },
+  "multinews_05_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization state Steinhafel's intent was specifically to support economic growth and job creation?",
+        "evidence_hint": "Check Article 1 letter quote: 'intent... was to support economic growth and job creation'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the donation amount correctly cited as approximately $150,000 in money and services?",
+        "evidence_hint": "Verify Article 2 text stating Target donated 'around $150,000 of money and services'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization identify MN Forward as backing Republican Tom Emmer's gubernatorial campaign?",
+        "evidence_hint": "Confirm both articles link MN Forward to backing 'Republican Tom Emmer's bid for governor'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the described impacts limited to employee backlash, boycott calls, and an apology letter?",
+        "evidence_hint": "Check sources for mentions of 'boycott', 'employees', and the August 5, 2010 apology letter."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly juxtapose the stated economic intent against the resulting social controversy?",
+        "evidence_hint": "Ensure both Steinhafel's 'economic growth' quote and the 'anti-gay marriage' backlash are presented."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the specific recipient of the support, Tom Emmer, clearly identified in the impact section?",
+        "evidence_hint": "Verify the visualization names 'Tom Emmer' as the candidate backed by the MN Forward group."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization reflect that the impact included a formal apology to employees?",
+        "evidence_hint": "Check if the output includes the fact that Steinhafel 'apologized to Target employees'."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the visualization format suitable for comparing two distinct concepts: stated intent versus actual outcome?",
+        "evidence_hint": "Assess if the chart type (e.g., side-by-side bars or contrast table) enables direct comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual design avoid implying a temporal sequence where none is the primary focus?",
+        "evidence_hint": "Ensure the layout emphasizes the contrast between intent and impact rather than a timeline."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1753,
+    "tokens_out": 625,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization state Steinhafel's intent was specifically to support economic growth and job creation?\",\n      \"evidence_hint\": \"Check Article 1 letter quote: 'intent... was to support economic growth and job creation'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the donation amount correctly cited as approximately $150,000 in money and services?\",\n      \"evidence_hint\": \"Verify Article 2 text stating Target donated 'around $150,000 of money and services'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization identify MN Forward as backing Republican Tom Emmer's gubernatorial campaign?\",\n      \"evidence_hint\": \"Confirm both articles link MN Forward to backing 'Republican Tom Emmer's bid for governor'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the described impacts limited to employee backlash, boycott calls, and an apology letter?\",\n      \"evidence_hint\": \"Check sources for mentions of 'boycott', 'employees', and the August 5, 2010 apology letter.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly juxtapose the stated economic intent against the resulting social controversy?\",\n      \"evidence_hint\": \"Ensure both Steinhafel's 'economic growth' quote and the 'anti-gay marriage' backlash are presented.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the specific recipient of the support, Tom Emmer, clearly identified in the impact section?\",\n      \"evidence_hint\": \"Verify the visualization names 'Tom Emmer' as the candidate backed by the MN Forward group.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization reflect that the impact included a formal apology to employees?\",\n      \"evidence_hint\": \"Check if the output includes the fact that Steinhafel 'apologized to Target employees'.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the visualization format suitable for comparing two distinct concepts: stated intent versus actual outcome?\",\n      \"evidence_hint\": \"Assess if the chart type (e.g., side-by-side bars or contrast table) enables direct comparison.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual design avoid implying a temporal sequence where none is the primary focus?\",\n      \"evidence_hint\": \"Ensure the layout emphasizes the contrast between intent and impact rather than a timeline.\"\n    }\n  ]\n}"
+  },
+  "multinews_06_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly identify Evenwel v. Abbott as the specific redistricting case regarding voter eligibility counts?",
+        "evidence_hint": "Check Article 1 for case name Evenwel v. Abbott and context of counting eligible voters."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the two specific legal questions on same-sex marriage accurately stated as banning marriage and recognizing out-of-state unions?",
+        "evidence_hint": "Verify Article 2 section on Same-sex marriage lists the two specific questions confronted by the court."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the lethal injection challenge correctly attributed to Oklahoma and the drug midazolam's effect on consciousness?",
+        "evidence_hint": "Confirm Article 2 identifies Oklahoma case and debates if midazolam causes coma or paralysis."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming a final ruling date when sources only mention decisions pending in June?",
+        "evidence_hint": "Check Article 2 states cases are left to decide in June with no specific release dates."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the distinct legal questions across all three specified case topics?",
+        "evidence_hint": "Ensure visual elements contrast legal questions for same-sex marriage, redistricting, and lethal injection side-by-side."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are the potential impacts for each case, such as power shifts or execution methods, clearly presented for comparison?",
+        "evidence_hint": "Verify inclusion of impacts like rural power shifts (Art 1) and pain vs coma (Art 2)."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization distinguish between the two different redistricting issues mentioned in the separate articles?",
+        "evidence_hint": "Check if visual separates Texas population count issue (Art 1) from Arizona commission issue (Art 2)."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a comparative layout used to effectively display differences in legal questions and impacts across the three cases?",
+        "evidence_hint": "Assess if format allows side-by-side analysis suitable for a comparative query type."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization use categorical grouping rather than a timeline, given the focus on comparing case attributes?",
+        "evidence_hint": "Verify structure groups by case topic instead of chronological sequence since dates are unspecified."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1546,
+    "tokens_out": 624,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization correctly identify Evenwel v. Abbott as the specific redistricting case regarding voter eligibility counts?\",\n      \"evidence_hint\": \"Check Article 1 for case name Evenwel v. Abbott and context of counting eligible voters.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the two specific legal questions on same-sex marriage accurately stated as banning marriage and recognizing out-of-state unions?\",\n      \"evidence_hint\": \"Verify Article 2 section on Same-sex marriage lists the two specific questions confronted by the court.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the lethal injection challenge correctly attributed to Oklahoma and the drug midazolam's effect on consciousness?\",\n      \"evidence_hint\": \"Confirm Article 2 identifies Oklahoma case and debates if midazolam causes coma or paralysis.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid claiming a final ruling date when sources only mention decisions pending in June?\",\n      \"evidence_hint\": \"Check Article 2 states cases are left to decide in June with no specific release dates.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly compare the distinct legal questions across all three specified case topics?\",\n      \"evidence_hint\": \"Ensure visual elements contrast legal questions for same-sex marriage, redistricting, and lethal injection side-by-side.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are the potential impacts for each case, such as power shifts or execution methods, clearly presented for comparison?\",\n      \"evidence_hint\": \"Verify inclusion of impacts like rural power shifts (Art 1) and pain vs coma (Art 2).\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization distinguish between the two different redistricting issues mentioned in the separate articles?\",\n      \"evidence_hint\": \"Check if visual separates Texas population count issue (Art 1) from Arizona commission issue (Art 2).\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a comparative layout used to effectively display differences in legal questions and impacts across the three cases?\",\n      \"evidence_hint\": \"Assess if format allows side-by-side analysis suitable for a comparative query type.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization use categorical grouping rather than a timeline, given the focus on comparing case attributes?\",\n      \"evidence_hint\": \"Verify structure groups by case topic instead of chronological sequence since dates are unspecified.\"\n    }\n  ]\n}"
+  },
+  "multinews_08_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is the abduction time correctly stated as 9:40 p.m. on Sunday, Nov. 2?",
+        "evidence_hint": "Article 2 states abduction happened at 9:40 p.m. Sunday."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the ATM usage time accurately shown as 6:00 or 6:01 a.m. on Monday?",
+        "evidence_hint": "Article 1 says 6 a.m.; Article 2 specifies 6:01 a.m. Monday."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the ATM location identified as Aberdeen, Maryland, approximately 75 miles from Philadelphia?",
+        "evidence_hint": "Article 3 mentions Aberdeen, about 75 miles from Philadelphia."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the time gap between events described as roughly 8 to 9 hours?",
+        "evidence_hint": "Article 3 states transaction occurred less than nine hours after abduction."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly compare the specific timestamps of the abduction and ATM use?",
+        "evidence_hint": "Query asks to compare timelines; sources provide specific times for both."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are both geographic locations (Germantown, PA and Aberdeen, MD) included in the comparison?",
+        "evidence_hint": "Query implies location context; sources identify Germantown and Aberdeen."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the sequence of events clear, showing abduction preceding the ATM transaction?",
+        "evidence_hint": "Query requires timeline comparison; sources confirm Sunday night precedes Monday morning."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline or chronological chart used to visualize the sequence of events?",
+        "evidence_hint": "Comparative timeline query requires temporal visualization like a line or bar chart."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Are the two distinct events visually separated yet linked by their time difference?",
+        "evidence_hint": "Comparative query needs clear distinction and connection between the two time points."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 2858,
+    "tokens_out": 573,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the abduction time correctly stated as 9:40 p.m. on Sunday, Nov. 2?\",\n      \"evidence_hint\": \"Article 2 states abduction happened at 9:40 p.m. Sunday.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the ATM usage time accurately shown as 6:00 or 6:01 a.m. on Monday?\",\n      \"evidence_hint\": \"Article 1 says 6 a.m.; Article 2 specifies 6:01 a.m. Monday.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the ATM location identified as Aberdeen, Maryland, approximately 75 miles from Philadelphia?\",\n      \"evidence_hint\": \"Article 3 mentions Aberdeen, about 75 miles from Philadelphia.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the time gap between events described as roughly 8 to 9 hours?\",\n      \"evidence_hint\": \"Article 3 states transaction occurred less than nine hours after abduction.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly compare the specific timestamps of the abduction and ATM use?\",\n      \"evidence_hint\": \"Query asks to compare timelines; sources provide specific times for both.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are both geographic locations (Germantown, PA and Aberdeen, MD) included in the comparison?\",\n      \"evidence_hint\": \"Query implies location context; sources identify Germantown and Aberdeen.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the sequence of events clear, showing abduction preceding the ATM transaction?\",\n      \"evidence_hint\": \"Query requires timeline comparison; sources confirm Sunday night precedes Monday morning.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline or chronological chart used to visualize the sequence of events?\",\n      \"evidence_hint\": \"Comparative timeline query requires temporal visualization like a line or bar chart.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Are the two distinct events visually separated yet linked by their time difference?\",\n      \"evidence_hint\": \"Comparative query needs clear distinction and connection between the two time points.\"\n    }\n  ]\n}"
+  },
+  "multinews_07_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the timeline state Chris Martin and Gwyneth Paltrow split in 2014?",
+        "evidence_hint": "Article 2 mentions they split in 2014 after 10 years of marriage."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization identify Dakota Johnson and Chris Martin's relationship start as mid-October 2017?",
+        "evidence_hint": "Article 2 states rumors sparked after a mid-October 2017 sushi date."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are Apple and Moses correctly listed as children of Chris Martin and Gwyneth Paltrow?",
+        "evidence_hint": "Article 2 lists their children as 14-year-old Apple and 12-year-old Moses."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the chart avoid claiming Chris Martin dated Dakota Johnson before 2017?",
+        "evidence_hint": "Article 2 confirms dating rumors began in mid-October 2017, not earlier."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the timeline visually compare the durations of both relationships side-by-side?",
+        "evidence_hint": "Query asks to compare relationships; sources provide start/end dates for both."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are key milestones like the 2014 split and 2017 dating start included?",
+        "evidence_hint": "Query implies comparing timelines; sources specify 2014 split and 2017 start."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization distinguish between the marriage to Paltrow and dating of Johnson?",
+        "evidence_hint": "Query compares relationships; sources define one as marriage, one as dating."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format used to effectively show the chronological sequence of relationships?",
+        "evidence_hint": "Query explicitly requests a timeline; content involves dates and durations."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual layout allow direct comparison of the two relationship periods?",
+        "evidence_hint": "Query is comparative; timeline format must enable side-by-side temporal analysis."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1135,
+    "tokens_out": 590,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the timeline state Chris Martin and Gwyneth Paltrow split in 2014?\",\n      \"evidence_hint\": \"Article 2 mentions they split in 2014 after 10 years of marriage.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization identify Dakota Johnson and Chris Martin's relationship start as mid-October 2017?\",\n      \"evidence_hint\": \"Article 2 states rumors sparked after a mid-October 2017 sushi date.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are Apple and Moses correctly listed as children of Chris Martin and Gwyneth Paltrow?\",\n      \"evidence_hint\": \"Article 2 lists their children as 14-year-old Apple and 12-year-old Moses.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the chart avoid claiming Chris Martin dated Dakota Johnson before 2017?\",\n      \"evidence_hint\": \"Article 2 confirms dating rumors began in mid-October 2017, not earlier.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the timeline visually compare the durations of both relationships side-by-side?\",\n      \"evidence_hint\": \"Query asks to compare relationships; sources provide start/end dates for both.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are key milestones like the 2014 split and 2017 dating start included?\",\n      \"evidence_hint\": \"Query implies comparing timelines; sources specify 2014 split and 2017 start.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization distinguish between the marriage to Paltrow and dating of Johnson?\",\n      \"evidence_hint\": \"Query compares relationships; sources define one as marriage, one as dating.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline format used to effectively show the chronological sequence of relationships?\",\n      \"evidence_hint\": \"Query explicitly requests a timeline; content involves dates and durations.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual layout allow direct comparison of the two relationship periods?\",\n      \"evidence_hint\": \"Query is comparative; timeline format must enable side-by-side temporal analysis.\"\n    }\n  ]\n}"
+  },
+  "multinews_09_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly state the current year's donation value as $2.1 billion?",
+        "evidence_hint": "Article 1 and 2 explicitly state the gift is worth $2.1 billion this year."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the share counts accurately shown as 16.6 million for this year and 17.5 million for last year?",
+        "evidence_hint": "Article 1 and 2 specify 16.6 million Class B shares this year, down from 17.5 million."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the previous year's donation value correctly depicted as $2.0 billion?",
+        "evidence_hint": "Article 1 states the value was $2.0 billion last year; Article 2 confirms a $2 billion record."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming data for three specific years if only two are explicitly detailed?",
+        "evidence_hint": "Sources detail only 'this year' and 'last year' with specific numbers; 2012 is mentioned vaguely as $1.5 billion."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization enable a direct comparison of donation values between the available years?",
+        "evidence_hint": "Query asks to compare annual donations; sources provide value data for consecutive years."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization reflect the trend of increasing value despite decreasing share counts?",
+        "evidence_hint": "Article 1 notes value increased for three consecutive years even though fewer shares were donated."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the recipient identified specifically as the Bill and Melinda Gates Foundation?",
+        "evidence_hint": "Query specifies Gates Foundation; Articles 1 and 2 confirm donations go to this specific entity."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a comparative chart type (e.g., bar or column) used to contrast annual donation values?",
+        "evidence_hint": "Query is comparative; bar charts effectively compare discrete values across different years."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization clearly distinguish between share count and monetary value metrics?",
+        "evidence_hint": "Sources show inverse trends for shares and value; distinct visual encoding prevents misinterpretation."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1354,
+    "tokens_out": 511,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the visualization correctly state the current year's donation value as $2.1 billion?\", \"evidence_hint\": \"Article 1 and 2 explicitly state the gift is worth $2.1 billion this year.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are the share counts accurately shown as 16.6 million for this year and 17.5 million for last year?\", \"evidence_hint\": \"Article 1 and 2 specify 16.6 million Class B shares this year, down from 17.5 million.\"}, {\"axis\": \"faithfulness\", \"question\": \"Is the previous year's donation value correctly depicted as $2.0 billion?\", \"evidence_hint\": \"Article 1 states the value was $2.0 billion last year; Article 2 confirms a $2 billion record.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the visualization avoid claiming data for three specific years if only two are explicitly detailed?\", \"evidence_hint\": \"Sources detail only 'this year' and 'last year' with specific numbers; 2012 is mentioned vaguely as $1.5 billion.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization enable a direct comparison of donation values between the available years?\", \"evidence_hint\": \"Query asks to compare annual donations; sources provide value data for consecutive years.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization reflect the trend of increasing value despite decreasing share counts?\", \"evidence_hint\": \"Article 1 notes value increased for three consecutive years even though fewer shares were donated.\"}, {\"axis\": \"coverage\", \"question\": \"Is the recipient identified specifically as the Bill and Melinda Gates Foundation?\", \"evidence_hint\": \"Query specifies Gates Foundation; Articles 1 and 2 confirm donations go to this specific entity.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is a comparative chart type (e.g., bar or column) used to contrast annual donation values?\", \"evidence_hint\": \"Query is comparative; bar charts effectively compare discrete values across different years.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the visualization clearly distinguish between share count and monetary value metrics?\", \"evidence_hint\": \"Sources show inverse trends for shares and value; distinct visual encoding prevents misinterpretation.\"}]}"
+  },
+  "arxiv_01_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the diagram correctly identify MCAT, SurvPath, and MMP as the audited multimodal models?",
+        "evidence_hint": "Check Introduction and Experiment A sections listing specific model names."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the data types listed as whole-slide histopathology images and genomic profiles?",
+        "evidence_hint": "Verify Abstract and Introduction for 'WSI' and 'genomic data' mentions."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the primary challenge identified as probability miscalibration despite high discrimination rankings?",
+        "evidence_hint": "Check Abstract and Introduction for 'fail 1-calibration' versus 'concordance index' statements."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the diagram note that gating-based fusion correlates with better calibration than bilinear methods?",
+        "evidence_hint": "Verify Abstract and Discussion sections regarding fusion types and calibration results."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization compare the three specific models requested: Transformer Hawkes, FairLogue, and Genomic Foundation Models?",
+        "evidence_hint": "Check if the diagram addresses the specific model names in the user query."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are core architectures, data types, and primary challenges all represented for each compared entity?",
+        "evidence_hint": "Verify presence of all three requested comparison dimensions in the diagram."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the diagram reflect the source document's focus on multimodal cancer survival models rather than the queried models?",
+        "evidence_hint": "Check if the content matches the provided source text about MCAT, SurvPath, and MMP."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a comparative diagram format used to effectively contrast attributes across the different models?",
+        "evidence_hint": "Assess if the visual layout supports side-by-side comparison of multiple entities."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization structure clearly separate architecture, data, and challenges for easy comparison?",
+        "evidence_hint": "Check if distinct categories are visually organized to answer the comparative query."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 3838,
+    "tokens_out": 574,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the diagram correctly identify MCAT, SurvPath, and MMP as the audited multimodal models?\",\n      \"evidence_hint\": \"Check Introduction and Experiment A sections listing specific model names.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the data types listed as whole-slide histopathology images and genomic profiles?\",\n      \"evidence_hint\": \"Verify Abstract and Introduction for 'WSI' and 'genomic data' mentions.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the primary challenge identified as probability miscalibration despite high discrimination rankings?\",\n      \"evidence_hint\": \"Check Abstract and Introduction for 'fail 1-calibration' versus 'concordance index' statements.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the diagram note that gating-based fusion correlates with better calibration than bilinear methods?\",\n      \"evidence_hint\": \"Verify Abstract and Discussion sections regarding fusion types and calibration results.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization compare the three specific models requested: Transformer Hawkes, FairLogue, and Genomic Foundation Models?\",\n      \"evidence_hint\": \"Check if the diagram addresses the specific model names in the user query.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are core architectures, data types, and primary challenges all represented for each compared entity?\",\n      \"evidence_hint\": \"Verify presence of all three requested comparison dimensions in the diagram.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the diagram reflect the source document's focus on multimodal cancer survival models rather than the queried models?\",\n      \"evidence_hint\": \"Check if the content matches the provided source text about MCAT, SurvPath, and MMP.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a comparative diagram format used to effectively contrast attributes across the different models?\",\n      \"evidence_hint\": \"Assess if the visual layout supports side-by-side comparison of multiple entities.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization structure clearly separate architecture, data, and challenges for easy comparison?\",\n      \"evidence_hint\": \"Check if distinct categories are visually organized to answer the comparative query.\"\n    }\n  ]\n}"
+  },
+  "arxiv_00_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming In-Place TTT or Target Policy Optimization mechanisms exist in the source?",
+        "evidence_hint": "Search text for 'In-Place TTT', 'Target Policy Optimization', or 'parameter update'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are all cited energy values (e.g., 485 MeV, 100 GeV) strictly attributed to electron acceleration experiments?",
+        "evidence_hint": "Verify numbers against pages 1, 11, and 12 regarding electron energy cutoffs."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization refrain from inventing comparisons between laser wakefield methods and machine learning optimizers?",
+        "evidence_hint": "Check if any link is made between 'flying-focus' and 'policy optimization' algorithms."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the alpha values (-0.0045, 0.0190) correctly labeled as wakefield velocity parameters rather than learning rates?",
+        "evidence_hint": "Cross-reference alpha values on page 11 with their definition as PFC or velocity tuning."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly state that the requested comparison cannot be performed due to missing source information?",
+        "evidence_hint": "Look for a clear message addressing the mismatch between query intent and document content."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output address the user's comparative intent by explaining the actual content found (flying-focus vs dephasing)?",
+        "evidence_hint": "Check if the viz pivots to comparing wakefield velocities or dephasing mitigation techniques mentioned."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are the key entities from the query (In-Place TTT, Target Policy Optimization) acknowledged as absent in the sources?",
+        "evidence_hint": "Verify if the visualization notes the absence of these specific machine learning terms."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the visualization format suitable for displaying a 'null result' or information gap rather than forcing a false comparison?",
+        "evidence_hint": "Assess if the chart type (e.g., text card, empty plot) fits the lack of comparable data."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visual structure avoid implying a valid side-by-side comparison where no source data exists?",
+        "evidence_hint": "Ensure no bar charts or tables falsely juxtapose non-existent algorithm parameters."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 4187,
+    "tokens_out": 652,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid claiming In-Place TTT or Target Policy Optimization mechanisms exist in the source?\",\n      \"evidence_hint\": \"Search text for 'In-Place TTT', 'Target Policy Optimization', or 'parameter update'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are all cited energy values (e.g., 485 MeV, 100 GeV) strictly attributed to electron acceleration experiments?\",\n      \"evidence_hint\": \"Verify numbers against pages 1, 11, and 12 regarding electron energy cutoffs.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization refrain from inventing comparisons between laser wakefield methods and machine learning optimizers?\",\n      \"evidence_hint\": \"Check if any link is made between 'flying-focus' and 'policy optimization' algorithms.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the alpha values (-0.0045, 0.0190) correctly labeled as wakefield velocity parameters rather than learning rates?\",\n      \"evidence_hint\": \"Cross-reference alpha values on page 11 with their definition as PFC or velocity tuning.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly state that the requested comparison cannot be performed due to missing source information?\",\n      \"evidence_hint\": \"Look for a clear message addressing the mismatch between query intent and document content.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output address the user's comparative intent by explaining the actual content found (flying-focus vs dephasing)?\",\n      \"evidence_hint\": \"Check if the viz pivots to comparing wakefield velocities or dephasing mitigation techniques mentioned.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are the key entities from the query (In-Place TTT, Target Policy Optimization) acknowledged as absent in the sources?\",\n      \"evidence_hint\": \"Verify if the visualization notes the absence of these specific machine learning terms.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the visualization format suitable for displaying a 'null result' or information gap rather than forcing a false comparison?\",\n      \"evidence_hint\": \"Assess if the chart type (e.g., text card, empty plot) fits the lack of comparable data.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visual structure avoid implying a valid side-by-side comparison where no source data exists?\",\n      \"evidence_hint\": \"Ensure no bar charts or tables falsely juxtapose non-existent algorithm parameters.\"\n    }\n  ]\n}"
+  },
+  "arxiv_02_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the mindmap correctly identify 'Action Images' as a mechanism discussed in the source text?",
+        "evidence_hint": "Search source text for the exact phrase 'Action Images' to verify existence."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the mindmap correctly identify 'HaloProbe' as a mechanism discussed in the source text?",
+        "evidence_hint": "Search source text for the exact phrase 'HaloProbe' to verify existence."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the mindmap correctly identify 'DiffHDR' as a mechanism discussed in the source text?",
+        "evidence_hint": "Search source text for the exact phrase 'DiffHDR' to verify existence."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are any numerical values in the mindmap (e.g., 90%, 0.4 meV) traced to the provided microcavity paper?",
+        "evidence_hint": "Check if numbers like '90%' or '0.4 meV' appear in the source text."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization address the comparison of core mechanisms for the three requested terms?",
+        "evidence_hint": "Check if the mindmap contains nodes comparing mechanisms for Action Images, HaloProbe, and DiffHDR."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization acknowledge the absence of the requested terms in the provided source documents?",
+        "evidence_hint": "Check if the viz indicates that the source text does not contain the requested entities."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the mindmap avoid fabricating mechanisms for the requested terms given the source mismatch?",
+        "evidence_hint": "Verify no invented definitions exist for Action Images, HaloProbe, or DiffHDR based on the text."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a mindmap format used to structurally compare the distinct mechanisms of the three entities?",
+        "evidence_hint": "Verify the output is a mindmap showing relationships or comparisons between items."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization structure support a comparative analysis rather than a sequential or temporal narrative?",
+        "evidence_hint": "Check if the layout facilitates side-by-side comparison of features rather than a timeline."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 3089,
+    "tokens_out": 604,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the mindmap correctly identify 'Action Images' as a mechanism discussed in the source text?\",\n      \"evidence_hint\": \"Search source text for the exact phrase 'Action Images' to verify existence.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the mindmap correctly identify 'HaloProbe' as a mechanism discussed in the source text?\",\n      \"evidence_hint\": \"Search source text for the exact phrase 'HaloProbe' to verify existence.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the mindmap correctly identify 'DiffHDR' as a mechanism discussed in the source text?\",\n      \"evidence_hint\": \"Search source text for the exact phrase 'DiffHDR' to verify existence.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are any numerical values in the mindmap (e.g., 90%, 0.4 meV) traced to the provided microcavity paper?\",\n      \"evidence_hint\": \"Check if numbers like '90%' or '0.4 meV' appear in the source text.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization address the comparison of core mechanisms for the three requested terms?\",\n      \"evidence_hint\": \"Check if the mindmap contains nodes comparing mechanisms for Action Images, HaloProbe, and DiffHDR.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization acknowledge the absence of the requested terms in the provided source documents?\",\n      \"evidence_hint\": \"Check if the viz indicates that the source text does not contain the requested entities.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the mindmap avoid fabricating mechanisms for the requested terms given the source mismatch?\",\n      \"evidence_hint\": \"Verify no invented definitions exist for Action Images, HaloProbe, or DiffHDR based on the text.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a mindmap format used to structurally compare the distinct mechanisms of the three entities?\",\n      \"evidence_hint\": \"Verify the output is a mindmap showing relationships or comparisons between items.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization structure support a comparative analysis rather than a sequential or temporal narrative?\",\n      \"evidence_hint\": \"Check if the layout facilitates side-by-side comparison of features rather than a timeline.\"\n    }\n  ]\n}"
+  },
+  "arxiv_03_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the diagram correctly identify Graph MFG-IV as the specific architecture proposed in the source text?",
+        "evidence_hint": "Check Definition 3.1 and Section 3 for 'Graph MFG-IV' and 'initial value optimization'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the core components labeled as probability function rho and value function S per the source equations?",
+        "evidence_hint": "Verify labels against Equation 3.2 variables rho_i(t) and S_i(t) in Section 3."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the diagram accurately reflect the neural network approach (MLP or GNN) mentioned for solving the problem?",
+        "evidence_hint": "Check Section 4 and 5 for 'MLP', 'GNN', and 'neural network-based approach'."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the system described as non-cooperative homogeneous agents on finite graphs as stated in the abstract?",
+        "evidence_hint": "Verify abstract text: 'infinite, non-cooperative and interactive homogeneous agents move on node states'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly address the specific architectures of 'Paper Circle' or 'Exclusive Unlearning' as requested?",
+        "evidence_hint": "Scan source text for mentions of 'Paper Circle', 'Exclusive Unlearning', or 'LLM collective study'."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the diagram illustrate the comparison between the three specific studies named in the user query?",
+        "evidence_hint": "Check if the visual output contains distinct sections or data for the three queried entities."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization capture the 'Initial Value Optimization' reformulation which is the paper's main contribution?",
+        "evidence_hint": "Verify if the diagram highlights the reduction from path-wise to initial value optimization (Section 3)."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a diagram format used to effectively compare architectural components rather than just listing text?",
+        "evidence_hint": "Assess if the visual layout shows structural relationships suitable for architectural comparison."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the comparative diagram clearly distinguish between the different systems or acknowledge missing data?",
+        "evidence_hint": "Check if the visual structure supports side-by-side comparison or explicitly notes unavailable source info."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 4937,
+    "tokens_out": 630,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the diagram correctly identify Graph MFG-IV as the specific architecture proposed in the source text?\",\n      \"evidence_hint\": \"Check Definition 3.1 and Section 3 for 'Graph MFG-IV' and 'initial value optimization'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the core components labeled as probability function rho and value function S per the source equations?\",\n      \"evidence_hint\": \"Verify labels against Equation 3.2 variables rho_i(t) and S_i(t) in Section 3.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the diagram accurately reflect the neural network approach (MLP or GNN) mentioned for solving the problem?\",\n      \"evidence_hint\": \"Check Section 4 and 5 for 'MLP', 'GNN', and 'neural network-based approach'.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the system described as non-cooperative homogeneous agents on finite graphs as stated in the abstract?\",\n      \"evidence_hint\": \"Verify abstract text: 'infinite, non-cooperative and interactive homogeneous agents move on node states'.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly address the specific architectures of 'Paper Circle' or 'Exclusive Unlearning' as requested?\",\n      \"evidence_hint\": \"Scan source text for mentions of 'Paper Circle', 'Exclusive Unlearning', or 'LLM collective study'.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the diagram illustrate the comparison between the three specific studies named in the user query?\",\n      \"evidence_hint\": \"Check if the visual output contains distinct sections or data for the three queried entities.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization capture the 'Initial Value Optimization' reformulation which is the paper's main contribution?\",\n      \"evidence_hint\": \"Verify if the diagram highlights the reduction from path-wise to initial value optimization (Section 3).\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a diagram format used to effectively compare architectural components rather than just listing text?\",\n      \"evidence_hint\": \"Assess if the visual layout shows structural relationships suitable for architectural comparison.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the comparative diagram clearly distinguish between the different systems or acknowledge missing data?\",\n      \"evidence_hint\": \"Check if the visual structure supports side-by-side comparison or explicitly notes unavailable source info.\"\n    }\n  ]\n}"
+  },
+  "10k_00_temporal::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the Q1 2025 section list only MacBook Pro, Mac mini, iMac, and iPad mini?",
+        "evidence_hint": "Check Item 7 Product Announcements First Quarter 2025 list."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are iPhone 16e, iPad Air, iPad, MacBook Air, and Mac Studio correctly placed in Q2 2025?",
+        "evidence_hint": "Verify Item 7 Second Quarter 2025 bullet points."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the Q3 2025 entry exclusively mention iOS 26, macOS Tahoe 26, and related OS updates?",
+        "evidence_hint": "Cross-reference Item 7 Third Quarter 2025 software list."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are iPhone 17 variants, Apple Watch Series 11, and AirPods Pro 3 assigned only to Q4 2025?",
+        "evidence_hint": "Inspect Item 7 Fourth Quarter 2025 hardware announcements."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include product announcements for all four fiscal quarters of 2025?",
+        "evidence_hint": "Ensure Q1 through Q4 sections from Item 7 are present."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are both hardware devices and software operating systems included in the respective quarters?",
+        "evidence_hint": "Check for hardware in Q1/Q2/Q4 and software in Q3."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the timeline exclude non-announcement topics like tariffs or macroeconomic conditions?",
+        "evidence_hint": "Confirm only 'Product, Service and Software Announcements' data is used."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the data presented as a chronological timeline or sequential flow matching the query intent?",
+        "evidence_hint": "Verify visual structure reflects temporal progression Q1 to Q4."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the format clearly distinguish between quarters to facilitate temporal comparison?",
+        "evidence_hint": "Check for clear visual segmentation of the four fiscal quarters."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1827,
+    "tokens_out": 485,
+    "raw": "{\"checklist\": [{\"axis\": \"faithfulness\", \"question\": \"Does the Q1 2025 section list only MacBook Pro, Mac mini, iMac, and iPad mini?\", \"evidence_hint\": \"Check Item 7 Product Announcements First Quarter 2025 list.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are iPhone 16e, iPad Air, iPad, MacBook Air, and Mac Studio correctly placed in Q2 2025?\", \"evidence_hint\": \"Verify Item 7 Second Quarter 2025 bullet points.\"}, {\"axis\": \"faithfulness\", \"question\": \"Does the Q3 2025 entry exclusively mention iOS 26, macOS Tahoe 26, and related OS updates?\", \"evidence_hint\": \"Cross-reference Item 7 Third Quarter 2025 software list.\"}, {\"axis\": \"faithfulness\", \"question\": \"Are iPhone 17 variants, Apple Watch Series 11, and AirPods Pro 3 assigned only to Q4 2025?\", \"evidence_hint\": \"Inspect Item 7 Fourth Quarter 2025 hardware announcements.\"}, {\"axis\": \"coverage\", \"question\": \"Does the visualization include product announcements for all four fiscal quarters of 2025?\", \"evidence_hint\": \"Ensure Q1 through Q4 sections from Item 7 are present.\"}, {\"axis\": \"coverage\", \"question\": \"Are both hardware devices and software operating systems included in the respective quarters?\", \"evidence_hint\": \"Check for hardware in Q1/Q2/Q4 and software in Q3.\"}, {\"axis\": \"coverage\", \"question\": \"Does the timeline exclude non-announcement topics like tariffs or macroeconomic conditions?\", \"evidence_hint\": \"Confirm only 'Product, Service and Software Announcements' data is used.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Is the data presented as a chronological timeline or sequential flow matching the query intent?\", \"evidence_hint\": \"Verify visual structure reflects temporal progression Q1 to Q4.\"}, {\"axis\": \"type_appropriateness\", \"question\": \"Does the format clearly distinguish between quarters to facilitate temporal comparison?\", \"evidence_hint\": \"Check for clear visual segmentation of the four fiscal quarters.\"}]}"
+  },
+  "arxiv_04_comparative::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the table explicitly state that Claw-Eval and ACE-Bench are not mentioned in the provided STORM documents?",
+        "evidence_hint": "Search all pages for 'Claw-Eval' or 'ACE-Bench'; confirm their absence in the text."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are any evaluation metrics in the table falsely attributed to Claw-Eval or ACE-Bench instead of STORM baselines?",
+        "evidence_hint": "Compare table metrics against source mentions of PCC, Visium, Xenium, or CosMx results."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the table avoid fabricating environment design details for Claw-Eval and ACE-Bench not found in the source?",
+        "evidence_hint": "Verify if 'environment design' descriptions match any text in the provided STORM manuscript sections."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the table's claim about comparing these two benchmarks supported by any direct quote or data point in the source?",
+        "evidence_hint": "Look for specific sentences comparing Claw-Eval and ACE-Bench; confirm none exist in the text."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly address the user's request to compare Claw-Eval and ACE-Bench, even if to note their absence?",
+        "evidence_hint": "Check if the table title or content directly references the specific benchmarks named in the query."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the table provide available information on actual evaluation metrics mentioned in the source (e.g., PCC) as an alternative?",
+        "evidence_hint": "Verify inclusion of real metrics like median gene-level PCC or platform comparisons from the text."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization clarify that the source document focuses on STORM rather than the requested benchmarks?",
+        "evidence_hint": "Check for a note or cell indicating the source document's primary subject is the STORM model."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a table format used to facilitate the side-by-side comparison of metrics and environments as requested?",
+        "evidence_hint": "Confirm the output is a structured table with rows/columns suitable for comparative analysis."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the table structure clearly separate 'Evaluation Metrics' and 'Environment Designs' as distinct comparison categories?",
+        "evidence_hint": "Check column headers or row groupings for explicit labels matching the query's two focus areas."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 3509,
+    "tokens_out": 649,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the table explicitly state that Claw-Eval and ACE-Bench are not mentioned in the provided STORM documents?\",\n      \"evidence_hint\": \"Search all pages for 'Claw-Eval' or 'ACE-Bench'; confirm their absence in the text.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are any evaluation metrics in the table falsely attributed to Claw-Eval or ACE-Bench instead of STORM baselines?\",\n      \"evidence_hint\": \"Compare table metrics against source mentions of PCC, Visium, Xenium, or CosMx results.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the table avoid fabricating environment design details for Claw-Eval and ACE-Bench not found in the source?\",\n      \"evidence_hint\": \"Verify if 'environment design' descriptions match any text in the provided STORM manuscript sections.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the table's claim about comparing these two benchmarks supported by any direct quote or data point in the source?\",\n      \"evidence_hint\": \"Look for specific sentences comparing Claw-Eval and ACE-Bench; confirm none exist in the text.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly address the user's request to compare Claw-Eval and ACE-Bench, even if to note their absence?\",\n      \"evidence_hint\": \"Check if the table title or content directly references the specific benchmarks named in the query.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the table provide available information on actual evaluation metrics mentioned in the source (e.g., PCC) as an alternative?\",\n      \"evidence_hint\": \"Verify inclusion of real metrics like median gene-level PCC or platform comparisons from the text.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization clarify that the source document focuses on STORM rather than the requested benchmarks?\",\n      \"evidence_hint\": \"Check for a note or cell indicating the source document's primary subject is the STORM model.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a table format used to facilitate the side-by-side comparison of metrics and environments as requested?\",\n      \"evidence_hint\": \"Confirm the output is a structured table with rows/columns suitable for comparative analysis.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the table structure clearly separate 'Evaluation Metrics' and 'Environment Designs' as distinct comparison categories?\",\n      \"evidence_hint\": \"Check column headers or row groupings for explicit labels matching the query's two focus areas.\"\n    }\n  ]\n}"
+  },
+  "10k_01_temporal::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly state Microsoft Cloud revenue increased 23% to $168.9 billion?",
+        "evidence_hint": "Check MD&A Highlights bullet point on Microsoft Cloud revenue figures."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is Azure and other cloud services revenue growth accurately shown as 34%?",
+        "evidence_hint": "Verify Server products bullet point mentioning Azure growth of 34%."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are all highlighted segments (e.g., LinkedIn, Xbox) labeled with their exact reported growth percentages?",
+        "evidence_hint": "Cross-reference each segment's percentage against the MD&A Highlights list."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization strictly compare fiscal years ending June 30, 2025 and 2024?",
+        "evidence_hint": "Confirm dates match the MD&A overview comparing year ended June 30, 2025 vs 2024."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization include all nine revenue highlights listed in the MD&A section?",
+        "evidence_hint": "Count visual elements against the nine bullet points in the Highlights section."
+      },
+      {
+        "axis": "coverage",
+        "question": "Is the comparison between 2025 and 2024 growth rates clearly presented for every segment?",
+        "evidence_hint": "Ensure both years' data or growth deltas are visible for each listed category."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output focus exclusively on revenue growth highlights as requested by the query?",
+        "evidence_hint": "Verify no extraneous risk data from Item 7A or non-revenue metrics are included."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the data presented in a timeline or sequential format suitable for temporal comparison?",
+        "evidence_hint": "Assess if the layout emphasizes the chronological progression from 2024 to 2025."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization format allow for easy side-by-side comparison of growth rates?",
+        "evidence_hint": "Check if the design facilitates comparing 2025 vs 2024 performance visually."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1773,
+    "tokens_out": 599,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization correctly state Microsoft Cloud revenue increased 23% to $168.9 billion?\",\n      \"evidence_hint\": \"Check MD&A Highlights bullet point on Microsoft Cloud revenue figures.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is Azure and other cloud services revenue growth accurately shown as 34%?\",\n      \"evidence_hint\": \"Verify Server products bullet point mentioning Azure growth of 34%.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are all highlighted segments (e.g., LinkedIn, Xbox) labeled with their exact reported growth percentages?\",\n      \"evidence_hint\": \"Cross-reference each segment's percentage against the MD&A Highlights list.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization strictly compare fiscal years ending June 30, 2025 and 2024?\",\n      \"evidence_hint\": \"Confirm dates match the MD&A overview comparing year ended June 30, 2025 vs 2024.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization include all nine revenue highlights listed in the MD&A section?\",\n      \"evidence_hint\": \"Count visual elements against the nine bullet points in the Highlights section.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Is the comparison between 2025 and 2024 growth rates clearly presented for every segment?\",\n      \"evidence_hint\": \"Ensure both years' data or growth deltas are visible for each listed category.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output focus exclusively on revenue growth highlights as requested by the query?\",\n      \"evidence_hint\": \"Verify no extraneous risk data from Item 7A or non-revenue metrics are included.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the data presented in a timeline or sequential format suitable for temporal comparison?\",\n      \"evidence_hint\": \"Assess if the layout emphasizes the chronological progression from 2024 to 2025.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization format allow for easy side-by-side comparison of growth rates?\",\n      \"evidence_hint\": \"Check if the design facilitates comparing 2025 vs 2024 performance visually.\"\n    }\n  ]\n}"
+  },
+  "10k_03_temporal::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid claiming any NVIDIA H20 export license timeline exists in the provided Alphabet documents?",
+        "evidence_hint": "Scan source text for mentions of NVIDIA, H20, or export licenses; none exist."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are all financial figures cited strictly limited to Alphabet's 2024-2026 data rather than NVIDIA's fiscal 2026?",
+        "evidence_hint": "Verify numbers match Alphabet's $402.8B revenue or Wiz acquisition costs, not NVIDIA data."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization refrain from attributing Alphabet's Waymo investment to NVIDIA's financial impacts?",
+        "evidence_hint": "Check if $16.0B Waymo investment is incorrectly linked to NVIDIA in the visual claims."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the visualization free of fabricated dates regarding NVIDIA license developments since the source lacks them?",
+        "evidence_hint": "Confirm no specific dates for NVIDIA events are invented, as sources only discuss Alphabet."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly state that the requested NVIDIA timeline cannot be generated from the provided sources?",
+        "evidence_hint": "Look for a clear message indicating missing data regarding NVIDIA H20 licenses in the sources."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization clarify that the available financial data pertains to Alphabet, not the queried NVIDIA entity?",
+        "evidence_hint": "Check if the distinction between Alphabet's financials and the user's NVIDIA query is highlighted."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output address the temporal intent by explaining the absence of chronological data for the specific query?",
+        "evidence_hint": "Verify the response explains why a timeline cannot be constructed for NVIDIA based on these documents."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a timeline format avoided or annotated with gaps since the source documents contain no temporal data for NVIDIA?",
+        "evidence_hint": "Assess if the visual format acknowledges the lack of sequential events for the queried topic."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the visualization choice reflect the mismatch between the temporal query type and the non-existent source content?",
+        "evidence_hint": "Evaluate if the chart type or layout signals that the specific temporal data is unavailable."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 2045,
+    "tokens_out": 625,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid claiming any NVIDIA H20 export license timeline exists in the provided Alphabet documents?\",\n      \"evidence_hint\": \"Scan source text for mentions of NVIDIA, H20, or export licenses; none exist.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are all financial figures cited strictly limited to Alphabet's 2024-2026 data rather than NVIDIA's fiscal 2026?\",\n      \"evidence_hint\": \"Verify numbers match Alphabet's $402.8B revenue or Wiz acquisition costs, not NVIDIA data.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization refrain from attributing Alphabet's Waymo investment to NVIDIA's financial impacts?\",\n      \"evidence_hint\": \"Check if $16.0B Waymo investment is incorrectly linked to NVIDIA in the visual claims.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the visualization free of fabricated dates regarding NVIDIA license developments since the source lacks them?\",\n      \"evidence_hint\": \"Confirm no specific dates for NVIDIA events are invented, as sources only discuss Alphabet.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly state that the requested NVIDIA timeline cannot be generated from the provided sources?\",\n      \"evidence_hint\": \"Look for a clear message indicating missing data regarding NVIDIA H20 licenses in the sources.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization clarify that the available financial data pertains to Alphabet, not the queried NVIDIA entity?\",\n      \"evidence_hint\": \"Check if the distinction between Alphabet's financials and the user's NVIDIA query is highlighted.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output address the temporal intent by explaining the absence of chronological data for the specific query?\",\n      \"evidence_hint\": \"Verify the response explains why a timeline cannot be constructed for NVIDIA based on these documents.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a timeline format avoided or annotated with gaps since the source documents contain no temporal data for NVIDIA?\",\n      \"evidence_hint\": \"Assess if the visual format acknowledges the lack of sequential events for the queried topic.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the visualization choice reflect the mismatch between the temporal query type and the non-existent source content?\",\n      \"evidence_hint\": \"Evaluate if the chart type or layout signals that the specific temporal data is unavailable.\"\n    }\n  ]\n}"
+  },
+  "10k_02_temporal::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization correctly identify the source company as NVIDIA instead of TSLA?",
+        "evidence_hint": "Check document headers and 'Overview' section mentioning NVIDIA and Santa Clara."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are the net income figures restricted to fiscal years 2025 and 2026 found in the text?",
+        "evidence_hint": "Search for 'net income' values associated with fiscal years 2025 and 2026 only."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the FX risk exposure limited to the $136 million and $180 million figures cited?",
+        "evidence_hint": "Verify 'Foreign Exchange Rate Risk' section for specific adverse impact amounts in 2025 and 2026."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid inventing 2024 data points since the text only covers 2025 and 2026?",
+        "evidence_hint": "Confirm no data exists for fiscal year 2024 in the provided 'Item 7' or 'Item 7A' sections."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly address the missing 2024 data gap implied by the user query?",
+        "evidence_hint": "Check if the viz notes that source documents lack 2024 data while showing available years."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are both net income trends and FX risk exposure metrics presented side-by-side or comparatively?",
+        "evidence_hint": "Verify presence of two distinct data series: net income and foreign exchange contract impacts."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the output clarify that the FX data represents hypothetical sensitivity analysis rather than actual losses?",
+        "evidence_hint": "Check labels indicating 'hypothetical 10% decrease' or 'sensitivity analysis' in the FX section."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the data plotted on a chronological axis suitable for comparing fiscal years 2025 and 2026?",
+        "evidence_hint": "Verify the x-axis represents time periods (fiscal years) consistent with the 'temporal' query type."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Does the timeline format effectively display two different metric types (income currency vs risk exposure)?",
+        "evidence_hint": "Assess if dual axes or clear legends distinguish between net income dollars and FX risk amounts."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1724,
+    "tokens_out": 661,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization correctly identify the source company as NVIDIA instead of TSLA?\",\n      \"evidence_hint\": \"Check document headers and 'Overview' section mentioning NVIDIA and Santa Clara.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are the net income figures restricted to fiscal years 2025 and 2026 found in the text?\",\n      \"evidence_hint\": \"Search for 'net income' values associated with fiscal years 2025 and 2026 only.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the FX risk exposure limited to the $136 million and $180 million figures cited?\",\n      \"evidence_hint\": \"Verify 'Foreign Exchange Rate Risk' section for specific adverse impact amounts in 2025 and 2026.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid inventing 2024 data points since the text only covers 2025 and 2026?\",\n      \"evidence_hint\": \"Confirm no data exists for fiscal year 2024 in the provided 'Item 7' or 'Item 7A' sections.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly address the missing 2024 data gap implied by the user query?\",\n      \"evidence_hint\": \"Check if the viz notes that source documents lack 2024 data while showing available years.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are both net income trends and FX risk exposure metrics presented side-by-side or comparatively?\",\n      \"evidence_hint\": \"Verify presence of two distinct data series: net income and foreign exchange contract impacts.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the output clarify that the FX data represents hypothetical sensitivity analysis rather than actual losses?\",\n      \"evidence_hint\": \"Check labels indicating 'hypothetical 10% decrease' or 'sensitivity analysis' in the FX section.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the data plotted on a chronological axis suitable for comparing fiscal years 2025 and 2026?\",\n      \"evidence_hint\": \"Verify the x-axis represents time periods (fiscal years) consistent with the 'temporal' query type.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Does the timeline format effectively display two different metric types (income currency vs risk exposure)?\",\n      \"evidence_hint\": \"Assess if dual axes or clear legends distinguish between net income dollars and FX risk amounts.\"\n    }\n  ]\n}"
+  },
+  "10k_04_temporal::non_agentic": {
+    "checklist": [
+      {
+        "axis": "faithfulness",
+        "question": "Is the 2025 total revenue plotted exactly as $200.97 billion per the Executive Overview?",
+        "evidence_hint": "Check Executive Overview section for 2025 total revenue figure."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Is the 2025 operating income plotted exactly as $83.28 billion per the Executive Overview?",
+        "evidence_hint": "Check Executive Overview section for 2025 income from operations figure."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Are 2023 and 2024 data points omitted or marked unavailable since the text lacks specific values?",
+        "evidence_hint": "Verify text contains no specific revenue or income numbers for 2023 or 2024."
+      },
+      {
+        "axis": "faithfulness",
+        "question": "Does the visualization avoid inventing 2023-2024 growth rates not explicitly stated in the source?",
+        "evidence_hint": "Confirm source only provides 2025 vs 2024 percentage changes, not full historical series."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization explicitly indicate that 2023 and 2024 data are missing from the source?",
+        "evidence_hint": "Check if visual annotations or titles address the lack of 2023-2024 specific data."
+      },
+      {
+        "axis": "coverage",
+        "question": "Are both total revenue and operating income included as distinct series in the visualization?",
+        "evidence_hint": "Verify presence of two data series matching the two requested financial metrics."
+      },
+      {
+        "axis": "coverage",
+        "question": "Does the visualization clarify that 2025 figures are GAAP results, not constant currency?",
+        "evidence_hint": "Check if visual context distinguishes reported GAAP numbers from non-GAAP constant currency mentions."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is a line chart or bar chart used to appropriately display temporal financial trends?",
+        "evidence_hint": "Verify chart type supports time-series comparison for financial metrics."
+      },
+      {
+        "axis": "type_appropriateness",
+        "question": "Is the X-axis labeled with years (2023, 2024, 2025) to reflect the requested temporal scope?",
+        "evidence_hint": "Check X-axis labels match the specific years requested in the user query."
+      }
+    ],
+    "n_items": 9,
+    "n_target": 9,
+    "tokens_in": 1776,
+    "tokens_out": 636,
+    "raw": "{\n  \"checklist\": [\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the 2025 total revenue plotted exactly as $200.97 billion per the Executive Overview?\",\n      \"evidence_hint\": \"Check Executive Overview section for 2025 total revenue figure.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Is the 2025 operating income plotted exactly as $83.28 billion per the Executive Overview?\",\n      \"evidence_hint\": \"Check Executive Overview section for 2025 income from operations figure.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Are 2023 and 2024 data points omitted or marked unavailable since the text lacks specific values?\",\n      \"evidence_hint\": \"Verify text contains no specific revenue or income numbers for 2023 or 2024.\"\n    },\n    {\n      \"axis\": \"faithfulness\",\n      \"question\": \"Does the visualization avoid inventing 2023-2024 growth rates not explicitly stated in the source?\",\n      \"evidence_hint\": \"Confirm source only provides 2025 vs 2024 percentage changes, not full historical series.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization explicitly indicate that 2023 and 2024 data are missing from the source?\",\n      \"evidence_hint\": \"Check if visual annotations or titles address the lack of 2023-2024 specific data.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Are both total revenue and operating income included as distinct series in the visualization?\",\n      \"evidence_hint\": \"Verify presence of two data series matching the two requested financial metrics.\"\n    },\n    {\n      \"axis\": \"coverage\",\n      \"question\": \"Does the visualization clarify that 2025 figures are GAAP results, not constant currency?\",\n      \"evidence_hint\": \"Check if visual context distinguishes reported GAAP numbers from non-GAAP constant currency mentions.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is a line chart or bar chart used to appropriately display temporal financial trends?\",\n      \"evidence_hint\": \"Verify chart type supports time-series comparison for financial metrics.\"\n    },\n    {\n      \"axis\": \"type_appropriateness\",\n      \"question\": \"Is the X-axis labeled with years (2023, 2024, 2025) to reflect the requested temporal scope?\",\n      \"evidence_hint\": \"Check X-axis labels match the specific years requested in the user query.\"\n    }\n  ]\n}"
   }
 }
