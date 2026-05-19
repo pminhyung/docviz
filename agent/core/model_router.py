@@ -62,19 +62,27 @@ class ModelConfig:
     use_max_completion_tokens: bool = False  # gpt-* LLM mode: use max_completion_tokens param
 
     def get_api_key(self) -> str:
-        """Get the API key"""
+        """Get the API key. Empty string allowed when targeting an on-prem
+        endpoint (e.g., local vLLM) that doesn't enforce auth — the OpenAI
+        SDK still expects a non-None string so we pass 'EMPTY' as a sentinel."""
         if not self.api_key:
-            raise ValueError("API key not provided")
+            return "EMPTY"
         return self.api_key
 
 
-# Default model configurations (api_key must be provided at runtime)
+# Default model configurations (api_key must be provided at runtime).
+# QWEN3_BASE_URL / QWEN3_MODEL_ID / QWEN3_API_KEY env-vars let callers redirect
+# the "qwen3" role (used as default for EXTRACTION / SUMMARIZATION / QUERY_GEN)
+# to an on-prem vLLM cluster so internal tools (ReadFullDocument, etc.) hit the
+# same backend as the reasoner. Without these overrides, EXTRACTION goes to
+# Novita API and fails 401 when the orchestrator passes only on-prem credentials.
 DEFAULT_MODELS: Dict[str, ModelConfig] = {
     "qwen3": ModelConfig(
-        model_id="qwen/qwen3-235b-a22b-instruct-2507",
-        base_url="https://api.novita.ai/v3/openai",
+        model_id=os.environ.get("QWEN3_MODEL_ID", "qwen/qwen3-235b-a22b-instruct-2507"),
+        base_url=os.environ.get("QWEN3_BASE_URL", "https://api.novita.ai/v3/openai"),
         max_tokens=16384,
         temperature=0.2,
+        api_key=os.environ.get("QWEN3_API_KEY", ""),
     ),
     "gemini": ModelConfig(
         model_id="gemini-2.5-pro",

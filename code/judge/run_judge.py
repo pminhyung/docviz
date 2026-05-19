@@ -172,18 +172,19 @@ def _score_record(
 
 def _summary(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     by_strategy: Dict[str, Dict[str, Any]] = {}
-    axis_keys = ("faithfulness", "coverage", "type_appropriateness",
-                 "search_query_quality")
+    # Dynamically discover axes seen in the data (supports new axes like
+    # cross_document_integration without code changes).
     for r in records:
         s = by_strategy.setdefault(r["strategy"], {
             "n": 0,
             "overall_sum": 0.0,
-            "axes": {ax: {"sum": 0.0, "n": 0} for ax in axis_keys},
+            "axes": {},
         })
         s["n"] += 1
         if r["overall"] is not None:
             s["overall_sum"] += r["overall"]
         for ax, v in r["axis_scores"].items():
+            s["axes"].setdefault(ax, {"sum": 0.0, "n": 0})
             s["axes"][ax]["sum"] += v
             s["axes"][ax]["n"] += 1
     out: Dict[str, Any] = {}

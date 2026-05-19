@@ -44,12 +44,14 @@ class AgentHandler:
     Wraps AgentV2Runner with async execution and response building.
     """
 
-    def __init__(self, max_workers: int = 4):
+    def __init__(self, max_workers: int = 16):
         """
         Initialize the handler.
 
         Args:
-            max_workers: Maximum thread pool workers for blocking operations
+            max_workers: Maximum thread pool workers for blocking operations.
+                Raised from 4 to 16 to support multi-host fan-out across the
+                Qwen3.5-397B 9-host cluster (workers=12 client × 9 hosts).
         """
         self._executor = ThreadPoolExecutor(max_workers=max_workers)
 
@@ -131,6 +133,7 @@ class AgentHandler:
             reasoner_base_url=getattr(request, 'reasoner_base_url', None),
             reasoner_model_max_length=request.reasoner_model_max_length,
             extraction_api_key=extraction_api_key,
+            skip_doc_step=getattr(request, "skip_doc_step", False),
         )
 
         # Setup

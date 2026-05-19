@@ -180,6 +180,15 @@ class RunRequestV2(BaseModel):
                     "need the actual search queries and RFD goals downstream (e.g., judge scoring)."
     )
 
+    skip_doc_step: bool = Field(
+        default=False,
+        description="When True, skip the doc-summary LLM call (Step 1) and set the agent's first user-turn "
+                    "'Internal Documents' overview' to an empty string. Used by the v0.3 Layer D −CIS pillar "
+                    "ablation to ablate the Cross-doc Iterative Search (CIS) pillar without confounding "
+                    "long-context tolerance with retrieval contribution. Honest abstention vs raw-concat "
+                    "substitution per paper §7 Layer D notes."
+    )
+
     model_config = {
         "json_schema_extra": {
             "examples": [

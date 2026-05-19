@@ -32,7 +32,7 @@ import tempfile
 import threading
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from code.adapters.agent_client import AgentClient
 from code.adapters.bundle_to_docai import write_bundle_as_docai
@@ -145,6 +145,11 @@ class S4AgenticTMG(Pipeline):
         # Sticky reasoner URL per instance — round-robin across host pool.
         self._reasoner_base_url = _next_reasoner_url()
 
+    def _ablation_overrides(self) -> Dict[str, Any]:
+        """Subclass hook for Layer D pillar ablations to inject extra
+        agent-server request fields (e.g., skip_doc_step). Default no-op."""
+        return {}
+
     def run(
         self,
         query: str,
@@ -184,6 +189,14 @@ class S4AgenticTMG(Pipeline):
             }
         else:
             tmg_rule = ""
+
+        # Subclass extension point — Layer D pillar ablations can inject
+        # extra request overrides (e.g., B6NoCIS adds skip_doc_step=True
+        # to ablate the CIS pillar). Default is {} (no-op).
+        ablation_overrides = self._ablation_overrides()
+        if ablation_overrides:
+            extra_overrides = dict(extra_overrides or {})
+            extra_overrides.update(ablation_overrides)
 
         with AgentClient(base_url=self._base_url) as client:
             if not client.health():

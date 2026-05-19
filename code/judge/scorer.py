@@ -230,9 +230,18 @@ def score_checklist(
         by_axis.setdefault(item["axis"], []).append(scored_item["score"])
 
     axis_scores = {ax: round(sum(vs) / len(vs), 4) for ax, vs in by_axis.items() if vs}
+    # `overall` averages ONLY universal axes (faith, cov, TA, CDI) for symmetric
+    # cross-strategy comparison. SQQ stays in axis_scores as agentic-only
+    # diagnostic but is excluded from the headline composite — otherwise
+    # agentic strategies are evaluated on N+1 axes while non-agentic gets N,
+    # making the mean asymmetric. CDI was added 2026-05-17 as the 4th universal
+    # axis (all 265 prototype bundles are multi-doc).
+    _UNIVERSAL = {"faithfulness", "coverage", "type_appropriateness",
+                  "cross_document_integration"}
+    universal_scores = {ax: v for ax, v in axis_scores.items() if ax in _UNIVERSAL}
     overall = (
-        round(sum(axis_scores.values()) / len(axis_scores), 4)
-        if axis_scores else None
+        round(sum(universal_scores.values()) / len(universal_scores), 4)
+        if universal_scores else None
     )
 
     usage = resp.get("usage") or {}

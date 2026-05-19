@@ -199,6 +199,7 @@ class AgentV2Runner:
         reasoner_base_url: Optional[str] = None,
         reasoner_model_max_length: Optional[int] = None,
         extraction_api_key: Optional[str] = None,
+        skip_doc_step: bool = False,
     ):
         """
         Initialize the runner.
@@ -238,6 +239,7 @@ class AgentV2Runner:
         self.reasoner_base_url = reasoner_base_url
         self.reasoner_model_max_length = reasoner_model_max_length
         self.extraction_api_key = extraction_api_key or ""
+        self.skip_doc_step = skip_doc_step
 
         # Initialize components
         self.compiler = PromptCompiler(language=language)
@@ -484,43 +486,51 @@ class AgentV2Runner:
         # Document summary truncation (domain module)
         docs_summary_input = truncate_documents(multi_docs, max_length=80000)
 
-        # Step 1: Document summary
-        print("\n[Step 1] Generating document summary...")
-        self.trace_collector.start_step()
-
-        doc_summ_prompt = DOC_STEP_PROMPT.format(user_query=user_query)
-        doc_summ_prompt += doc_contexts
-
-        doc_summ_messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": doc_summ_prompt},
-        ]
-
-        summ_response = client.chat.completions.create(
-            messages=doc_summ_messages,
-            temperature=0.2,
-            max_tokens=4000
-        )
-        msg = summ_response.choices[0].message
-        doc_summary = msg.content or getattr(msg, 'reasoning_content', '') or ''
-
-        if builder is not None:
-            builder.record_doc_step(DocSummaryCompleted(prompt=doc_summ_prompt, summary=doc_summary))
+        # Step 1: Document summary (Pillar 1 = CIS). Honest-abstention path
+        # (skip_doc_step=True) used by the v0.3 Layer D −CIS pillar ablation:
+        # the agent's first user-turn 'Internal Documents' overview' is set
+        # to empty, so retrieval/reasoning proceeds without the upfront
+        # cross-doc summary that the CIS pillar contributes.
+        if self.skip_doc_step:
+            print("\n[Step 1] SKIPPED (skip_doc_step=True; CIS ablation)")
+            doc_summary = ""
         else:
-            train_sample["doc_step"] = [
-                {"role": "user", "content": doc_summ_prompt, "loss_masking": True},
-                {"role": "assistant", "content": doc_summary, "loss_masking": False},
+            print("\n[Step 1] Generating document summary...")
+            self.trace_collector.start_step()
+
+            doc_summ_prompt = DOC_STEP_PROMPT.format(user_query=user_query)
+            doc_summ_prompt += doc_contexts
+
+            doc_summ_messages = [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": doc_summ_prompt},
             ]
 
-        self.trace_collector.record_step(
-            step_type="doc_summary",
-            step_name="Document Analysis",
-            action="doc_summary",
-            tokens_used=summ_response.usage.total_tokens if summ_response.usage else 0,
-            model_used="qwen3",
-        )
+            summ_response = client.chat.completions.create(
+                messages=doc_summ_messages,
+                temperature=0.2,
+                max_tokens=4000
+            )
+            msg = summ_response.choices[0].message
+            doc_summary = msg.content or getattr(msg, 'reasoning_content', '') or ''
 
-        print(f"[Step 1] Document summary generated ({len(doc_summary)} chars)")
+            if builder is not None:
+                builder.record_doc_step(DocSummaryCompleted(prompt=doc_summ_prompt, summary=doc_summary))
+            else:
+                train_sample["doc_step"] = [
+                    {"role": "user", "content": doc_summ_prompt, "loss_masking": True},
+                    {"role": "assistant", "content": doc_summary, "loss_masking": False},
+                ]
+
+            self.trace_collector.record_step(
+                step_type="doc_summary",
+                step_name="Document Analysis",
+                action="doc_summary",
+                tokens_used=summ_response.usage.total_tokens if summ_response.usage else 0,
+                model_used="qwen3",
+            )
+
+            print(f"[Step 1] Document summary generated ({len(doc_summary)} chars)")
 
         # Initialize agent state
         runtime_prompt = self.compiled_prompt.runtime_prompt

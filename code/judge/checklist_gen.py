@@ -1,11 +1,12 @@
 """Per-instance checklist generator (PAPER_MASTER_SPEC §8.1, action guide §6.1).
 
-Given (query, query_type, source documents), emit 9 (non-agentic) or 12
-(agentic) yes/no items distributed across 4 axes:
-  - faithfulness        (4 items)
-  - coverage            (3 items)
-  - type_appropriateness (2 items)
-  - search_query_quality (3 items, agentic only)
+Given (query, query_type, source documents), emit 11 (non-agentic) or 14
+(agentic) yes/no items distributed across 4 universal axes + 1 agentic-only:
+  - faithfulness                 (4 items)
+  - coverage                     (3 items)
+  - type_appropriateness         (2 items)
+  - cross_document_integration   (2 items, universal; all bundles are multi-doc)
+  - search_query_quality         (3 items, agentic only; diagnostic, NOT in overall)
 
 Items are grounded in the bundle content and the query type — generic
 "is the chart accurate?" questions are forbidden by the prompt; we want
@@ -49,9 +50,17 @@ Generate a JSON LIST of {n_items} yes/no questions distributed exactly as:
               query implies? Reference query intent + source coverage.
 - "type_appropriateness": 2 items — does the viz format fit the query type
                            and content? (e.g., temporal → timeline/line)
+- "cross_document_integration": 2 items — does the visualization synthesize
+                                evidence from MULTIPLE source documents in
+                                the bundle, not just one? Each item must
+                                reference entities/facts that originate in
+                                DISTINCT source docs and ask whether both
+                                appear in the viz. This bundle has multiple
+                                documents — viz that draws from only one
+                                misses the cross-doc nature of the task.
 {search_query_block}
 Each item must be JSON of the form:
-  {{"axis": "<one of faithfulness | coverage | type_appropriateness{search_query_axis_or_empty}>",
+  {{"axis": "<one of faithfulness | coverage | type_appropriateness | cross_document_integration{search_query_axis_or_empty}>",
     "question": "Yes/no question grounded in this query+sources (max 25 words)",
     "evidence_hint": "What the scorer should look at to answer (max 20 words)"}}
 
@@ -106,7 +115,7 @@ def generate_checklist(
     seed: int = PAPER_DEFAULT_SEED,
 ) -> Dict[str, Any]:
     """Return a dict {"checklist": [...], "raw": <model output>, "usage": {...}}."""
-    n_items = 12 if strategy_class == "agentic" else 9
+    n_items = 14 if strategy_class == "agentic" else 11
     prompt = CHECKLIST_GEN_PROMPT.format(
         query=query,
         query_type=query_type,
@@ -141,7 +150,8 @@ def generate_checklist(
     items = obj.get("checklist") or []
     # Light validation: drop malformed items, keep at most n_items
     valid: List[Dict[str, Any]] = []
-    allowed_axes = {"faithfulness", "coverage", "type_appropriateness"}
+    allowed_axes = {"faithfulness", "coverage", "type_appropriateness",
+                    "cross_document_integration"}
     if strategy_class == "agentic":
         allowed_axes.add("search_query_quality")
     for it in items:

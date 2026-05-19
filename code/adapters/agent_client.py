@@ -60,8 +60,11 @@ DEFAULT_REASONER_KEY = "EMPTY"   # vLLM ignores; set to non-empty to satisfy
                                   # the agent's Pydantic validator.
 
 # Anti-hallucination defaults aligned with PAPER_MASTER_SPEC §3.5 / §19.
+# QWEN_SEED env override enables §13 three-seed reporting (42/43/44) without
+# touching downstream pipelines — every PAPER_DEFAULT_SEED importer picks up
+# the override transparently.
 PAPER_DEFAULT_TEMPERATURE = 0
-PAPER_DEFAULT_SEED = 42
+PAPER_DEFAULT_SEED = int(os.environ.get("QWEN_SEED", "42"))
 
 # Qwen3.5-397B-A17B-FP8 recommended sampling per Alibaba/Qwen team:
 #   - non-thinking mode: T=0.7, top_p=0.8, top_k=20, min_p=0

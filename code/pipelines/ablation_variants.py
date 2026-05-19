@@ -23,7 +23,7 @@ The ablation cell names map to amendment §10 Layer D row:
 """
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from pathlib import Path
 
 from code.pipelines.base import Bundle, Pipeline, VizOutput
@@ -78,48 +78,21 @@ class B6NoSAO(S4AgenticTMG):
         return vo
 
 
-class B6NoCIS(Pipeline):
-    """V0.3 PLACEHOLDER — deferred to Week-1.
+class B6NoCIS(S4AgenticTMG):
+    """V4_consolidated minus CIS (Pillar 1): same agent loop, TMG routing,
+    SAO post-processing, but the upfront doc-summary step (agent server's
+    Step 1) is skipped via `skip_doc_step=True` in RunRequestV2.
 
-    Full −CIS requires the agent server to bypass the doc-step
-    (`agent/run_agent_v2.py:474` doc_summary generation). The cleanest
-    way is to add a `skip_doc_step: bool` field to RunRequestV2; when
-    True, the server uses an empty `doc_summary` and the agent's first
-    user-turn omits the "Internal Documents' overview" line.
-
-    Without this flag we cannot cleanly ablate CIS — substituting raw
-    concat in the doc_summary slot would test "long context tolerance",
-    not "Pillar 1 contribution". Honest abstention is better than a
-    confounded ablation.
-
-    For paper §7 Layer D table this row is reported as "deferred to
-    Week-1; mechanism analysis in §8.4".
-    """
+    The agent's first user-turn carries an empty 'Internal Documents' overview'
+    so retrieval/reasoning proceeds without the cross-doc summary that the
+    CIS pillar contributes. Honest abstention rather than raw-concat
+    substitution (which would confound long-context tolerance with the
+    pillar's contribution)."""
 
     name = "B6_NoCIS"
 
-    def run(
-        self,
-        query: str,
-        bundle: Bundle,
-        *,
-        query_type: Optional[str] = None,
-        query_id: Optional[str] = None,
-    ) -> VizOutput:
-        return VizOutput(
-            viz_dsl="",
-            viz_type="",
-            rendered_image_path="",
-            render_success=False,
-            retrieved_chunks=[],
-            sub_queries=[],
-            source_attribution={},
-            tokens_in=0,
-            tokens_out=0,
-            cost_usd=0.0,
-            errors=[
-                "B6_NoCIS: deferred to Week-1 (requires agent server "
-                "skip_doc_step flag; honest abstention vs confounded "
-                "ablation per paper §7 Layer D notes)"
-            ],
-        )
+    def __init__(self, **kwargs):
+        super().__init__(mode="v4_consolidated", **kwargs)
+
+    def _ablation_overrides(self) -> Dict[str, Any]:
+        return {"skip_doc_step": True}
