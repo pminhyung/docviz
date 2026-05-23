@@ -42,22 +42,38 @@ Inputs:
 - Source documents (bundle):
 {sources}
 
-Generate a JSON LIST of {n_items} yes/no questions distributed exactly as:
-- "faithfulness": 4 items — does every visual claim trace to source content?
-                  Reference specific entities, numbers, dates, or quotes the
-                  scorer can check against the source.
-- "coverage": 3 items — does the viz address the key information needs the
-              query implies? Reference query intent + source coverage.
-- "type_appropriateness": 2 items — does the viz format fit the query type
-                           and content? (e.g., temporal → timeline/line)
-- "cross_document_integration": 2 items — does the visualization synthesize
-                                evidence from MULTIPLE source documents in
-                                the bundle, not just one? Each item must
-                                reference entities/facts that originate in
-                                DISTINCT source docs and ask whether both
-                                appear in the viz. This bundle has multiple
-                                documents — viz that draws from only one
-                                misses the cross-doc nature of the task.
+Generate a JSON LIST of {n_items} yes/no questions distributed exactly as
+follows. Each axis has its own scope; do NOT let one axis's scope rule
+bleed into items of another axis.
+
+- "faithfulness" (4 items) — scope: facts the visualization CLAIMS.
+  Each item targets a specific entity, number, date, or quoted phrase
+  that the viz actually displays, and asks whether the source supports
+  that exact claim. Items must reference what is IN the viz, not what
+  is missing from it. Do not draft items about source-side facts the
+  viz omits — those belong to coverage, not faithfulness.
+
+- "coverage" (3 items) — scope: what the user query EXPLICITLY asks
+  about. Items target the topics, entities, dimensions, time periods,
+  comparisons, or relationships that the query NAMES — and only those.
+  Do not penalize the viz for omitting source-side facts that fall
+  outside the query's stated scope; the visualization is not expected
+  to mirror the full source, only the slice the query targets.
+
+- "type_appropriateness" (2 items) — does the viz format fit the
+  query type and content? (e.g., temporal → timeline/line; relational
+  → flowchart; hierarchical → mindmap/tree)
+
+- "cross_document_integration" (2 items) — scope: the BUNDLE's
+  MULTI-DOCUMENT structure, UNIVERSAL across all queries. Each item
+  must explicitly name two distinct source documents (by title or
+  doc_id) and ask whether facts from BOTH appear in the visualization.
+  This axis is NOT narrowed by the query — even when the query could
+  be answered from a single document, the bundle is multi-doc by
+  construction, and a viz that draws from only one document misses
+  the cross-doc nature of the task. Do not relax this requirement
+  because the coverage axis above narrows to query scope; CDI's scope
+  is the bundle's document set, not the query.
 {search_query_block}
 Each item must be JSON of the form:
   {{"axis": "<one of faithfulness | coverage | type_appropriateness | cross_document_integration{search_query_axis_or_empty}>",

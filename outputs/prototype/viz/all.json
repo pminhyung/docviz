@@ -1762,25 +1762,23 @@
     "query_type": "quantitative",
     "query": "Chart the year-over-year change in TSLA's total revenue and net income for 2025 compared to the prior year.",
     "strategy": "S4_AgenticTMGv4_consolidated",
-    "viz_dsl": "",
-    "viz_type": "mermaid_flowchart",
+    "viz_dsl": "{\"type\":\"bar\",\"data\":{\"labels\":[\"2024\",\"2025\"],\"datasets\":[{\"label\":\"Total Revenue (Billions USD)\",\"data\":[97.69,94.83],\"backgroundColor\":\"rgba(54, 162, 235, 0.6)\",\"borderColor\":\"rgba(54, 162, 235, 1)\",\"borderWidth\":1},{\"label\":\"Net Income (Billions USD)\",\"data\":[7.09,3.79],\"backgroundColor\":\"rgba(255, 206, 86, 0.6)\",\"borderColor\":\"rgba(255, 206, 86, 1)\",\"borderWidth\":1}]},\"options\":{\"indexAxis\":\"x\",\"responsive\":true,\"scales\":{\"x\":{\"title\":{\"display\":true,\"text\":\"Year\"}},\"y\":{\"beginAtZero\":true,\"title\":{\"display\":true,\"text\":\"Value in Billions of USD\"}}},\"plugins\":{\"title\":{\"display\":true,\"text\":\"TSLA Year-Over-Year Financial Performance (2024 vs 2025)\"},\"legend\":{\"display\":true,\"position\":\"top\"}}}}",
+    "viz_type": "chartjs_grouped_bar",
     "rendered_image_path": "",
     "render_success": false,
-    "syntax_valid": false,
-    "syntax_check_kind": "empty",
+    "syntax_valid": true,
+    "syntax_check_kind": "chartjs_json:bar",
     "n_retrieved": 1,
-    "sub_queries": [],
-    "n_sub_queries": 0,
+    "sub_queries": [
+      "Search for TSLA 2025 and 2024 revenue and net income data in the internal document"
+    ],
+    "n_sub_queries": 1,
     "source_attribution_keys": [],
     "tokens_in": 0,
-    "tokens_out": 0,
+    "tokens_out": 21024,
     "cost_usd": 0.0,
-    "errors": [
-      "agent call raised: ReadTimeout: timed out",
-      "agent returned empty final_answer",
-      "S4_AgenticTMGv4_consolidated: generate_viz sidecar missing for query_id='10k_06_quantitative'; agent likely did not invoke the tool. Final_answer used as fallback."
-    ],
-    "duration_seconds": 600.026
+    "errors": [],
+    "duration_seconds": 57.514
   },
   {
     "query_id": "10k_06_quantitative",
@@ -13003,25 +13001,26 @@
     "query_type": "comparative",
     "query": "Compare the smoking reduction effects of price versus tax increases across age groups using a bar chart.",
     "strategy": "S4_AgenticTMGv4_consolidated",
-    "viz_dsl": "",
-    "viz_type": "mermaid_flowchart",
+    "viz_dsl": "{\"type\":\"bar\",\"data\":{\"labels\":[\"15-24 years\",\"25+ years\"],\"datasets\":[{\"label\":\"Cigarette Tax Increases\",\"data\":[3.44,0],\"backgroundColor\":\"rgba(54, 162, 235, 0.6)\",\"borderColor\":\"rgba(54, 162, 235, 1)\",\"borderWidth\":1},{\"label\":\"Cigarette Price Increases\",\"data\":[0,0],\"backgroundColor\":\"rgba(255, 159, 64, 0.6)\",\"borderColor\":\"rgba(255, 159, 64, 1)\",\"borderWidth\":1}]},\"options\":{\"indexAxis\":\"x\",\"responsive\":true,\"scales\":{\"y\":{\"beginAtZero\":true,\"title\":{\"display\":true,\"text\":\"Change in Smoking Rate (percentage points)\"}},\"x\":{\"title\":{\"display\":true,\"text\":\"Age Group\"}}},\"plugins\":{\"title\":{\"display\":true,\"text\":\"Smoking Reduction Effects: Price vs. Tax Increases by Age Group\"},\"legend\":{\"display\":true,\"position\":\"top\"},\"subtitle\":{\"display\":true,\"text\":\"Data derived from Stoller & Huber (2026): Tax effects significant only for 15-24 demographic. 15-24 Tax: Significant Reduction (3.44 pp); 25+ Tax: Negligible/Non-significant; Price Increases: Not Statistically Significant.\"}}}}",
+    "viz_type": "chartjs_grouped_bar",
     "rendered_image_path": "",
     "render_success": false,
-    "syntax_valid": false,
-    "syntax_check_kind": "empty",
+    "syntax_valid": true,
+    "syntax_check_kind": "chartjs_json:bar",
     "n_retrieved": 1,
-    "sub_queries": [],
-    "n_sub_queries": 0,
+    "sub_queries": [
+      "Search for smoking reduction effects by age group in the document",
+      "Search for detailed results on age group heterogeneity and specific effect sizes",
+      "Search for results section and specific age group data tables",
+      "Read the full document to extract age-specific results for price and tax effects"
+    ],
+    "n_sub_queries": 4,
     "source_attribution_keys": [],
     "tokens_in": 0,
-    "tokens_out": 0,
+    "tokens_out": 75090,
     "cost_usd": 0.0,
-    "errors": [
-      "agent call raised: ReadTimeout: timed out",
-      "agent returned empty final_answer",
-      "S4_AgenticTMGv4_consolidated: generate_viz sidecar missing for query_id='arxiv_34_comparative'; agent likely did not invoke the tool. Final_answer used as fallback."
-    ],
-    "duration_seconds": 600.08
+    "errors": [],
+    "duration_seconds": 146.305
   },
   {
     "query_id": "arxiv_34_comparative",
@@ -22858,25 +22857,23 @@
     "query_type": "temporal",
     "query": "Show a timeline of the 2014 QHSR phases from the 2012 initiation to the final report release.",
     "strategy": "S4_AgenticTMGv4_consolidated",
-    "viz_dsl": "",
-    "viz_type": "mermaid_flowchart",
+    "viz_dsl": "timeline\n    title 2014 Quadrennial Homeland Security Review (QHSR) Process\n    section Initiation/Preparation\n        Summer 2012 : Initiation of the second QHSR by DHS\n        2013 : Issuance of terms of reference outlining the framework\n    section Study/Analysis\n        2013-2014 : Conduct of five QHSR studies by study groups<br>6-Month Period\n    section Review/Consolidation\n        Pre-June 2014 : Senior leadership review<br>Draft report consolidation<br>Stakeholder feedback\n    section Release\n        June 2014 : Final release of the QHSR report\n",
+    "viz_type": "mermaid_timeline",
     "rendered_image_path": "",
     "render_success": false,
-    "syntax_valid": false,
-    "syntax_check_kind": "empty",
+    "syntax_valid": true,
+    "syntax_check_kind": "mermaid_header:timeline",
     "n_retrieved": 1,
-    "sub_queries": [],
-    "n_sub_queries": 0,
+    "sub_queries": [
+      "Search internal document for 2014 QHSR timeline details"
+    ],
+    "n_sub_queries": 1,
     "source_attribution_keys": [],
     "tokens_in": 0,
-    "tokens_out": 0,
+    "tokens_out": 27133,
     "cost_usd": 0.0,
-    "errors": [
-      "agent call raised: HTTPStatusError: Client error '400 Bad Request' for url 'http://localhost:9037/v2/run'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-      "agent returned empty final_answer",
-      "S4_AgenticTMGv4_consolidated: generate_viz sidecar missing for query_id='govreport_22_temporal'; agent likely did not invoke the tool. Final_answer used as fallback."
-    ],
-    "duration_seconds": 318.687
+    "errors": [],
+    "duration_seconds": 107.122
   },
   {
     "query_id": "govreport_22_temporal",
@@ -24164,25 +24161,24 @@
     "query_type": "temporal",
     "query": "Show a timeline of key immigration policy milestones from the 1986 IRCA through the 2013 Congress discussions on unauthorized aliens.",
     "strategy": "S4_AgenticTMGv4_consolidated",
-    "viz_dsl": "",
-    "viz_type": "mermaid_flowchart",
+    "viz_dsl": "timeline\n    title U.S. Immigration Policy Milestones (1986–2013)\n    section 1980s Legislative Actions\n        1986 : Registry provision updated by law<br>Continuous residence since before January 1, 1972\n        1987 : 100th Congress enacts legislation providing adjustment of status for aliens with Extended Voluntary Departure (EVD)<br>Includes Ethiopians, Afghans, and Poles\n    section 1990s Statutes and Guidance\n        1994 : INA Section 245(i) added<br>Allows adjustment of status for unauthorized aliens who entered unlawfully\n        1994 : Violence Against Women Act (VAWA) enacted\n        1996 : Illegal Immigration Reform and Immigrant Responsibility Act (IIRIRA) enacted<br>Adding 3-year and 10-year bars for unlawful presence\n        1997 : INS issues guidance memorandum on deferred action for battered aliens under VAWA\n    section 2000s Extensions and Reform Considerations\n        2000 : Law extends INA Section 245(i)<br>April 30, 2001 cutoff date for petitions\n        2013 : 113th Congress considers comprehensive immigration reform<br>Unauthorized alien population estimated at over 11 million\n",
+    "viz_type": "mermaid_timeline",
     "rendered_image_path": "",
     "render_success": false,
-    "syntax_valid": false,
-    "syntax_check_kind": "empty",
+    "syntax_valid": true,
+    "syntax_check_kind": "mermaid_header:timeline",
     "n_retrieved": 1,
-    "sub_queries": [],
-    "n_sub_queries": 0,
+    "sub_queries": [
+      "Search internal document for immigration policy milestones and timeline information",
+      "Search for specific mentions of 1986 IRCA and additional policy milestones"
+    ],
+    "n_sub_queries": 2,
     "source_attribution_keys": [],
     "tokens_in": 0,
-    "tokens_out": 0,
+    "tokens_out": 48547,
     "cost_usd": 0.0,
-    "errors": [
-      "agent call raised: ReadTimeout: timed out",
-      "agent returned empty final_answer",
-      "S4_AgenticTMGv4_consolidated: generate_viz sidecar missing for query_id='govreport_27_temporal'; agent likely did not invoke the tool. Final_answer used as fallback."
-    ],
-    "duration_seconds": 600.025
+    "errors": [],
+    "duration_seconds": 75.39
   },
   {
     "query_id": "govreport_27_temporal",
@@ -47446,25 +47442,23 @@
     "query_type": "temporal",
     "query": "Show a timeline of the Maker's Mark proof reduction controversy from the February announcement to the reversal.",
     "strategy": "S4_AgenticTMGv4_consolidated",
-    "viz_dsl": "",
-    "viz_type": "mermaid_flowchart",
+    "viz_dsl": "timeline\n    title Maker's Mark Proof Reduction Controversy\n    section Mid-February\n        Announcement : Proof reduction announced due to raw material shortages\n    section Following Days\n        Customer Revolt : Social media backlash and panic buying<br>Caused 44% sales surge\n    section February 17\n        Reversal : Company reverses decision<br>Posts apology 'You spoke. We listened' on social media",
+    "viz_type": "mermaid_timeline",
     "rendered_image_path": "",
     "render_success": false,
-    "syntax_valid": false,
-    "syntax_check_kind": "empty",
+    "syntax_valid": true,
+    "syntax_check_kind": "mermaid_header:timeline",
     "n_retrieved": 1,
-    "sub_queries": [],
-    "n_sub_queries": 0,
+    "sub_queries": [
+      "Search for timeline details in the internal document"
+    ],
+    "n_sub_queries": 1,
     "source_attribution_keys": [],
     "tokens_in": 0,
-    "tokens_out": 0,
+    "tokens_out": 16353,
     "cost_usd": 0.0,
-    "errors": [
-      "agent call raised: ReadTimeout: timed out",
-      "agent returned empty final_answer",
-      "S4_AgenticTMGv4_consolidated: generate_viz sidecar missing for query_id='multinews_17_temporal'; agent likely did not invoke the tool. Final_answer used as fallback."
-    ],
-    "duration_seconds": 600.119
+    "errors": [],
+    "duration_seconds": 45.648
   },
   {
     "query_id": "multinews_17_temporal",
