@@ -26,24 +26,25 @@ import httpx
 AGENT_BASE_URL = os.environ.get("DOCVIZ_AGENT_URL", "http://localhost:9024")
 
 # ── On-premise Qwen3.5-397B-A17B-FP8 vLLM cluster ──────────────────────────
-# 9 production hosts on the internal cluster, all serving the same model.
+# 6 production hosts on the internal cluster, all serving Qwen3.5-397B.
 # Each entry is "host:port"; the orchestrator's round-robin picks one
 # entry per pipeline instance, allowing parallel sample-level dispatch.
 #
-# Host policy:
+# Host policy (per user spec 2026-05-24):
+#   - Qwen3.5-397B pool: 10.1.211.147, 148, 163, 164, 165, 166 (all :8000)
+#   - DeepSeek V4-Flash pool: 10.1.211.167, 168, 169, 170 (separate cluster
+#     — never mix into Qwen pool)
 #   - 10.1.211.148:8000 is the *single-host pinned* endpoint (head of list,
-#     always used in single mode);
-#   - 10.1.211.163..170:8000 are the additional pool members used in
-#     multi mode for sample-level parallelism.
+#     always used in single mode).
 #
 # Mode selection (env DOCVIZ_HOST_MODE, default "single"):
 #   - "single" → only QWEN_HOSTS[0] (= 148) is used;
-#   - "multi"  → round-robin across all QWEN_HOSTS (148 + 163-170).
+#   - "multi"  → round-robin across all QWEN_HOSTS (147,148,163..166).
 #
 # Override by setting QWEN_HOSTS env to a comma-separated list.
 
 _DEFAULT_QWEN_HOSTS = ",".join(
-    ["10.1.211.148:8000"] + [f"10.1.211.{i}:8000" for i in range(163, 171)]
+    [f"10.1.211.{i}:8000" for i in (147, 148, 163, 164, 165, 166)]
 )
 QWEN_HOSTS = [
     h.strip() for h in os.environ.get("QWEN_HOSTS", _DEFAULT_QWEN_HOSTS).split(",")
@@ -164,7 +165,7 @@ class AgentClient:
         reasoner_model_name: str = QWEN_MODEL,
         reasoner_base_url: str = QWEN_BASE_URL,
         reasoner_api_key: str = DEFAULT_REASONER_KEY,
-        reasoner_max_length: Optional[int] = 32768,
+        reasoner_max_length: Optional[int] = None,
         extra_overrides: Optional[Dict[str, Any]] = None,
         omit_default_dsl_rule: bool = False,
     ) -> AgentRunResponse:
@@ -382,8 +383,10 @@ class QwenDirectClient:
         # Round-robin cursor + per-host cooldown registry. The cursor is
         # protected by a lock so concurrent callers (ThreadPoolExecutor)
         # distribute evenly across hosts.
-        import threading
-        self._idx = 0
+        import random as _random, threading
+        # Randomize initial cursor per client instance so concurrent workers
+        # (each creating its own client) don't all start hammering host[0].
+        self._idx = _random.randint(0, len(self._bases) - 1) if len(self._bases) > 1 else 0
         self._idx_lock = threading.Lock()
         self._cooldown_until: Dict[str, float] = {b: 0.0 for b in self._bases}
         self._cooldown_lock = threading.Lock()

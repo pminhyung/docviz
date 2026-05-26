@@ -39,17 +39,18 @@ EXPECTED = {
 }
 TARGET_TOTAL = sum(EXPECTED.values())
 
-# Per-source char floor. HotpotQA supporting paragraphs are inherently short
-# (see WEEK0_LOG.md decision note). Master spec's 3K-80K range applies to the
-# larger sources.
+# v0.4 LOADER_CONTRACT_v04.md — all 6 sources now uniform 15K-200K chars,
+# 3-5 docs/bundle. HotpotQA carve-out (500 chars) deprecated 2026-05-24.
 PER_SOURCE_MIN_CHARS = {
-    "hotpotqa":  500,
-    "multinews": 3_000,
-    "arxiv":     3_000,
-    "10k":       3_000,
-    "govreport": 3_000,
-    "tech_docs": 3_000,
+    "hotpotqa":  15_000,
+    "multinews": 15_000,
+    "arxiv":     15_000,
+    "10k":       15_000,
+    "govreport": 15_000,
+    "tech_docs": 15_000,
 }
+PER_SOURCE_MAX_CHARS = 200_000
+PER_SOURCE_MIN_DOCS = 3
 
 
 def main() -> int:
@@ -75,11 +76,12 @@ def main() -> int:
     print(f"[merge] per-source counts: {counts}")
     print(f"[merge] total: {len(all_bundles)}")
 
-    # Validate (per-source min_chars)
+    # Validate (per-source min_chars + min_docs, v0.4 contract)
     errors: List[str] = []
     for b in all_bundles:
-        floor = PER_SOURCE_MIN_CHARS.get(b.source, 3_000)
-        errors.extend(validate_bundle(b, min_chars=floor, max_chars=80_000))
+        floor = PER_SOURCE_MIN_CHARS.get(b.source, 15_000)
+        errors.extend(validate_bundle(b, min_docs=PER_SOURCE_MIN_DOCS,
+                                      min_chars=floor, max_chars=PER_SOURCE_MAX_CHARS))
     if errors:
         print("  [VALIDATION ERRORS]")
         for e in errors:

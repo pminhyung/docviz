@@ -1,30 +1,44 @@
-"""Technical Docs loader (v0.3 amendment D2.5-D2.8) → 50 multi-doc Bundles.
+"""Tech docs loader → 50 cross-document multi-article bundles (LOADER_CONTRACT_v04).
 
-Sub-source S6-a (default): long Wikipedia technical articles. Per
-AMENDMENT_v0.3_ACTION_SPEC.md §3.4:
+REDESIGN 2026-05-24 (v0.4): Each bundle = 3-4 DISTINCT Wikipedia articles
+from the same technology ecosystem. Replaces the v0.3 intra-article
+section-split design that produced non-cross-doc bundles per the audit.
 
-  - Curated list of 60-80 Wikipedia long technical articles spanning
-    ML / networking / databases / OS / cryptography / software arch
-  - Download via Wikipedia REST API (`/page/{title}` and section APIs)
-  - Group 2-4 contiguous top-level sections per article → 1 bundle
-    (alternative grouping: 2-4 related articles per bundle, kept for
-    later if S6-a yields too narrow a style)
-  - 50 bundles, source="tech_docs", random.seed(42)
-  - metadata = {article_title, source_url, sections, topic}
+Spec (LOADER_CONTRACT_v04):
+  - N_BUNDLES = 50
+  - 3-5 docs/bundle (we target 3-4)
+  - 15K-200K chars/bundle
+  - Doc = 1 distinct Wikipedia article (intro + 1-2 main sections, trimmed)
+  - random.seed(42)
+  - bundle.metadata = {language: "en", bridge_entity: <ecosystem>,
+                       ecosystem: ..., articles: [...]}
 
-Verification gate D2.8: each bundle has 2-4 docs of plain text and
-passes Bundle schema validation.
+Ecosystems (3 chosen for ~17 bundles each):
+  1. container_orchestration  — Docker, Kubernetes, Helm, Istio, ...
+  2. database_systems          — PostgreSQL, Redis, MongoDB, ...
+  3. js_frameworks             — React, Vue, Angular, Svelte, ...
 
-Bundles use 1 article × 2-4 sections (intra-article multi-doc). This
-keeps each bundle thematically coherent — multi-section flow within
-one technical topic, mirroring how a user would reference one technical
-doc with multiple chapters. Cross-article bundling is the secondary
-strategy if intra-article diversity proves insufficient.
+Pipeline:
+  1. For each ecosystem, fetch each curated article via Wikipedia parse API
+     and cache the parsed wikitext (+ stripped sections) to
+     data/prototype/sources/raw/tech_docs/{slug}.json. Resume-friendly.
+  2. Convert each article into a Doc (intro + 1-2 sections, trimmed to
+     ≤ PER_DOC_CHAR_CAP; minimum PER_DOC_MIN_CHARS or article is dropped).
+  3. Per ecosystem, enumerate unique 3-4 article combinations with a seeded
+     RNG (random.seed(42)), allocating roughly 17 bundles per ecosystem
+     until N_BUNDLES = 50 is reached. Skip combinations whose total chars
+     fall outside [MIN_CHARS, MAX_CHARS]; on under-shoot, switch to 4 docs.
+  4. Validate every bundle with validate_bundle(min_docs=3,
+     min_chars=15_000, max_chars=200_000).
+
+Network: uses the same MediaWiki API as the v0.3 loader, with 429-aware
+backoff. Disk cache means a re-run is a no-op when articles are present.
 """
 from __future__ import annotations
 
 import argparse
 import html
+import itertools
 import json
 import os
 import random
@@ -44,104 +58,112 @@ from code.pipelines.base import Bundle, Doc
 from code.utils.bundle_io import validate_bundle, write_bundles_json
 
 
+# ── Contract constants ──────────────────────────────────────────────────────
 SEED = 42
 N_BUNDLES = 50
-MIN_DOCS = 2
-MAX_DOCS = 4
-MIN_SECTION_CHARS = 1500       # skip stub sections
-BODY_CAP_CHARS = 18_000        # cap per section to keep bundle ≤ 80K total
+MIN_DOCS = 3
+MAX_DOCS = 4          # contract allows up to 5; we cap at 4 to keep variety high
+MIN_CHARS = 15_000
+MAX_CHARS = 200_000
+
+# Per-doc bounds. Doc = intro + 1-2 sections, capped so 3 docs ~> ≥ 15K chars.
+PER_DOC_CHAR_CAP = 18_000
+PER_DOC_MIN_CHARS = 1_800     # drop too-short articles (stubs / redirects)
+PER_SECTION_MIN_CHARS = 400   # drop tiny sections before counting
+
 WIKI_API = "https://en.wikipedia.org/w/api.php"
-USER_AGENT = "DocViz-Agent-Research/0.3 (research; contact via repo)"
+USER_AGENT = "DocViz-Agent-Research/0.4 (research; contact via repo)"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUT_PATH = REPO_ROOT / "data" / "prototype" / "bundles" / "tech_docs.json"
+RAW_CACHE_DIR = REPO_ROOT / "data" / "prototype" / "sources" / "raw" / "tech_docs"
 
 
-# Curated article titles, chosen for: (a) substantial body length (>20K chars
-# typical), (b) clean top-level section structure, (c) topic breadth across
-# 6 sub-domains. 60 entries — enough to skip a few stubs and still yield 50.
-ARTICLES: List[Tuple[str, str]] = [
-    # (article_title, topic_tag)
-    # ── ML / AI ───────────────────────────────────────────────────────────
-    ("Transformer (deep learning architecture)", "ml"),
-    ("Attention (machine learning)",             "ml"),
-    ("BERT (language model)",                    "ml"),
-    ("Convolutional neural network",             "ml"),
-    ("Recurrent neural network",                 "ml"),
-    ("Gradient descent",                          "ml"),
-    ("Backpropagation",                           "ml"),
-    ("Reinforcement learning",                   "ml"),
-    ("Generative adversarial network",           "ml"),
-    ("Diffusion model",                           "ml"),
-    # ── Networking ────────────────────────────────────────────────────────
-    ("Transmission Control Protocol",             "net"),
-    ("Internet Protocol",                          "net"),
-    ("OSI model",                                  "net"),
-    ("Hypertext Transfer Protocol",                "net"),
-    ("HTTPS",                                       "net"),
-    ("Domain Name System",                         "net"),
-    ("Border Gateway Protocol",                    "net"),
-    ("OAuth",                                       "net"),
-    ("OpenID Connect",                              "net"),
-    ("Transport Layer Security",                   "net"),
-    # ── Databases ─────────────────────────────────────────────────────────
-    ("ACID",                                        "db"),
-    ("B-tree",                                      "db"),
-    ("SQL",                                          "db"),
-    ("NoSQL",                                       "db"),
-    ("MapReduce",                                  "db"),
-    ("Multiversion concurrency control",            "db"),
-    ("Entity–relationship model",                  "db"),
-    ("Database normalization",                      "db"),
-    ("CAP theorem",                                 "db"),
-    ("Shard (database architecture)",              "db"),
-    # ── Operating systems ────────────────────────────────────────────────
-    ("Process (computing)",                         "os"),
-    ("Thread (computing)",                          "os"),
-    ("Mutex",                                       "os"),
-    ("Semaphore (programming)",                     "os"),
-    ("Page replacement algorithm",                  "os"),
-    ("Virtual memory",                              "os"),
-    ("File system",                                 "os"),
-    ("Linux kernel",                                "os"),
-    ("Kubernetes",                                  "os"),
-    ("Container (computing)",                       "os"),
-    # ── Cryptography ─────────────────────────────────────────────────────
-    ("Advanced Encryption Standard",                "crypto"),
-    ("RSA cryptosystem",                            "crypto"),
-    ("SHA-2",                                       "crypto"),
-    ("Diffie–Hellman key exchange",                 "crypto"),
-    ("Public-key cryptography",                     "crypto"),
-    ("Cryptographic hash function",                 "crypto"),
-    ("Digital signature",                           "crypto"),
-    ("Elliptic-curve cryptography",                 "crypto"),
-    ("Block cipher",                                "crypto"),
-    ("Zero-knowledge proof",                        "crypto"),
-    # ── Software architecture ────────────────────────────────────────────
-    ("Microservices",                               "swa"),
-    ("Representational state transfer",             "swa"),
-    ("Model–view–controller",                       "swa"),
-    ("Event sourcing",                              "swa"),
-    ("Publish–subscribe pattern",                   "swa"),
-    ("Service mesh",                                "swa"),
-    ("API gateway",                                 "swa"),
-    ("Command Query Responsibility Segregation",    "swa"),
-    ("Domain-driven design",                        "swa"),
-    ("Saga (computer science)",                     "swa"),
+# ── Ecosystem definitions (≤3 ecosystems × ~15-20 articles each) ────────────
+ECOSYSTEMS: Dict[str, List[str]] = {
+    "container_orchestration": [
+        "Docker (software)",
+        "Kubernetes",
+        "Containerd",
+        "OS-level virtualization",
+        "LXC",
+        "Container Linux",
+        "OpenShift",
+        "Rancher Labs",
+        "Cloud Native Computing Foundation",
+        "OpenStack",
+        "Apache Mesos",
+        "Docker Swarm",
+        "OpenVZ",
+        "FreeBSD jail",
+        "Solaris Containers",
+        "Hyper-V",
+        "VMware ESXi",
+        "Nomad (software)",
+    ],
+    "database_systems": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "Apache Cassandra",
+        "SQLite",
+        "MariaDB",
+        "Elasticsearch",
+        "ClickHouse",
+        "CockroachDB",
+        "InfluxDB",
+        "Apache Kafka",
+        "RabbitMQ",
+        "Memcached",
+        "Neo4j",
+        "Couchbase Server",
+        "Amazon DynamoDB",
+        "Apache HBase",
+    ],
+    "js_frameworks": [
+        "React (software)",
+        "Vue.js",
+        "Angular (web framework)",
+        "Svelte",
+        "Next.js",
+        "Nuxt",
+        "Redux (software)",
+        "JQuery",
+        "Ember.js",
+        "AngularJS",
+        "Knockout (web framework)",
+        "Meteor (web framework)",
+        "Express.js",
+        "Node.js",
+        "TypeScript",
+        "JavaScript",
+        "Web framework",
+        "Single-page application",
+    ],
+}
+
+# Articles allocated per ecosystem to reach 50 bundles total
+# 17 + 17 + 16 = 50
+BUNDLES_PER_ECOSYSTEM: List[Tuple[str, int]] = [
+    ("container_orchestration", 17),
+    ("database_systems",        17),
+    ("js_frameworks",           16),
 ]
 
 
-# ── Wikipedia API client ────────────────────────────────────────────────────
+# ── Wikipedia API client (resilient to 429 rate limits) ─────────────────────
+
+def _slug(title: str) -> str:
+    s = re.sub(r"[^A-Za-z0-9._-]+", "_", title.strip())
+    return s.strip("_") or "untitled"
+
 
 def _fetch_parse(
     title: str,
     client: httpx.Client,
     max_retries: int = 5,
 ) -> Optional[Dict]:
-    """Call MediaWiki parse API for a given page title with 429 backoff.
-
-    Returns the parsed `{sections, text}` dict, or None on persistent failure.
-    """
     params = {
         "action": "parse",
         "page": title,
@@ -154,7 +176,6 @@ def _fetch_parse(
         try:
             resp = client.get(WIKI_API, params=params, timeout=30.0)
             if resp.status_code == 429:
-                # Honor Retry-After when present; otherwise exponential backoff
                 ra = resp.headers.get("Retry-After")
                 wait = float(ra) if ra and ra.replace(".", "").isdigit() else backoff
                 print(f"  [429] {title!r}: sleeping {wait:.0f}s (attempt {attempt+1}/{max_retries})")
@@ -181,60 +202,44 @@ def _fetch_parse(
 
 
 def _strip_wikitext(text: str) -> str:
-    """Best-effort wikitext → plain-text conversion.
-
-    Handles the most common Wikipedia markup: links, templates, comments,
-    HTML tags, references, files, formatting. This is not a full
-    wikitext parser — full parsing would require mwparserfromhell, but
-    for retrieval-context purposes a coarse strip is sufficient.
-    """
+    """Best-effort wikitext → plain-text conversion."""
     t = text
-    # Strip HTML comments
     t = re.sub(r"<!--.*?-->", "", t, flags=re.DOTALL)
-    # Strip <ref>...</ref> citations (both inline and named)
     t = re.sub(r"<ref[^/>]*?/>", "", t)
     t = re.sub(r"<ref[^>]*>.*?</ref>", "", t, flags=re.DOTALL)
-    # Strip remaining HTML tags
     t = re.sub(r"<[^>]+>", "", t)
-    # Strip files/images: [[File:...]] / [[Image:...]]
     t = re.sub(r"\[\[(?:File|Image):.*?\]\]", "", t, flags=re.DOTALL)
-    # Strip nested templates {{...}} (iterative, since they can nest)
     prev = None
     while prev != t:
         prev = t
         t = re.sub(r"\{\{[^\{\}]*\}\}", "", t)
-    # Convert wiki links: [[target|display]] → display ; [[target]] → target
     t = re.sub(r"\[\[([^\[\]\|]+)\|([^\[\]]+)\]\]", r"\2", t)
     t = re.sub(r"\[\[([^\[\]\|]+)\]\]", r"\1", t)
-    # Convert external links: [url display] → display ; [url] → url
     t = re.sub(r"\[(?:https?:|//)[^\s\]]+\s+([^\]]+)\]", r"\1", t)
     t = re.sub(r"\[(https?:[^\s\]]+)\]", r"\1", t)
-    # Strip bold/italic markers
     t = re.sub(r"'''([^']+)'''", r"\1", t)
     t = re.sub(r"''([^']+)''", r"\1", t)
-    # HTML entities
     t = html.unescape(t)
-    # Collapse whitespace
     t = re.sub(r"\n{3,}", "\n\n", t)
     t = re.sub(r"[ \t]+", " ", t)
     return t.strip()
 
 
-def _split_into_sections(wikitext: str, sections_meta: List[Dict]) -> List[Tuple[str, str]]:
-    """Split wikitext by top-level section headers (`== Section ==`).
+_DROP_SECTION_TITLES = {
+    "see also", "references", "notes", "citations", "external links",
+    "further reading", "bibliography", "footnotes", "sources",
+    "awards", "release history", "version history",
+}
 
-    Returns list of (section_title, section_body_plaintext). Drops the
-    lead section if it's shorter than MIN_SECTION_CHARS, and stubs (e.g.,
-    "See also", "References", "External links", "Further reading").
-    """
-    # Match level-2 headers: `\n== Title ==\n`. Level-2 is the top-level
-    # section divider on Wikipedia (level-1 is the page title itself).
+
+def _split_into_sections(wikitext: str) -> List[Tuple[str, str]]:
+    """Split wikitext at level-2 headers; return list of (title, plaintext).
+    Index 0 is always the lead (intro) under title "Introduction"."""
     level2 = re.compile(r"^==\s*([^=].*?)\s*==\s*$", re.MULTILINE)
     matches = list(level2.finditer(wikitext))
 
     sections: List[Tuple[str, str]] = []
     if matches:
-        # Lead section (before first H2)
         lead = wikitext[: matches[0].start()].strip()
         if lead:
             sections.append(("Introduction", _strip_wikitext(lead)))
@@ -243,186 +248,329 @@ def _split_into_sections(wikitext: str, sections_meta: List[Dict]) -> List[Tuple
             start = m.end()
             end = matches[i + 1].start() if i + 1 < len(matches) else len(wikitext)
             body = wikitext[start:end].strip()
-            if not body:
-                continue
-            sections.append((title, _strip_wikitext(body)))
+            if body:
+                sections.append((title, _strip_wikitext(body)))
     else:
-        # No section headers — treat whole article as one section
         sections.append(("Article", _strip_wikitext(wikitext)))
 
-    # Drop boilerplate sections + stubs
-    DROP_TITLES = {
-        "see also", "references", "notes", "citations", "external links",
-        "further reading", "bibliography", "footnotes", "sources",
-    }
     out: List[Tuple[str, str]] = []
     for title, body in sections:
-        if title.strip().lower() in DROP_TITLES:
+        if title.strip().lower() in _DROP_SECTION_TITLES:
             continue
-        if len(body) < MIN_SECTION_CHARS:
+        if len(body) < PER_SECTION_MIN_CHARS:
             continue
-        out.append((title, body[:BODY_CAP_CHARS]))
+        out.append((title, body))
     return out
 
 
-def _build_bundle(idx: int, article_title: str, sections: List[Tuple[str, str]],
-                  topic: str) -> Optional[Bundle]:
-    if len(sections) < MIN_DOCS:
+# ── Per-article fetch + cache ───────────────────────────────────────────────
+
+def _cache_path(title: str) -> Path:
+    return RAW_CACHE_DIR / f"{_slug(title)}.json"
+
+
+def _fetch_article_cached(
+    title: str, client: httpx.Client, sleep_between: float = 1.5,
+) -> Optional[Dict]:
+    """Fetch + parse + strip a single article, with on-disk caching.
+
+    Cache format (per article):
+      {
+        "title":     <wiki title>,
+        "slug":      <filesystem slug>,
+        "fetched_at": <unix ts>,
+        "sections":  [{"title": ..., "body": ...}, ...]   # plain text
+      }
+    Returns None on persistent fetch failure or unusable article.
+    """
+    cache = _cache_path(title)
+    if cache.exists():
+        try:
+            obj = json.loads(cache.read_text(encoding="utf-8"))
+            if obj.get("sections"):
+                return obj
+        except Exception as e:
+            print(f"  [cache-warn] {cache.name}: re-fetching ({e})")
+
+    print(f"  [wiki] fetching {title!r}…")
+    parse = _fetch_parse(title, client)
+    if not parse:
         return None
+    wikitext_obj = parse.get("wikitext") or {}
+    wikitext = wikitext_obj.get("*") if isinstance(wikitext_obj, dict) else ""
+    if not wikitext or len(wikitext) < 3_000:
+        print(f"    [skip] wikitext too short ({len(wikitext)} chars)")
+        time.sleep(sleep_between)
+        return None
+    sections = _split_into_sections(wikitext)
+    if not sections:
+        print(f"    [skip] no usable sections after stripping")
+        time.sleep(sleep_between)
+        return None
+    obj = {
+        "title": parse.get("title", title),
+        "slug": _slug(title),
+        "fetched_at": time.time(),
+        "sections": [{"title": t, "body": b} for t, b in sections],
+        "source_url": f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}",
+    }
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+    time.sleep(sleep_between)
+    return obj
 
-    # If more than MAX_DOCS sections, take first MAX_DOCS (intro + early sections
-    # are usually the most informative).
-    used = sections[:MAX_DOCS]
 
+def _article_to_text(article: Dict) -> str:
+    """Concatenate intro + first 1-2 sections; trim to PER_DOC_CHAR_CAP.
+
+    Strategy: greedily take sections from index 0 until we either:
+      (a) have ≥ PER_DOC_MIN_CHARS chars AND >= 2 sections used, or
+      (b) run out of sections.
+    Then truncate to PER_DOC_CHAR_CAP to bound per-doc size.
+    """
+    sections = article.get("sections", [])
+    if not sections:
+        return ""
+    parts: List[str] = []
+    total = 0
+    for i, sec in enumerate(sections):
+        title = sec["title"]
+        body = sec["body"]
+        # Always include intro; include subsequent sections greedily until cap
+        if i == 0:
+            parts.append(body)
+            total += len(body)
+            continue
+        if total >= PER_DOC_CHAR_CAP * 0.8 and i >= 2:
+            # We have enough body from intro + 1+ sections
+            break
+        parts.append(f"\n\n## {title}\n\n{body}")
+        total += len(body) + len(title) + 8
+        if i >= 2 and total >= PER_DOC_MIN_CHARS:
+            # Cap at intro + 2 main sections to leave room for other docs
+            break
+    text = "\n".join(parts).strip()
+    return text[:PER_DOC_CHAR_CAP]
+
+
+def _article_to_doc(idx: int, j: int, article: Dict) -> Optional[Doc]:
+    body = _article_to_text(article)
+    if len(body) < PER_DOC_MIN_CHARS:
+        return None
+    title = article.get("title") or "Untitled Wikipedia article"
+    return Doc(
+        doc_id=f"tech_docs_{idx:02d}_{j}",
+        title=title[:200],
+        content=body,
+        page_id=article.get("slug"),
+    )
+
+
+# ── Bundle assembly ─────────────────────────────────────────────────────────
+
+def _build_bundle(
+    idx: int, ecosystem: str, articles: List[Dict],
+) -> Optional[Bundle]:
     docs: List[Doc] = []
-    for j, (sec_title, body) in enumerate(used):
-        docs.append(Doc(
-            doc_id=f"tech_docs_{idx:02d}_{j}",
-            title=f"{article_title} — {sec_title}"[:160],
-            content=body,
-            page_id=None,
-        ))
-
+    for j, art in enumerate(articles):
+        d = _article_to_doc(idx, j, art)
+        if d is None:
+            return None
+        docs.append(d)
+    if len(docs) < MIN_DOCS:
+        return None
     return Bundle(
         bundle_id=f"tech_docs_{idx:02d}",
         source="tech_docs",
         docs=docs,
         metadata={
             "language": "en",
-            "article_title": article_title,
-            "source_url": f"https://en.wikipedia.org/wiki/{article_title.replace(' ', '_')}",
-            "topic": topic,
-            "section_titles": [s[0] for s in used],
+            "bridge_entity": ecosystem,
+            "ecosystem": ecosystem,
+            "articles": [a.get("title") for a in articles],
+            "article_slugs": [a.get("slug") for a in articles],
+            "n_docs": len(docs),
+            "source_urls": [a.get("source_url") for a in articles],
+            "source_corpus": "wikipedia",
         },
     )
 
 
-def _load_existing_titles(path: Path) -> set[str]:
-    """Read existing tech_docs.json (if any) and return the set of
-    article titles already in it, so a resume run can skip them."""
-    if not path.exists():
-        return set()
-    try:
-        from code.utils.bundle_io import read_bundles_json
-        existing = read_bundles_json(str(path))
-        return {b.metadata.get("article_title") for b in existing
-                if b.metadata.get("article_title")}
-    except Exception as e:
-        print(f"  [warn] could not read existing bundles for resume: {e}")
-        return set()
+def _enumerate_combinations(
+    pool: List[Dict], n_target: int, rng: random.Random,
+) -> List[List[Dict]]:
+    """Yield up to n_target unique 3- or 4-article combinations from pool.
+
+    Strategy: build the full set of 3-combinations, shuffle deterministically,
+    then iterate. If a 3-combo doesn't clear MIN_CHARS, swap to 4 by appending
+    one extra unused article from the pool. Returns at most n_target combos.
+    """
+    if len(pool) < MIN_DOCS:
+        return []
+    combos_3 = list(itertools.combinations(range(len(pool)), MIN_DOCS))
+    rng.shuffle(combos_3)
+    out: List[List[Dict]] = []
+    seen_keys: set = set()
+    for combo in combos_3:
+        if len(out) >= n_target:
+            break
+        articles = [pool[i] for i in combo]
+        total = sum(len(_article_to_text(a)) for a in articles)
+        used_idx = set(combo)
+        if total < MIN_CHARS:
+            # Try to extend with one more article (largest unused one)
+            unused = [i for i in range(len(pool)) if i not in used_idx]
+            unused.sort(key=lambda i: -len(_article_to_text(pool[i])))
+            if not unused:
+                continue
+            articles = articles + [pool[unused[0]]]
+            used_idx.add(unused[0])
+            total = sum(len(_article_to_text(a)) for a in articles)
+            if total < MIN_CHARS:
+                continue
+        if total > MAX_CHARS:
+            continue  # extremely unlikely given per-doc cap, but guard
+        key = tuple(sorted(used_idx))
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+        out.append(articles)
+    return out
 
 
-def load_tech_docs(
-    n_bundles: int = N_BUNDLES,
-    seed: int = SEED,
-    sleep_between: float = 0.5,
-    existing_titles: Optional[set[str]] = None,
+def build_bundles(
+    n_bundles: int = N_BUNDLES, seed: int = SEED,
+    sleep_between: float = 1.5,
 ) -> List[Bundle]:
     rng = random.Random(seed)
-    articles = list(ARTICLES)
-    rng.shuffle(articles)
 
-    bundles: List[Bundle] = []
-    skipped_existing = 0
+    # Phase 1: fetch + cache every article, grouped by ecosystem.
+    # Wikipedia redirects (e.g. "Containerd" -> "Cloud Native Computing
+    # Foundation") collapse multiple input titles to the same resolved page,
+    # which would create within-bundle duplicates. We dedup pools by the
+    # *resolved* article title (parse.get("title")).
+    ecosystem_pools: Dict[str, List[Dict]] = {}
     with httpx.Client(headers={"User-Agent": USER_AGENT}) as client:
-        for art_idx, (title, topic) in enumerate(articles):
+        for eco, titles in ECOSYSTEMS.items():
+            print(f"\n[tech_docs] === fetching ecosystem: {eco} ({len(titles)} candidates) ===")
+            pool: List[Dict] = []
+            seen_resolved: set = set()
+            for title in titles:
+                art = _fetch_article_cached(title, client, sleep_between=sleep_between)
+                if art is None:
+                    continue
+                resolved = (art.get("title") or title).strip()
+                if resolved in seen_resolved:
+                    print(f"    [dedup] {title!r} → resolves to already-seen "
+                          f"{resolved!r}; dropping")
+                    continue
+                body_len = len(_article_to_text(art))
+                if body_len < PER_DOC_MIN_CHARS:
+                    print(f"    [drop] {title!r}: only {body_len} usable chars")
+                    continue
+                seen_resolved.add(resolved)
+                pool.append(art)
+            print(f"[tech_docs] {eco}: {len(pool)} usable articles "
+                  f"(after redirect-dedup)")
+            ecosystem_pools[eco] = pool
+
+    # Phase 2: per-ecosystem bundle assembly
+    bundles: List[Bundle] = []
+    for eco, target_n in BUNDLES_PER_ECOSYSTEM:
+        if len(bundles) >= n_bundles:
+            break
+        pool = ecosystem_pools.get(eco, [])
+        if len(pool) < MIN_DOCS:
+            print(f"[tech_docs] {eco}: SKIP — only {len(pool)} articles")
+            continue
+        # Adjust target if other ecosystems under-shot earlier
+        remaining = n_bundles - len(bundles)
+        want = min(target_n, remaining)
+        combos = _enumerate_combinations(pool, want, rng)
+        print(f"[tech_docs] {eco}: enumerated {len(combos)} candidate combos "
+              f"(want={want}, pool={len(pool)})")
+        for articles in combos:
             if len(bundles) >= n_bundles:
                 break
-            if existing_titles and title in existing_titles:
-                skipped_existing += 1
-                continue
-            print(f"[tech_docs] {art_idx+1:02d}/{len(articles)} fetching {title!r}…")
-            parse = _fetch_parse(title, client)
-            if not parse:
-                time.sleep(sleep_between)
-                continue
-            wikitext_obj = parse.get("wikitext") or {}
-            wikitext = wikitext_obj.get("*") if isinstance(wikitext_obj, dict) else ""
-            if not wikitext or len(wikitext) < 5000:
-                print(f"  [skip] wikitext too short ({len(wikitext)} chars)")
-                time.sleep(sleep_between)
-                continue
-            sections_meta = parse.get("sections") or []
-            sections = _split_into_sections(wikitext, sections_meta)
-            print(f"  → {len(sections)} usable sections")
-            b = _build_bundle(len(bundles), title, sections, topic)
+            b = _build_bundle(len(bundles), eco, articles)
             if b is None:
-                print(f"  [skip] not enough sections after filtering")
-                time.sleep(sleep_between)
                 continue
-            try:
-                validate_bundle(b)
-            except Exception as e:
-                print(f"  [skip] bundle validation failed: {e}")
-                time.sleep(sleep_between)
+            errs = validate_bundle(b, min_docs=MIN_DOCS,
+                                   min_chars=MIN_CHARS, max_chars=MAX_CHARS)
+            if errs:
+                print(f"  [skip] {eco} bundle {len(bundles)}: {errs}")
                 continue
             bundles.append(b)
-            time.sleep(sleep_between)  # be a polite Wikipedia API user
 
-    print(f"\n[tech_docs] produced {len(bundles)} new bundles (skipped {skipped_existing} already present)")
-    for b in bundles[:5]:
-        print(
-            f"  {b.bundle_id} [{b.metadata.get('topic')}]: docs={len(b.docs)}, "
-            f"chars={b.total_chars()}, article={b.metadata.get('article_title')!r}"
-        )
+    # Phase 3: fallback fill (if under-shot, draw from largest pools)
+    if len(bundles) < n_bundles:
+        print(f"\n[tech_docs] fallback fill: have {len(bundles)} of {n_bundles}")
+        # Re-enumerate combinations across all ecosystems, prefer larger pools
+        for eco, pool in sorted(
+            ecosystem_pools.items(), key=lambda x: -len(x[1])
+        ):
+            if len(bundles) >= n_bundles:
+                break
+            existing_keys = {
+                tuple(sorted(b.metadata["articles"]))
+                for b in bundles
+                if b.metadata.get("ecosystem") == eco
+            }
+            extra = _enumerate_combinations(
+                pool, n_bundles - len(bundles) + 10, rng,
+            )
+            for articles in extra:
+                if len(bundles) >= n_bundles:
+                    break
+                key = tuple(sorted(a.get("title") for a in articles))
+                if key in existing_keys:
+                    continue
+                b = _build_bundle(len(bundles), eco, articles)
+                if b is None:
+                    continue
+                errs = validate_bundle(b, min_docs=MIN_DOCS,
+                                       min_chars=MIN_CHARS, max_chars=MAX_CHARS)
+                if errs:
+                    continue
+                bundles.append(b)
+                existing_keys.add(key)
+
     return bundles
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Build cross-doc tech_docs bundles.")
     ap.add_argument("--n-bundles", type=int, default=N_BUNDLES)
     ap.add_argument("--out", default=str(OUT_PATH))
-    ap.add_argument("--sleep", type=float, default=2.0,
-                    help="Sleep between successful Wikipedia API requests (s). "
-                         "Use 2.0+ to avoid 429 rate-limit responses.")
-    ap.add_argument("--resume", action="store_true",
-                    help="Skip article titles already present in --out and "
-                         "merge new bundles into the existing file.")
+    ap.add_argument("--sleep", type=float, default=1.5,
+                    help="Sleep between Wikipedia fetches (s). >=1.5 advised "
+                         "to avoid 429.")
     args = ap.parse_args()
 
+    bundles = build_bundles(n_bundles=args.n_bundles, sleep_between=args.sleep)
+    print(f"\n[tech_docs] built {len(bundles)} bundles")
+
+    errors: List[str] = []
+    for b in bundles:
+        errors.extend(validate_bundle(b, min_docs=MIN_DOCS,
+                                      min_chars=MIN_CHARS, max_chars=MAX_CHARS))
+    if errors:
+        print("[tech_docs] VALIDATION ERRORS:")
+        for e in errors:
+            print(f"  {e}")
+        return 2
+
     out = Path(args.out)
-    existing: List[Bundle] = []
-    existing_titles: set[str] = set()
-    if args.resume and out.exists():
-        from code.utils.bundle_io import read_bundles_json
-        existing = read_bundles_json(str(out))
-        existing_titles = {b.metadata.get("article_title") for b in existing
-                           if b.metadata.get("article_title")}
-        print(f"[tech_docs] resume: {len(existing)} existing bundles "
-              f"({len(existing_titles)} known article titles)")
-
-    need = max(args.n_bundles - len(existing), 0)
-    if need == 0:
-        print("[tech_docs] resume target already met")
-        return 0
-
-    new_bundles = load_tech_docs(
-        n_bundles=need,
-        sleep_between=args.sleep,
-        existing_titles=existing_titles,
-    )
-    if not new_bundles and not existing:
-        print("[tech_docs] no bundles produced — aborting write")
-        return 1
-
-    # Re-number when resuming so bundle_ids stay sequential across merge.
-    merged: List[Bundle] = []
-    next_idx = 0
-    for b in (existing + new_bundles):
-        # Re-assign sequential idx
-        new_id = f"tech_docs_{next_idx:02d}"
-        if b.bundle_id != new_id:
-            # Rewrite the bundle_id + doc_ids to stay consistent
-            for j, d in enumerate(b.docs):
-                d.doc_id = f"{new_id}_{j}"
-            b.bundle_id = new_id
-        merged.append(b)
-        next_idx += 1
-
     out.parent.mkdir(parents=True, exist_ok=True)
-    write_bundles_json(merged, str(out))
-    print(f"[tech_docs] wrote {len(merged)} bundles → {out}")
-    return 0
+    write_bundles_json(bundles, str(out))
+    print(f"[tech_docs] wrote {len(bundles)} bundles → {out}")
+    for b in bundles:
+        print(
+            f"  {b.bundle_id} [{b.metadata['ecosystem']}]: "
+            f"docs={len(b.docs)}, chars={b.total_chars()}, "
+            f"articles={b.metadata['articles']}"
+        )
+    return 0 if len(bundles) >= args.n_bundles else 2
 
 
 if __name__ == "__main__":

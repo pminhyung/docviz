@@ -29,8 +29,10 @@ from code.utils.bundle_io import validate_bundle, write_bundles_json
 
 SEED = 42
 N_BUNDLES = 50
-MIN_ARTICLES = 2
+MIN_ARTICLES = 3
 MAX_ARTICLES = 5
+MIN_CHARS = 15_000
+MAX_CHARS = 200_000
 SPLIT = "validation"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -69,23 +71,24 @@ def _build_bundle(idx: int, ex: Dict[str, Any]) -> Bundle:
             title=f"Article {j + 1}: {_first_words(art)}",
             content=art,
         ))
+    summary = _clean(ex.get("summary", ""))
+    event_slug = _first_words(summary, n=8)
     return Bundle(
         bundle_id=f"multinews_{idx:02d}",
         source="multinews",
         docs=docs,
         metadata={
             "language": "en",
-            "reference_summary": _clean(ex.get("summary", "")),
+            "reference_summary": summary,
             "n_articles": len(articles),
+            "bridge_entity": f"event_cluster:{event_slug}",
+            "event_cluster": event_slug,
         },
     )
 
 
 def build_bundles() -> List[Bundle]:
     print("[multinews] loading validation split…")
-    # `alexfabbri/multi_news` is the canonical author's release and is more
-    # reliable than the bare `multi_news` namespace. Both ship a custom loader
-    # script — HF requires explicit opt-in via trust_remote_code.
     ds = load_dataset("alexfabbri/multi_news", split=SPLIT, trust_remote_code=True)
     print(f"  loaded {len(ds)} clusters")
 
@@ -94,21 +97,28 @@ def build_bundles() -> List[Bundle]:
         n = len(_split_cluster(ex["document"]))
         if MIN_ARTICLES <= n <= MAX_ARTICLES:
             candidates.append(ex)
-    print(f"  {len(candidates)} candidates after cluster-size filter")
+    print(f"  {len(candidates)} candidates after cluster-size filter ({MIN_ARTICLES}-{MAX_ARTICLES} articles)")
 
     random.seed(SEED)
     random.shuffle(candidates)
 
     bundles: List[Bundle] = []
+    rejected_small = rejected_large = 0
     for ex in candidates:
         if len(bundles) >= N_BUNDLES:
             break
         b = _build_bundle(len(bundles), ex)
         if len(b.docs) < MIN_ARTICLES:
             continue
-        if b.total_chars() < 3000 or b.total_chars() > 80000:
+        ch = b.total_chars()
+        if ch < MIN_CHARS:
+            rejected_small += 1
+            continue
+        if ch > MAX_CHARS:
+            rejected_large += 1
             continue
         bundles.append(b)
+    print(f"  built {len(bundles)} bundles (rejected: {rejected_small} <{MIN_CHARS} chars, {rejected_large} >{MAX_CHARS} chars)")
     return bundles
 
 
@@ -122,7 +132,7 @@ def main() -> int:
         print(f"  [WARN] only {len(bundles)} bundles built (target {N_BUNDLES})")
     errors: List[str] = []
     for b in bundles:
-        errors.extend(validate_bundle(b))
+        errors.extend(validate_bundle(b, min_docs=MIN_ARTICLES, min_chars=MIN_CHARS, max_chars=MAX_CHARS))
     if errors:
         print("  [VALIDATION ERRORS]")
         for e in errors:

@@ -60,7 +60,7 @@ class S4Agentic(Pipeline):
         self,
         agent_base_url: Optional[str] = None,
         n_steps_max: int = 8,
-        reasoner_max_length: int = 32768,
+        reasoner_max_length: Optional[int] = None,
         work_dir: Optional[Path] = None,
     ):
         self._base_url = agent_base_url or os.environ.get(

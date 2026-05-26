@@ -514,7 +514,7 @@ def main() -> int:
         if bc_pairs:
             new = _run_strategy_pool(
                 "B6_NoCIS", lambda: B6NoCIS(), bc_pairs,
-                workers=args.s1_workers, raw_path=raw_path,
+                workers=args.s4_workers, raw_path=raw_path,
             )
             for r in new:
                 existing[(r["query_id"], r["strategy"])] = r

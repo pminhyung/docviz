@@ -1,0 +1,94 @@
+[
+  {
+    "query_id": "arxiv_07_CDC",
+    "bundle_id": "arxiv_07",
+    "source": "arxiv",
+    "dep_type": "CDC",
+    "content_shape": "hierarchical",
+    "query": "Compare the cross-modal interactions in glioma prediction with the representation choice effects on protein conformational interpretation.",
+    "word_count": 16,
+    "doc_coverage": 2,
+    "covered_doc_idxs": [
+      0,
+      1
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true,
+    "query_type": "hierarchical"
+  },
+  {
+    "query_id": "govreport_23_TAS",
+    "bundle_id": "govreport_23",
+    "source": "govreport",
+    "dep_type": "TAS",
+    "content_shape": "temporal",
+    "query": "Show a timeline of the Challenger commission report and the enactment of U.S. trade safeguard measures.",
+    "word_count": 16,
+    "doc_coverage": 2,
+    "covered_doc_idxs": [
+      0,
+      1
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true,
+    "query_type": "temporal"
+  },
+  {
+    "query_id": "govreport_25_CIC",
+    "bundle_id": "govreport_25",
+    "source": "govreport",
+    "dep_type": "CIC",
+    "content_shape": "temporal",
+    "query": "Trace how DOD Directive 3000.3 influenced the Army Corps of Engineers' civil project approvals over time.",
+    "word_count": 16,
+    "doc_coverage": 2,
+    "covered_doc_idxs": [
+      0,
+      1
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true,
+    "query_type": "temporal"
+  },
+  {
+    "query_id": "10k_00_CDC",
+    "bundle_id": "10k_00",
+    "source": "10k",
+    "dep_type": "CDC",
+    "content_shape": "quantitative",
+    "query": "Compare OMC's consolidated financial statements and TMUS's executive compensation using grouped bars.",
+    "word_count": 12,
+    "doc_coverage": 3,
+    "covered_doc_idxs": [
+      0,
+      1,
+      2
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true,
+    "query_type": "quantitative"
+  },
+  {
+    "query_id": "10k_18_CDA",
+    "bundle_id": "10k_18",
+    "source": "10k",
+    "dep_type": "CDA",
+    "content_shape": "quantitative",
+    "query": "Compare the count of forward-looking statement risk factors for Oracle and HPE in their Item 7 MD&A sections.",
+    "word_count": 18,
+    "doc_coverage": 3,
+    "covered_doc_idxs": [
+      0,
+      1,
+      2
+    ],
+    "model": "Qwen3.5-397B-A17B-FP8",
+    "retries_used": 0,
+    "filter_passed": true,
+    "query_type": "quantitative"
+  }
+]

@@ -20,6 +20,25 @@ import yaml
 from agent.core.sandbox import is_sandbox_mode, SandboxProxyClient
 
 
+# ── Multi-host pool for QWEN3 (round-robin across replicas) ──────────────
+# QWEN3_BASE_URLS (comma-separated, optional) overrides single QWEN3_BASE_URL.
+# When set (e.g. "http://10.1.211.147:8000/v1,http://10.1.211.148:8000/v1,..."),
+# ProxyClient round-robins requests across the listed URLs so concurrent agent
+# dispatches spread across the vLLM cluster. Single-URL behavior is preserved
+# when QWEN3_BASE_URLS is unset.
+def _resolve_qwen3_base_urls() -> List[str]:
+    pool = os.environ.get("QWEN3_BASE_URLS", "").strip()
+    if pool:
+        urls = [u.strip() for u in pool.split(",") if u.strip()]
+        if urls:
+            return urls
+    single = os.environ.get("QWEN3_BASE_URL", "https://api.novita.ai/v3/openai")
+    return [single]
+
+
+_QWEN3_BASE_URLS: List[str] = _resolve_qwen3_base_urls()
+
+
 # ── Tool Output Data Models ──────────────────────────────────
 
 @dataclass
@@ -79,7 +98,9 @@ class ModelConfig:
 DEFAULT_MODELS: Dict[str, ModelConfig] = {
     "qwen3": ModelConfig(
         model_id=os.environ.get("QWEN3_MODEL_ID", "qwen/qwen3-235b-a22b-instruct-2507"),
-        base_url=os.environ.get("QWEN3_BASE_URL", "https://api.novita.ai/v3/openai"),
+        # base_url here is the *first* URL in _QWEN3_BASE_URLS; ProxyClient
+        # builds one OpenAI client per URL and round-robins between them.
+        base_url=_QWEN3_BASE_URLS[0],
         max_tokens=16384,
         temperature=0.2,
         api_key=os.environ.get("QWEN3_API_KEY", ""),
@@ -139,15 +160,37 @@ class ProxyClient:
         self._total_tokens = 0
         self._total_calls = 0
 
-        # Initialize the actual OpenAI client
+        # Initialize the actual OpenAI client(s).
+        # When the global _QWEN3_BASE_URLS pool has >1 entries AND this
+        # config's base_url matches one of them, build one client per pool URL
+        # and round-robin between them. Otherwise single client (backward compat).
         import openai
-        self._client = openai.OpenAI(
-            api_key=model_config.get_api_key(),
-            base_url=model_config.base_url,
-        )
+        import itertools
+        import threading
+        if len(_QWEN3_BASE_URLS) > 1 and model_config.base_url in _QWEN3_BASE_URLS:
+            self._clients = [
+                openai.OpenAI(api_key=model_config.get_api_key(), base_url=url)
+                for url in _QWEN3_BASE_URLS
+            ]
+            self._client_lock = threading.Lock()
+            self._client_iter = itertools.cycle(self._clients)
+            self._client = self._clients[0]  # default for code expecting single client
+        else:
+            self._client = openai.OpenAI(
+                api_key=model_config.get_api_key(),
+                base_url=model_config.base_url,
+            )
+            self._clients = [self._client]
+            self._client_lock = threading.Lock()
+            self._client_iter = itertools.cycle(self._clients)
 
         # Create chat completions interface
         self.chat = _ChatCompletions(self)
+
+    def _next_client(self):
+        """Round-robin pick the next client (thread-safe)."""
+        with self._client_lock:
+            return next(self._client_iter)
 
     def _complete(
         self,
@@ -184,7 +227,10 @@ class ProxyClient:
         # Add any remaining kwargs
         params.update(kwargs)
 
-        response = self._client.chat.completions.create(**params)
+        # Round-robin pick a client (multi-host pool); single-host returns
+        # the lone client every time.
+        client = self._next_client()
+        response = client.chat.completions.create(**params)
 
         # Track usage
         if self.track_usage and hasattr(response, "usage") and response.usage:

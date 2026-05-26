@@ -38,7 +38,12 @@ from code.adapters.agent_client import AgentClient
 from code.adapters.bundle_to_docai import write_bundle_as_docai
 from code.adapters.viz_output_mapper import map_agent_response
 from code.pipelines.base import Bundle, Pipeline, VizOutput
-from code.pipelines.tmg import V4_POOL_EXPOSURE_RULE, build_tmg_rule
+from code.pipelines.tmg import (
+    V4_POOL_EXPOSURE_RULE,
+    TYPE_TO_VIZ,
+    build_tmg_rule,
+    primary_viz_type,
+)
 
 
 # generate_viz tool's viz output sidecar — written by the tool, read by
@@ -124,7 +129,7 @@ class S4AgenticTMG(Pipeline):
         mode: str = "v0",
         agent_base_url: Optional[str] = None,
         n_steps_max: int = 8,
-        reasoner_max_length: int = 32768,
+        reasoner_max_length: Optional[int] = None,
         work_dir: Optional[Path] = None,
     ):
         if mode not in _STRATEGY_NAMES:
@@ -292,19 +297,133 @@ class S4AgenticTMG(Pipeline):
 
         # V4 modes: the generate_viz tool persisted the viz to a sidecar
         # file. Override the (likely empty / ack-only) viz from the agent's
-        # short final_answer with the sidecar payload. Falls back to the
-        # mapped agent response if the sidecar is missing (e.g., the agent
-        # never invoked the tool — a content failure we surface as-is).
+        # short final_answer with the sidecar payload. If the sidecar is
+        # missing (agent never invoked the tool — e.g. emitted prose
+        # final_answer, hit ReadTimeout, or Mode A retry failed) the
+        # orchestrator runs a rescue path that calls generate_viz directly
+        # with a brief synthesised from (query, bundle docs).
         if self.mode in ("v4_pool", "v4_consolidated"):
             sidecar = _read_viz_sidecar(self.mode, query_id)
             if sidecar:
                 vo.viz_type = sidecar.get("viz_type") or vo.viz_type
                 vo.viz_dsl = sidecar.get("viz_dsl") or vo.viz_dsl
             else:
-                vo.errors.append(
-                    f"{self.name}: generate_viz sidecar missing for "
-                    f"query_id={query_id!r}; agent likely did not invoke "
-                    "the tool. Final_answer used as fallback."
+                rescue = self._rescue_viz(
+                    query=query,
+                    query_type=query_type,
+                    query_id=query_id or "_unknown",
+                    bundle=bundle,
+                    agent_final_answer=getattr(response, "final_answer", "") or "",
                 )
+                if rescue is not None:
+                    vo.viz_type = rescue["viz_type"]
+                    vo.viz_dsl = rescue["viz_dsl"]
+                    vo.errors.append(
+                        f"{self.name}: rescue_viz invoked for "
+                        f"query_id={query_id!r} (sidecar missing; "
+                        f"recovered viz_dsl_chars={len(rescue['viz_dsl'])})."
+                    )
+                else:
+                    vo.errors.append(
+                        f"{self.name}: generate_viz sidecar missing for "
+                        f"query_id={query_id!r} AND rescue_viz failed. "
+                        "Final_answer used as fallback."
+                    )
 
         return vo
+
+    # ── Fix #2 (2026-05-26): rescue path for sidecar-missing failures ────
+    # When the agent fails to invoke generate_viz (F1: precondition rule
+    # violated → final_answer = "success" / prose; F2: 600s ReadTimeout;
+    # F3: Step-1 summary leaks as final_answer), the orchestrator
+    # synthesises a content brief from (query, bundle.docs) and calls the
+    # GenerateVizTool directly. This eliminates the catastrophic 0-score
+    # failure mode that accounted for 86% of the B6 vs S7 paired Δ on the
+    # v0.4 dataset (seed42 analysis 2026-05-25).
+    def _rescue_viz(
+        self,
+        *,
+        query: str,
+        query_type: Optional[str],
+        query_id: str,
+        bundle: Bundle,
+        agent_final_answer: str,
+        doc_char_cap: int = 8_000,
+    ) -> Optional[Dict[str, str]]:
+        """Call generate_viz directly with a brief built from the bundle.
+
+        Returns {"viz_type": ..., "viz_dsl": ...} on success, None on
+        failure. Failure is silent (logged via the returning caller's
+        errors list).
+        """
+        try:
+            from code.agent_tools.generate_viz import GenerateVizTool
+        except Exception:
+            return None
+
+        # Rule-based viz_type — same routing the agent SHOULD have used.
+        # Default to mermaid_flowchart (the most catastrophically failing
+        # type in seed42) when query_type is unknown.
+        if query_type and query_type in TYPE_TO_VIZ:
+            viz_type = primary_viz_type(query_type)
+        else:
+            viz_type = "mermaid_flowchart"
+
+        # Brief: query + (truncated) bundle text. If the agent left a
+        # non-trivial final_answer (Step-1 summary leak), include it as
+        # an additional signal — it often names the relevant entities.
+        doc_parts = []
+        per_doc_cap = max(1_000, doc_char_cap // max(1, len(bundle.docs)))
+        for d in bundle.docs:
+            body = (d.content or "")[:per_doc_cap]
+            title = d.title or d.doc_id
+            doc_parts.append(f"[{title}]\n{body}")
+        docs_concat = "\n\n---\n\n".join(doc_parts)
+
+        brief_parts = [
+            f"User query: {query}",
+            "",
+            "Build the visualization to answer the query above. Include "
+            "every entity the query names, with concrete dates, numbers, "
+            "or quantities pulled from the source documents below. Do "
+            "not fabricate values.",
+        ]
+        if agent_final_answer and len(agent_final_answer) > 20 and \
+                agent_final_answer.strip().lower() != "success":
+            brief_parts += [
+                "",
+                "Agent's draft notes on the documents (use as a hint "
+                "for which entities matter; do not copy verbatim):",
+                agent_final_answer[:1500],
+            ]
+        brief_parts += [
+            "",
+            f"Source documents ({len(bundle.docs)}):",
+            docs_concat,
+        ]
+        content_brief = "\n".join(brief_parts)
+
+        try:
+            tool = GenerateVizTool(vllm_base_url=self._reasoner_base_url)
+            tool.execute(
+                args={"viz_type": viz_type, "content_brief": content_brief},
+                context={"tool_secrets": {
+                    "tmg_mode": self.mode,
+                    "query_id": query_id,
+                    "vllm_base_url": self._reasoner_base_url,
+                }},
+            )
+        except Exception:
+            return None
+
+        # GenerateVizTool wrote the sidecar (or returned an error JSON).
+        sidecar = _read_viz_sidecar(self.mode, query_id)
+        if not sidecar:
+            return None
+        viz_dsl = sidecar.get("viz_dsl") or ""
+        if not viz_dsl:
+            return None
+        return {
+            "viz_type": sidecar.get("viz_type") or viz_type,
+            "viz_dsl": viz_dsl,
+        }

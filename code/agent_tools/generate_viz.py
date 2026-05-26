@@ -258,7 +258,8 @@ class GenerateVizTool:
                 temperature=0.7,
                 top_p=0.8,
                 seed=42,
-                max_tokens=4096,
+                # No max_tokens cap — Qwen3.5-397B max_model_len=131072 handles output;
+                # 4096 cap previously truncated multi-doc viz DSL mid-stream.
                 response_format={"type": "json_object"},
                 extra_body={
                     "top_k": 20,
