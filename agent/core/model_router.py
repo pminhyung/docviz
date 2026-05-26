@@ -21,19 +21,63 @@ from agent.core.sandbox import is_sandbox_mode, SandboxProxyClient
 
 
 # ── Multi-host pool for QWEN3 (round-robin across replicas) ──────────────
-# QWEN3_BASE_URLS (comma-separated, optional) overrides single QWEN3_BASE_URL.
-# When set (e.g. "http://10.1.211.147:8000/v1,http://10.1.211.148:8000/v1,..."),
-# ProxyClient round-robins requests across the listed URLs so concurrent agent
-# dispatches spread across the vLLM cluster. Single-URL behavior is preserved
-# when QWEN3_BASE_URLS is unset.
+# Hard requirement: every role (REASONING / EXTRACTION / SUMMARIZATION /
+# QUERY_GENERATION) MUST hit the on-prem Qwen vLLM cluster — the same hosts
+# the main reasoner uses. No public-API fallback. Configure via env (one of):
+#   - QWEN3_BASE_URLS  (server-side preferred): "http://h1:p/v1,http://h2:p/v1,..."
+#   - QWEN_HOSTS       (orchestrator-side):     "h1:p,h2:p,..." (prepend http://, append /v1)
+#   - QWEN3_BASE_URL / QWEN_BASE_URL: single URL (no round-robin)
+# If none set, this module raises at import. Any URL containing a known
+# public-API host (api.novita.ai, api.openai.com, etc.) is also rejected.
+_PUBLIC_API_HOST_DENYLIST = (
+    "api.novita.ai",
+    "api.openai.com",
+    "generativelanguage.googleapis.com",
+    "anthropic.com",
+)
+
+
+def _reject_public(urls: List[str]) -> List[str]:
+    for u in urls:
+        for banned in _PUBLIC_API_HOST_DENYLIST:
+            if banned in u:
+                raise RuntimeError(
+                    f"agent.core.model_router: refusing to route Qwen role "
+                    f"to public API host '{banned}' (found in URL {u!r}). "
+                    "Only on-prem Qwen cluster is permitted. Reconfigure "
+                    "QWEN3_BASE_URLS / QWEN_HOSTS to point at the cluster."
+                )
+    return urls
+
+
 def _resolve_qwen3_base_urls() -> List[str]:
     pool = os.environ.get("QWEN3_BASE_URLS", "").strip()
     if pool:
         urls = [u.strip() for u in pool.split(",") if u.strip()]
         if urls:
-            return urls
-    single = os.environ.get("QWEN3_BASE_URL", "https://api.novita.ai/v3/openai")
-    return [single]
+            return _reject_public(urls)
+    hosts = os.environ.get("QWEN_HOSTS", "").strip()
+    if hosts:
+        urls = []
+        for h in hosts.split(","):
+            h = h.strip()
+            if not h:
+                continue
+            if h.startswith("http"):
+                urls.append(h.rstrip("/") + ("" if h.endswith("/v1") else "/v1"))
+            else:
+                urls.append(f"http://{h}/v1")
+        if urls:
+            return _reject_public(urls)
+    for env_key in ("QWEN3_BASE_URL", "QWEN_BASE_URL"):
+        single = os.environ.get(env_key, "").strip()
+        if single:
+            return _reject_public([single])
+    raise RuntimeError(
+        "agent.core.model_router: no Qwen base URL configured. Set one of "
+        "QWEN3_BASE_URLS, QWEN_HOSTS, QWEN3_BASE_URL, or QWEN_BASE_URL to "
+        "the on-prem Qwen vLLM cluster before starting the agent server."
+    )
 
 
 _QWEN3_BASE_URLS: List[str] = _resolve_qwen3_base_urls()
@@ -89,21 +133,23 @@ class ModelConfig:
         return self.api_key
 
 
-# Default model configurations (api_key must be provided at runtime).
-# QWEN3_BASE_URL / QWEN3_MODEL_ID / QWEN3_API_KEY env-vars let callers redirect
-# the "qwen3" role (used as default for EXTRACTION / SUMMARIZATION / QUERY_GEN)
-# to an on-prem vLLM cluster so internal tools (ReadFullDocument, etc.) hit the
-# same backend as the reasoner. Without these overrides, EXTRACTION goes to
-# Novita API and fails 401 when the orchestrator passes only on-prem credentials.
+# Default model configurations.
+# `qwen3` role serves REASONING / EXTRACTION / SUMMARIZATION / QUERY_GENERATION;
+# all of these MUST hit the on-prem cluster resolved by _resolve_qwen3_base_urls().
+# QWEN3_MODEL_ID overrides the model name (default = on-prem deployment id);
+# QWEN3_API_KEY is the vLLM auth token (default empty = no auth, matching local
+# vLLM convention). Public-API model configs below (gemini/gpt4o/gpt5) are
+# reachable only by explicit opt-in via load_config() YAML; default routing
+# (DEFAULT_ROUTING) never references them.
 DEFAULT_MODELS: Dict[str, ModelConfig] = {
     "qwen3": ModelConfig(
-        model_id=os.environ.get("QWEN3_MODEL_ID", "qwen/qwen3-235b-a22b-instruct-2507"),
-        # base_url here is the *first* URL in _QWEN3_BASE_URLS; ProxyClient
-        # builds one OpenAI client per URL and round-robins between them.
+        model_id=os.environ.get("QWEN3_MODEL_ID", "Qwen3.5-397B-A17B-FP8"),
+        # base_url = first URL in _QWEN3_BASE_URLS; ProxyClient builds one
+        # OpenAI client per URL in the pool and round-robins between them.
         base_url=_QWEN3_BASE_URLS[0],
         max_tokens=16384,
         temperature=0.2,
-        api_key=os.environ.get("QWEN3_API_KEY", ""),
+        api_key=os.environ.get("QWEN3_API_KEY", "EMPTY"),
     ),
     "gemini": ModelConfig(
         model_id="gemini-2.5-pro",

@@ -146,17 +146,16 @@ class GenerateVizTool:
 
     name = "generate_viz"
     description = (
-        "Generate a visualization DSL of the chosen viz_type "
-        "(Mermaid markdown or Chart.js JSON) from a natural-language "
-        "content brief. Use this tool ONCE per query, after you have "
-        "decided which viz_type from the 10-enum pool best fits the "
-        "query and source content. The tool persists the produced viz "
-        "to a sidecar file for the downstream pipeline; it returns a "
-        "short status JSON (e.g., "
-        '{"status": "viz_generated", "viz_type": "...", '
-        '"viz_dsl_chars": N}). After calling this tool, produce a '
-        "brief one-sentence <final_answer> acknowledgment — do not "
-        "repeat the DSL."
+        "PRIMARY DELIVERABLE of this task. Generates a visualization DSL "
+        "(Mermaid markdown or Chart.js JSON) of the chosen viz_type from "
+        "a natural-language content brief. You MUST invoke this tool "
+        "exactly once per query, after gathering the needed entities via "
+        "`search` or `ReadFullDocument`. The tool persists the viz to a "
+        "sidecar for the pipeline and returns a short status JSON. After "
+        "this tool returns, your next step is `<final_answer>success"
+        "</final_answer>` (the literal seven characters — no other "
+        "content). Skipping this tool and producing `<final_answer>` "
+        "directly causes the run to be discarded."
     )
     parameters = {
         "type": "object",
