@@ -34,11 +34,16 @@ mkdir -p "$LOG_DIR" "$PID_DIR"
 VARIANT="${VARIANT:-27b}"
 MODEL_BASE="/ex_disk2/mhpark/poc/chartvr/models"
 case "$VARIANT" in
-  27b) MODEL_PATH="$MODEL_BASE/gemma3-27b-it"; MODEL_ID="gemma-3-27b-it"; TP=${TP:-2} ;;
-  4b)  MODEL_PATH="$MODEL_BASE/gemma3-4b-it";  MODEL_ID="gemma-3-4b-it";  TP=${TP:-1} ;;
-  *) echo "Unknown VARIANT=$VARIANT (expect 27b or 4b)"; exit 1 ;;
+  27b)    MODEL_PATH="$MODEL_BASE/gemma3-27b-it";   MODEL_ID="gemma-3-27b-it";   TP=${TP:-2} ;;
+  4b)     MODEL_PATH="$MODEL_BASE/gemma3-4b-it";    MODEL_ID="gemma-3-4b-it";    TP=${TP:-1} ;;
+  4-31b)  MODEL_PATH="$MODEL_BASE/gemma-4-31B-it";  MODEL_ID="gemma-4-31b-it";   TP=${TP:-2}
+          # Gemma4 requires vllm>=0.21 (gemma4_mm module). Force the new env.
+          VLLM_BIN="${VLLM_BIN:-/ex_disk2/mhpark/poc/gemma4_vllm_env/bin/vllm}"
+          ;;
+  *) echo "Unknown VARIANT=$VARIANT (expect 27b | 4b | 4-31b)"; exit 1 ;;
 esac
 
+# Default vllm binary: nightly env (works for gemma3). Gemma4 overrides above.
 VLLM_BIN="${VLLM_BIN:-/opt/conda/bin/vllm}"
 [ -x "$VLLM_BIN" ] || VLLM_BIN="/ex_disk2/mhpark/poc/vllm_nightly_env/bin/vllm"
 
@@ -90,6 +95,12 @@ for ((i=0; i<N_HOSTS; i++)); do
   log="$LOG_DIR/host_${port}.log"
   pidf="$PID_DIR/gemma3_${port}.pid"
   echo "[gemma3] launching host port=$port gpus=$gpu_slice TP=$TP"
+  # Gemma4 is multimodal — needs larger max-num-batched-tokens (default 2048
+  # is below per-MM-item budget). Gemma3 + others fine at default.
+  EXTRA_FLAGS=""
+  if [[ "$VARIANT" == 4-* ]]; then
+    EXTRA_FLAGS="--max-num-batched-tokens 8192"
+  fi
   CUDA_VISIBLE_DEVICES="$gpu_slice" nohup "$VLLM_BIN" serve "$MODEL_PATH" \
     --served-model-name "$MODEL_ID" \
     --port "$port" \
@@ -98,6 +109,7 @@ for ((i=0; i<N_HOSTS; i++)); do
     --gpu-memory-utilization "$GPU_MEM_UTIL" \
     --max-model-len "$MAX_MODEL_LEN" \
     --dtype bfloat16 \
+    $EXTRA_FLAGS \
     > "$log" 2>&1 &
   pid=$!
   echo "$pid" > "$pidf"
