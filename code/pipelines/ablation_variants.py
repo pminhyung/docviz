@@ -53,15 +53,24 @@ class B6NoTMG(S4Agentic):
 
 
 class B6NoSAO(S4AgenticTMG):
-    """V4_consolidated minus SAO (Pillar 3): same agent loop and TMG
-    routing, but the source_attribution post-processing is suppressed
-    (the field is set to empty in the returned VizOutput so downstream
-    metrics treating attribution as a signal degrade to 0)."""
+    """New B6 (TMG + SAO, CIS skipped) minus SAO (Pillar 3): same agent loop,
+    same TMG routing, same `skip_doc_step=True` (CIS pillar removed per the
+    2026-05-27 v0.4 finding), but the source_attribution post-processing is
+    suppressed (the field is set to empty in the returned VizOutput so
+    downstream metrics treating attribution as a signal degrade to 0).
+
+    This cell is the −SAO ablation for the NEW B6 (= NoCIS), used in the
+    Layer D ablation table. The old version (which had CIS active) was
+    superseded when the v0.4 measurement showed CIS pillar net-negative
+    on multi-doc bundles."""
 
     name = "B6_NoSAO"
 
     def __init__(self, **kwargs):
         super().__init__(mode="v4_consolidated", **kwargs)
+
+    def _ablation_overrides(self) -> Dict[str, Any]:
+        return {"skip_doc_step": True}
 
     def run(
         self,

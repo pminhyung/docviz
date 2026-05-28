@@ -43,10 +43,10 @@ from code.adapters.agent_client import QwenDirectClient
 # ── Hosts / model registry ─────────────────────────────────────────────────
 
 _QWEN_HOSTS_DEFAULT = (
-    ["10.1.211.148:8000"]
-    + [f"10.1.211.{i}:8000" for i in range(163, 167)]   # 167-170 now DeepSeek
+    ["10.1.211.147:8000", "10.1.211.148:8000"]
+    + [f"10.1.211.{i}:8000" for i in range(163, 169)]   # 147,148,163-168 (8 hosts) — 169,170 retasked
 )
-_DEEPSEEK_HOSTS_DEFAULT = [f"10.1.211.{i}:8000" for i in range(167, 171)]
+_DEEPSEEK_HOSTS_DEFAULT = ["10.1.211.169:8000", "10.1.211.170:8000"]   # only last 2 host DeepSeek now (2026-05-28)
 _GEMMA3_HOSTS_DEFAULT = ["localhost:9401"]
 
 

@@ -183,48 +183,129 @@ def _run_one(
     return _record_from_vizout(q, strategy, vo, time.time() - t0)
 
 
+_RETRIABLE_ERROR_PATTERNS = (
+    "empty final_answer",
+    "ReadTimeout",
+    "timed out",
+    "HTTPStatusError",
+    "ConnectError",
+    "401",
+    "FAILED_TO_AUTH",
+    "agent call raised",
+)
+
+
+def _is_retriable_failure(rec: Dict[str, Any]) -> bool:
+    """A record should be requeued if it shows a transient server-side
+    failure pattern. We do NOT retry on content-quality failures (e.g. agent
+    chose a poor viz_type) — those would just produce the same result.
+
+    Retriable signals (from rec.errors or core fields):
+      - empty final_answer (Mode A: silent upstream LLM crash)
+      - ReadTimeout (host overloaded)
+      - HTTP 401 / auth / connection errors
+      - syntax_invalid AND tok_out is small (agent never made meaningful progress)
+    """
+    errs = rec.get("errors") or []
+    if any(any(p in e for p in _RETRIABLE_ERROR_PATTERNS) for e in errs):
+        return True
+    if not rec.get("syntax_valid") and rec.get("tokens_out", 0) < 1000:
+        return True
+    return False
+
+
 def _run_strategy_pool(
     label: str,
     pipeline_factory,
     pairs: List[Tuple[Dict[str, Any], Bundle]],
     workers: int,
     raw_path: Path,
+    max_retries: int = 2,
 ) -> List[Dict[str, Any]]:
-    print(f"[{label}] running {len(pairs)} pairs (workers={workers})…")
+    """Run a strategy across pairs with sample-level requeue on transient
+    failures.
+
+    Each (q, b) is wrapped as a task with attempt counter. A fresh
+    `pipeline_factory()` is built per attempt, which means a fresh
+    pipeline instance — that instance picks the next round-robin reasoner
+    URL, so a retry naturally lands on a different host.
+
+    Records whose `_is_retriable_failure` is True are re-enqueued up to
+    `max_retries` times. The final accepted record is the latest attempt
+    (even if still failing). All attempts are appended to raw_path for
+    forensics.
+    """
+    print(f"[{label}] running {len(pairs)} pairs (workers={workers}, max_retries={max_retries})…")
     out: List[Dict[str, Any]] = []
     if workers <= 1:
         pipe = pipeline_factory()
         for i, (q, b) in enumerate(pairs, 1):
             rec = _run_one(pipe, q, b, label)
+            attempt = 1
+            while attempt <= max_retries and _is_retriable_failure(rec):
+                attempt += 1
+                rec_prev = rec
+                rec = _run_one(pipeline_factory(), q, b, label)
+                rec["errors"] = (rec.get("errors") or []) + [
+                    f"retry={attempt} after_prev_errors={rec_prev.get('errors') or []}"
+                ]
             out.append(rec)
             _append_raw(rec, raw_path)
             print(f"  [{label} {i:>3d}/{len(pairs):>3d}] {rec['query_id']:<28s}"
                   f" syntax={'Y' if rec['syntax_valid'] else 'N'}"
                   f" tok_out={rec['tokens_out']:>5d}"
                   f" t={rec['duration_seconds']:>5.1f}s"
-                  f" err={len(rec['errors'])}")
+                  f" err={len(rec['errors'])}"
+                  f" attempts={attempt}")
         return out
 
-    # Pool workers — each gets its own pipeline instance to avoid sharing
-    # state (e.g., httpx clients, round-robin counters).
-    def _worker(q_b):
-        q, b = q_b
-        return _run_one(pipeline_factory(), q, b, label)
+    # Concurrent pool with sample-level requeue. We submit one future per
+    # (q, b, attempt) tuple; as each completes, if it's a retriable
+    # failure and we have budget, we submit a new future for that pair
+    # with attempt+1.
+    completed: Dict[str, Dict[str, Any]] = {}  # query_id -> latest record
+    attempts: Dict[str, int] = {}              # query_id -> attempts so far
+    total = len(pairs)
+    pair_by_qid = {q["query_id"]: (q, b) for q, b in pairs}
+
+    def _submit(ex, q, b, attempt: int):
+        return ex.submit(_run_one, pipeline_factory(), q, b, label)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        futures = {ex.submit(_worker, qb): qb for qb in pairs}
+        futures = {}
+        for q, b in pairs:
+            qid = q["query_id"]
+            attempts[qid] = 1
+            futures[_submit(ex, q, b, 1)] = qid
+
         done = 0
-        for fut in as_completed(futures):
-            done += 1
+        while futures:
+            fut = next(as_completed(list(futures.keys())))
+            qid = futures.pop(fut)
             rec = fut.result()
-            out.append(rec)
+            cur_attempt = attempts[qid]
+
+            if _is_retriable_failure(rec) and cur_attempt < max_retries + 1:
+                attempts[qid] = cur_attempt + 1
+                q, b = pair_by_qid[qid]
+                short_errs = (rec.get("errors") or [])[:1]
+                print(f"  [{label} retry {qid:<28s}] attempt {cur_attempt} failed"
+                      f" (errs={short_errs}); requeuing as attempt {cur_attempt+1}")
+                _append_raw(rec, raw_path)  # log failed attempt
+                futures[_submit(ex, q, b, cur_attempt + 1)] = qid
+                continue
+
+            completed[qid] = rec
             _append_raw(rec, raw_path)
-            print(f"  [{label} {done:>3d}/{len(pairs):>3d}] {rec['query_id']:<28s}"
+            done += 1
+            print(f"  [{label} {done:>3d}/{total:>3d}] {rec['query_id']:<28s}"
                   f" syntax={'Y' if rec['syntax_valid'] else 'N'}"
                   f" tok_out={rec['tokens_out']:>5d}"
                   f" t={rec['duration_seconds']:>5.1f}s"
-                  f" err={len(rec['errors'])}")
-    return out
+                  f" err={len(rec['errors'])}"
+                  f" attempts={cur_attempt}")
+
+    return list(completed.values())
 
 
 # ── Summary ───────────────────────────────────────────────────────────────
