@@ -21,3 +21,14 @@ node_modules/
 
 # raw source dumps (loaders re-fetch on demand)
 data/prototype/sources/raw/
+
+# Bulk data + outputs (do not commit to git)
+data/
+outputs/
+
+# Debug artifacts
+core.*
+=*
+
+# Harness migration legacy
+_legacy_v0.4_pre_harness/

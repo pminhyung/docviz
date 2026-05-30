@@ -36,8 +36,10 @@ MODEL_BASE="/ex_disk2/mhpark/poc/chartvr/models"
 case "$VARIANT" in
   27b)    MODEL_PATH="$MODEL_BASE/gemma3-27b-it";   MODEL_ID="gemma-3-27b-it";   TP=${TP:-2} ;;
   4b)     MODEL_PATH="$MODEL_BASE/gemma3-4b-it";    MODEL_ID="gemma-3-4b-it";    TP=${TP:-1} ;;
-  4-31b)  MODEL_PATH="$MODEL_BASE/gemma-4-31B-it";  MODEL_ID="gemma-4-31b-it";   TP=${TP:-2}
-          # Gemma4 requires vllm>=0.21 (gemma4_mm module). Force the new env.
+  4-31b)  MODEL_PATH="$MODEL_BASE/gemma-4-31B-it";  MODEL_ID="gemma-4-31b-it";   TP=${TP:-4}
+          # Gemma4 requires vllm>=0.19 with transformers>=5.9 (model_type=gemma4).
+          # gemma4_vllm_env has vllm 0.19 + torch 2.10+cu128 + transformers 5.9
+          # (works on driver 535.x via CUDA 12.8 forward-compat).
           VLLM_BIN="${VLLM_BIN:-/ex_disk2/mhpark/poc/gemma4_vllm_env/bin/vllm}"
           ;;
   *) echo "Unknown VARIANT=$VARIANT (expect 27b | 4b | 4-31b)"; exit 1 ;;
