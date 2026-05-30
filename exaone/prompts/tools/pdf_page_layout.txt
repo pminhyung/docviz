@@ -1,0 +1,3 @@
+### `pdf_page_layout`
+
+Render full PDF page(s) as images for spatial/layout inspection — useful when you need to see how figures relate to surrounding text, table positions, or column structure (context that cropped figures don't convey). Each `scope` item must be `'<document_idx>@<page>'`; doc-only form is not accepted here because it would render an entire document. Returns per-page metadata + an `Index` per page that downstream visual analysis can refer to. `dpi` defaults to 150 (100 / 150 / 200 supported).

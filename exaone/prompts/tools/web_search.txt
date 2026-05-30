@@ -1,0 +1,9 @@
+# Tool: web_search
+
+- Use `web_search` when the question requires information not covered by the attached internal documents — such as recent data, external comparisons, industry benchmarks, or quantitative details absent from the documents.
+- Pass 1-3 related queries in a single call via the `queries` array.
+- Each query returns 10 hits with fields `Index`, `query_idx`, `site_name`, `snippet`, and `url`.
+- `snippet` may be a list of phrases (Brave `extra_snippets`) or a single string; both forms are valid evidence.
+- Cite web hits by their `Index` value in the final answer (e.g. `[ws742.3]`).
+- Issue additional parallel `web_search` calls only for clearly distinct topics; 4+ parallel calls are rarely useful.
+- Stop calling as soon as you have enough information to answer.

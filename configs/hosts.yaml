@@ -1,0 +1,29 @@
+# Multi-host vLLM pool for exaone/batch_runner_pool.py
+#
+# Each host advertises its served model id under /v1/models — vLLM matches
+# requests strictly against that id, so the per-host ``model`` field MUST
+# equal the id the host actually serves. Two model families are mixed in
+# this pool; each entry pins its own name.
+#
+# n_concurrent = number of worker processes spawned for this host.
+# Total worker count = sum(n_concurrent across all hosts).
+
+api_key: EMPTY
+port: 8000
+
+hosts:
+  # Qwen3.5-397B-A17B-FP8 hosts only.
+  # NOTE: deepseek-v4-flash hosts (169, 170) removed from the pool
+  # because upstream Hermes' `_needs_deepseek_tool_reasoning` guard
+  # is triggered by any model name containing "deepseek" and forces
+  # `reasoning_content = " "` padding on every tool-call assistant
+  # turn. That fabricated empty-think pattern poisons the SFT data
+  # (refs froggeric Qwen-Fixed-Chat-Templates v19 diagnosis).
+  - { host: 10.1.211.147, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.148, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.163, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.164, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.165, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.166, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.167, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.168, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }

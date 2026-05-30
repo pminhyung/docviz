@@ -1,0 +1,13 @@
+# Tool: update_canvasdoc
+
+⚠️ **Canvas mode is active** — edits to the active canvas (or whole-doc rewrites) MUST go through this tool. Do NOT respond with a plain-text revised version in lieu of calling update_canvasdoc.
+
+- Use this tool to apply one or more block-level edits to canvas docs in a single batch call. Each entry in `updates` targets one doc by `canvas_id`.
+- REQUIRED precursor for ANY edit (whole rewrite OR partial): call `get_canvas_status` in the same turn first. The user may have edited the doc via the UI between turns, so prior responses in history may not reflect the current body — confirm against fresh status before writing. For partial edits, the `block_id`s you pass MUST also come from that fresh response; they are reassigned from 1 on every status call and stale ids will silently target the wrong block.
+- Never pass the doc body, `name`, or `type`. The server resolves each spec from prior `create_canvasdoc` / successful `update_canvasdoc` responses in conversation history.
+- Two edit modes per spec:
+  - Whole rewrite: `blocks={"root": "<full new doc body>"}`. Replaces everything in the doc.
+  - Partial edit: `blocks={"<block_id>": "<full new content of that block>", ...}`. Always provide the COMPLETE new content of each block — never a fragment or diff. If any `block_id` is not present in the current doc, the whole spec fails with `unknown block_id(s)` and nothing in that spec is applied; refresh with `get_canvas_status` and retry.
+- For docs whose `type` starts with `"code/"`, prefer whole rewrite — partial edits risk breaking imports, indentation, or fences.
+- The response is `{results, applied, total}`. Specs are independent: one failing spec does not abort the others, so inspect `results[i].status` and the `applied`/`total` counters to confirm what actually took effect.
+- Use a single spec when only one doc is changing. Batch multiple specs only when you genuinely need to update several distinct docs in the same turn; do NOT split edits to the same doc across multiple specs in one call (they would all see the same pre-call baseline).

@@ -1,0 +1,8 @@
+# Tool: web_extract
+
+- Use `web_extract` to extract detailed, goal-oriented summaries from web results. Read multiple URLs at once when useful.
+- Pass URLs from prior `web_search` hits in the `urls` array. You must perform at least one `web_search` before invoking `web_extract`; select URLs to read based on those search results.
+- Each result has `contents` plus two flags:
+  - `summarized: true` — the body was LLM-compressed (pages 35K-100K chars). Cite normally; treat as faithful summary.
+  - `truncated: true` — only the first 35K chars of raw body are present (pages over 100K chars, or fallback when summarization failed).
+- **Cite extracted facts using the originating `web_search` Index, never the `web_extract` call's own `tool_call_id`.** A `web_extract` result is an expansion of a search hit, not a new source.

@@ -1,0 +1,29 @@
+### Tool: ReadFullDocument
+
+Use `ReadFullDocument` to retrieve a goal-oriented extraction (rational
+/ evidence / summary) over the FULL parsed text of a single attached
+document. The document must have been parsed earlier in this task via
+`parse_web_and_doc`.
+
+When to use:
+- The user's request is the **document itself** — a full summary,
+  overall understanding, or end-to-end review of the entire document.
+
+When NOT to use:
+- The question is narrow or topic-based (a specific issue, theme,
+  insight, implication, or "key summary" about one aspect of the
+  document). Use `doc_search` or `get_document_chunks` instead — they
+  are much cheaper and more precise for targeted queries.
+
+Input rules:
+- `document_idx` is required: a single integer index from the
+  `[Attached documents]` block (e.g. `1`).
+- `goal` is required: pass the user's information goal so the
+  extraction is focused on it.
+
+Output:
+- A JSON envelope with `Index`, `document_idx`, `filename`,
+  `page_count`, `goal`, `content_char_count`, `content_truncated_to`,
+  and `text` (the goal-oriented extraction).
+- Cite the extracted findings by the envelope's `Index` value
+  (e.g. `[rfdZ.0]`).

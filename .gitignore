@@ -1,34 +1,101 @@
-
-# harness (managed by wire-harness.sh)
-.harness/
-docs/active
-docs/reference
-
-# session-local state
-.orchestrator_state/
-
-# python
+.DS_Store
+/venv/
+/_pycache/
+*.pyc*
 __pycache__/
-*.pyc
-*.pyo
-
-# node
-node_modules/
-
-# env
+.venv/
+.vscode/
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+export*
+__pycache__/model_tools.cpython-310.pyc
+__pycache__/web_tools.cpython-310.pyc
+logs/
+.hermes/
+data/*
+!data/bundles/
+!data/bundles/**
+.pytest_cache/
+tmp/
+temp_vision_images/
+hermes-*/*
+examples/
+tests/quick_test_dataset.jsonl
+tests/sample_dataset.jsonl
+run_datagen_kimik2-thinking.sh
+run_datagen_megascience_glm4-6.sh
+run_datagen_sonnet.sh
+source-data/*
+run_datagen_megascience_glm4-6.sh
+data/*
+node_modules/
+browser-use/
+agent-browser/
+# Private keys
+*.ppk
+*.pem
+privvy*
+images/
+__pycache__/
+hermes_agent.egg-info/
+wandb/
+testlogs
 
-# raw source dumps (loaders re-fetch on demand)
-data/prototype/sources/raw/
+# CLI config (may contain sensitive SSH paths)
+cli-config.yaml
 
-# Bulk data + outputs (do not commit to git)
-data/
+# Skills Hub state (lives in ~/.hermes/skills/.hub/ at runtime, but just in case)
+skills/.hub/
+ignored/
+.worktrees/
+environments/benchmarks/evals/
+
+# Web UI build output
+hermes_cli/web_dist/
+
+# Web UI assets — synced from @nous-research/ui at build time via
+# `npm run sync-assets` (see web/package.json).
+web/public/fonts/
+web/public/ds-assets/
+
+# Release script temp files
+.release_notes.md
+mini-swe-agent/
+
+# Nix
+.direnv/
+.nix-stamps/
+result
+website/static/api/skills-index.json
+models-dev-upstream/
+# Canvas
+CANVAS_NOTION_SHARE.md
+CANVAS_TOOL_IMPLEMENTATION.md
+canvas-generation/
+scripts/build_history_jsonl.py
+scripts/synthesize_queries.py
+uv.lock
+
+train_data/
+
+# EXAONE visual_tools — super-resolution model weights (large binaries).
+# Untracked; developers download per exaone/visual_tools/_models/README.md.
+exaone/visual_tools/_models/*.pb
+
+# === docviz-specific (added on top of harness defaults) ===
+.harness/
+.orchestrator_state/
+data/*
+!data/bundles/
+!data/bundles/**
 outputs/
-
-# Debug artifacts
 core.*
 =*
-
-# Harness migration legacy
 _legacy_v0.4_pre_harness/
+docs/active
+docs/reference

@@ -1,0 +1,5 @@
+# Tool: doc_tool
+
+- Use this template tool to search internal or indexed documentation.
+- Prefer specific keywords from the user request.
+- Treat hits as reference material and quote accurately.

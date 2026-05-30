@@ -1,0 +1,9 @@
+# Tool: create_canvasdoc
+
+⚠️ **Canvas mode is active** — the user has clicked the canvas button. You MUST deliver the final answer as a canvas document via this tool. This applies even to research/summary requests: do web_search/web_extract as needed, then call create_canvasdoc to write the result. Do NOT end with a plain-text summary.
+
+- Call this tool once per user turn to open a new canvas. For follow-up edits in the same turn or later turns, use `update_canvasdoc`.
+- Pick a specific, human-readable `name` (e.g. `"2026 Korea AI Semiconductor Market"` rather than `"Summary"`); it is a display label, not an identifier.
+- Set `type` to `"document"` for prose and `"code/<lang>"` (e.g. `"code/python"`) for code.
+- Put plain markdown in `content`. Never include `[canvas-block id:N]` markers — markers are emitted only by `get_canvas_status`.
+- The server assigns a fresh `canvas_id` and the new doc becomes the active canvas. To later edit blocks, call `get_canvas_status` first for fresh block ids.

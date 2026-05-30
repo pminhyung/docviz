@@ -1,0 +1,30 @@
+# Tool: get_document_chunks
+
+Use `get_document_chunks` to fetch the full text of specific document
+pages by (document_idx, page). Reads from the per-task cache populated
+by `parse_web_and_doc` — no IR or parser round-trip.
+
+When to use:
+- The user's question explicitly refers to a **specific page** or
+  **specific part (page number)** within an attached document.
+- A `doc_search` hit pointed you at specific pages and you need their
+  full text (not just the snippet).
+- You need to read several pages from different documents in one call.
+
+Input rules:
+- `doc_page`: list of `'<document_idx>-<page>'` strings, e.g.
+  `['1-3', '1-5', '2-1']` = page 3 and 5 of attached document 1 plus
+  page 1 of attached document 2.
+- Pages must have been parsed earlier in this task via `parse_web_and_doc`.
+- Include a clear reasoning why those page(s) are relevant to the
+  user's current question before invoking this tool.
+
+Output:
+- A JSON envelope with `results` (one row per resolved page) and
+  optionally `missing` (entries that were not in the cache). Each
+  result has `Index`, `document_idx`, `page`, `text`, `html`,
+  `char_count`.
+
+If a page is in `missing`, the referenced document is not parsed in
+this task or the page number does not exist. Call `parse_web_and_doc` first
+or pick a different page.

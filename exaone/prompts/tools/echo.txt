@@ -1,0 +1,4 @@
+# Tool: echo
+
+- Returns the input text as-is.
+- Use only for diagnostics or controlled tool-call tests.

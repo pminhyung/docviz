@@ -1,0 +1,9 @@
+# Tool: doc_search
+
+- Search the registered internal documents for passages relevant to one or more queries.
+- Pass 1-3 related queries in the `queries` array; each query returns up to `top_n` hits.
+- `document_idx` is required: a non-empty list of integer indices from the `[Attached documents]` block (e.g. `[1, 2]`). The documents must be parsed first via `parse_web_and_doc`.
+- Each hit carries `Index`, `query_idx`, `document_idx`, `page`, `title`, and `snippet`. When IR rerank or the selector is active, also `ir_score` and/or `selector_score`.
+- Cite hits by their `Index` value in the final answer (e.g. `[pug830.0]`).
+- Run `list_documents` first if you have not seen the session's document pool in this turn — its `parsed` flag tells you which `document_idx` are ready and which still need `parse_web_and_doc`.
+- For public web search use the built-in `web_search` tool — do not pass web URLs through `doc_search`.

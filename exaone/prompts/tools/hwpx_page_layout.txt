@@ -1,0 +1,3 @@
+### `hwpx_page_layout`
+
+Render HWPX page(s) as images for spatial/layout inspection. Same `scope` and `dpi` interface as `pdf_page_layout`. NOT YET IMPLEMENTED in this build — calls return an error; fall back to cropped-figure retrieval for HWPX content.

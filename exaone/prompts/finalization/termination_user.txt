@@ -1,0 +1,1 @@
+Iteration budget reached. Synthesize the final answer now using only the evidence above. Cite sources by Index. Do not call any further tools.

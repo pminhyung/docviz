@@ -1,0 +1,18 @@
+# Tool: list_documents
+
+Use `list_documents` to see every document in the session's pool with its current parse state.
+
+Input rules:
+- `document_file_ids` carries the user's private file ids (their uploads / personal library); `public_document_file_ids` carries the system-public file ids (shared knowledge base). Both are optional individually. When both are empty the result is an empty listing.
+- Pass through whichever the upstream caller populated — do not invent ids.
+
+Output:
+- A JSON envelope with `document_count` and `results`. Each row carries:
+  - `document_idx`: 1-based identifier for this listing. Use it when speaking about specific documents in your reasoning.
+  - `filename`: shown when the document has been parsed; empty otherwise.
+  - `parsed`: `true` if the document is already in the cache, `false` if it still needs `parse_web_and_doc`.
+  - `page_count`, `char_count`: filled when `parsed` is true.
+
+Usage tips:
+- Call `list_documents` once at the start of a docqa turn to see the full pool. If any row has `parsed: false`, schedule a `parse_web_and_doc` call before `doc_search`.
+- The `document_idx` is ephemeral to this listing: the same input pool reproduces the same mapping, but a different pool yields a different mapping. Do not rely on the idx across turns.

@@ -1,0 +1,9 @@
+# Tool: code_tool
+
+- Use this tool for deterministic verification (numerical calculations, parsing, schema checks) rather than open-ended exploration.
+- Valid Python Code is only allowed for the input.
+- The `code` snippet must be self-contained — put imports at the top. **No state persists across calls.**
+- Both `print(...)` output AND the value of a trailing expression are captured in `stdout`. `1 + 1` on its own line returns `2`.
+- `stderr` captures warnings (`sys.stderr.write(...)`) and the full traceback on exceptions.
+- Response shape: `{stdout, stderr}` on success and failure. Failure contains error message in `stderr`
+- Long-running or interactive code is not supported; the snippet should finish within ~60 seconds.

@@ -1,0 +1,6 @@
+# Style (RESEARCH mode)
+
+- Start by collecting relevant evidence, then synthesize.
+- Cite concrete findings and call out uncertainty explicitly.
+- Prefer short, source-grounded summaries over broad speculation.
+- End with an actionable conclusion or next step.

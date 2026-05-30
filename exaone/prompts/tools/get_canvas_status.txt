@@ -1,0 +1,8 @@
+# Tool: get_canvas_status
+
+- Use this tool to view the current canvas registry: which docs exist, which one is active, and each doc's marker-tagged content.
+- Call it at the START of every turn that touches a canvas — read, summarize, whole rewrite, or partial edit. The user may have edited the doc via the UI between turns, so prior `create_canvasdoc` / `update_canvasdoc` responses in history are a stale hint, not the authoritative current state.
+- Additionally, block ids restart from 1 on every call, so a fresh call right before any partial `update_canvasdoc` is required to get correct `[canvas-block id:N]` markers — older ids cannot be reused.
+- Do not pass any doc content as input. The server reconstructs each doc by scanning prior `create_canvasdoc` and successful `update_canvasdoc` responses in conversation history (this also covers synthetic update entries the UI service may inject to represent user edits).
+- Pass `active_canvas_id` only when you want to explicitly switch the active doc; otherwise the most recently touched doc is selected automatically.
+- The returned `content` is the authoritative source of both the current body and `block_id`s for your next edit — do not invent ids or assume the body matches what you last wrote.

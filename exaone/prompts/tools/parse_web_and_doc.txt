@@ -1,0 +1,26 @@
+# Tool: parse_web_and_doc
+
+Use `parse_web_and_doc` to register attached documents OR one or more web pages into the task's document pool so they become searchable by the other docqa tools.
+
+The tool has two mutually-exclusive branches:
+
+## Document branch
+
+Input:
+- `document_idx`: a non-empty list of integer indices from the `[Attached documents]` block of the user's message (e.g. `[1]` or `[1, 2]`). Pass several indices in one call to parse multiple documents at once instead of issuing back-to-back single calls.
+- Never invent indices that are not in the `[Attached documents]` list.
+
+Output:
+- A JSON envelope with `registered`, `cached`, `errors` counts and a `results` array — one entry per requested index carrying `document_idx`, `filename`, `extension`, `page_count`, `char_count`, and `status` (`registered`, `cached`, `rehydrated_from_ir`, `already_indexed`, or `error`). All downstream docqa tools refer to documents by the same `document_idx` value — fids are internal bookkeeping and never appear in the envelope.
+
+## Web branch
+
+Input:
+- `urls`: list of URLs (same key as `web_extract` — you can hand the same URL list over to either tool). Each URL is parsed via the doc_parser's WebParser endpoint.
+
+Output:
+- A JSON envelope with `branch: "web"`, `registered`, `cached`, `errors` counts and a `results` array. Each row carries `url`, `file_id`, `page_count`, `char_count`, and `status`. URLs are addressed by their original URL string; idx-based tooling does not apply to the web branch.
+
+## When to skip a call
+
+- Run `list_documents` first if you are unsure which documents have already been parsed in this task. Rows with `parsed: true` do not need another `parse_web_and_doc` call.

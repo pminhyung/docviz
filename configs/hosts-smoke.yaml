@@ -1,0 +1,8 @@
+# Tiny pool for smoke testing batch_runner_pool + HERMES_DOC_SHIM.
+# 1 host × 2 workers — keeps the trajectory count small and easy to inspect.
+model: Qwen3.5-397B-A17B-FP8
+api_key: EMPTY
+port: 8000
+
+hosts:
+  - { host: 10.1.211.148, n_concurrent: 2 }
