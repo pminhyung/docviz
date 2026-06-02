@@ -93,7 +93,12 @@ exaone/visual_tools/_models/*.pb
 data/*
 !data/bundles/
 !data/bundles/**
-outputs/
+outputs/*
+# Reports + paper artifacts under outputs/ ARE tracked (small text-only).
+!outputs/paper/
+!outputs/v0.5_harness/
+outputs/v0.5_harness/*
+!outputs/v0.5_harness/*.md
 core.*
 =*
 _legacy_v0.4_pre_harness/
