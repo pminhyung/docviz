@@ -1,0 +1,11 @@
+# DeepSeek-V4-Flash — paper eval (cross-backbone Table 4 row)
+# 2 hosts × 4 concurrent = 8 workers
+# NOTE: upstream Hermes _needs_deepseek_tool_reasoning guard activates on
+# "deepseek" model name and injects reasoning_content=" " padding for
+# tool-call assistant turns. SAFE for inference eval (we're not training);
+# DO NOT reuse for SFT data gen.
+api_key: EMPTY
+port: 8000
+hosts:
+  - { host: 10.1.211.169, n_concurrent: 4, model: deepseek-v4-flash }
+  - { host: 10.1.211.170, n_concurrent: 4, model: deepseek-v4-flash }

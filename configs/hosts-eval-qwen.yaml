@@ -1,0 +1,13 @@
+# Qwen3.5-397B-A17B-FP8 — paper eval (B6 / S1 / S7 / B1-B4)
+# 8 hosts × 4 concurrent = 32 workers
+api_key: EMPTY
+port: 8000
+hosts:
+  - { host: 10.1.211.147, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.148, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.163, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.164, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.165, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.166, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.167, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
+  - { host: 10.1.211.168, n_concurrent: 4, model: Qwen3.5-397B-A17B-FP8 }
