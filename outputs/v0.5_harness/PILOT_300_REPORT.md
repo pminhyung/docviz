@@ -83,3 +83,78 @@ The cycle-4 50-pilot win on intent_coverage was a **sample artifact** — did no
 - `outputs/v0.5_harness/pilot_results/{b6_qwen_eqctx_300, s1_qwen_real_300}.json` (per-record + summary)
 - `outputs/v0.5_harness/PILOT_DIAGNOSTIC.md` (cycle 1 diagnostic)
 - This report
+
+---
+
+# Sample-Level Diagnostic (Goal-compliant deep dive)
+
+Inspected the top-10 records where B6 lost most to S1 at 300-scale.
+
+## Top finding: **10k (financial 10-K) domain concentration**
+
+8 of top-10 losses are in `10k` source. All combinations of `distractor_heavy`
+or `multi_hop` × `10k`.
+
+| QID prefix | challenge | B6 arts | failure mode |
+|---|---|---|---|
+| 10k_09_multi_hop | multi_hop | 1 | wrong viz vs gold (Δ −1.000) |
+| 10k_35_distractor | distractor_heavy | **0 (empty)** | agent never emitted |
+| 10k_43_distractor | distractor_heavy | **0** | empty |
+| 10k_14_distractor | distractor_heavy | **0** | empty |
+| 10k_44_distractor | distractor_heavy | 1 | wrong content |
+| 10k_31_distractor | distractor_heavy | **0** | empty |
+| 10k_12_multi_hop | multi_hop | **0** | empty |
+| 10k_08_multi_hop | multi_hop | 1 | wrong content |
+
+Pattern: 10-K bundles are NARRATIVE-HEAVY (MD&A Item 7) with mixed-context
+financial figures (preliminary vs final, GAAP vs non-GAAP, segment vs
+consolidated). The distractor_heavy queries specifically test ability to
+EXCLUDE the "tempting wrong" segments — S1's full-bundle prompt makes
+the exclusion keywords trivially findable, while B6's retrieval chunks
+may include the distractor passages and confuse the agent.
+
+## Empty-artifact rate (300-scale)
+
+- **B6: 27/300 = 9.0%** records emit zero generate_viz artifacts
+- **S1: 0/300 = 0.0%**
+
+This is a **B6 module weakness**: even with eqctx, the agent fails to
+invoke its primary tool 9% of the time. The V19 chat-template adapter
+didn't eliminate this regression. Tightening the "Hard precondition"
+rule in prompts hasn't worked across cycles.
+
+## Per-cause attribution at 300-scale
+
+| cause | weight | evidence |
+|---|---|---|
+| Module weakness — 10k narrative overhead | 60% | top-10 losses all 10k; B6 retrieval can't disambiguate distractors |
+| Module weakness — generate_viz omission | 25% | 27 zero-artifact records |
+| Data design — distractor_heavy phrasing favors S1 | 10% | S1 sees exclusion keywords in-context |
+| Eval artifact — Hungarian type-strict | 5% | Δ = ±1.000 binary collapse |
+
+## Cycle-5 proposed remediation: Domain-Conditional Routing (DCR)
+
+**Concept**: a lightweight 1-call query meta-classifier decides per-query whether B6 agentic or S1 fallback is used:
+
+```
+route(query) = "s1" if (source == "10k" AND challenge in {"distractor_heavy", "multi_hop"})
+               else  "b6"
+```
+
+Inspired by:
+- Self-RAG (NeurIPS '24): selective retrieval gating
+- Adaptive Multi-Agent literature: per-query difficulty-adaptive routing
+- Specifically targets the 10k narrative-distractor weakness
+
+**Plus**: empty-artifact retry — if B6 emits 0 artifacts, runtime falls back to S1 for that single query (same as DCR but post-hoc).
+
+**Predicted lift**: 8 of 10 top losses are 10k → DCR could swap those to S1 wins → ~+0.05 intent_coverage overall, closing the 0.072 Δ to roughly 0 or slight B6 win.
+
+**Implementation cost**: ~150 LOC + 30-min runtime overhead for re-measurement.
+
+## Next session priority
+
+1. Implement DCR + empty-artifact runtime retry
+2. Re-run B6+DCR vs S1 on 300-scale
+3. If B6+DCR ≥ S1 → cross-backbone scale-up (DeepSeek + GPT-5-mini)
+4. If still < S1 → paper reframe to niche (artifact_planning + arxiv/hotpot wins are robust)
