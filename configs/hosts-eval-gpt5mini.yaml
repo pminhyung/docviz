@@ -1,0 +1,6 @@
+# GPT-5-mini eval — OpenAI API. n_concurrent must respect rate limits.
+# Use a single "host" entry pointing at api.openai.com via env override.
+api_key: PLACEHOLDER_USE_ENV
+port: 443
+hosts:
+  - { host: api.openai.com, n_concurrent: 8, model: gpt-5-mini }

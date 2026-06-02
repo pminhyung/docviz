@@ -135,7 +135,14 @@ def _load_host_config(path: str) -> List[HostSlot]:
                 f"host {host}: model must be set either at root or on the host entry"
             )
         api_key = str(entry.get("api_key") or default_api_key).strip() or "EMPTY"
-        base_url = f"http://{host}:{port}/v1"
+        # Use https + standard /v1 for OpenAI; http+port for local vLLM.
+        if host == "api.openai.com":
+            base_url = "https://api.openai.com/v1"
+            if api_key == "PLACEHOLDER_USE_ENV" or api_key == "EMPTY":
+                import os as _os
+                api_key = _os.environ.get("OPENAI_API_KEY", "EMPTY")
+        else:
+            base_url = f"http://{host}:{port}/v1"
         for _ in range(n_concurrent):
             slots.append(HostSlot(
                 worker_id=len(slots),
