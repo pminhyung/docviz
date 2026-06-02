@@ -127,3 +127,96 @@ def parse_chartjs_to_table(dsl_code: str) -> Optional[NormalizedTable]:
         series=series,
         cells=cells,
     )
+
+
+# ── §9.2 evaluate_chartjs — Chart Data F1 + chart_type accuracy ────────────
+
+def _cell_key(c) -> tuple:
+    """Cells match if (col, row) coincide; value compared separately."""
+    return (str(getattr(c, "col", c.get("col") if isinstance(c, dict) else "")),
+            str(getattr(c, "row", c.get("row") if isinstance(c, dict) else "")))
+
+
+def _cell_value(c):
+    return getattr(c, "value", c.get("value") if isinstance(c, dict) else None)
+
+
+def _values_match(a, b, tol_pct: float = 0.05) -> bool:
+    """Numeric within ±5% tolerance; otherwise exact string equality."""
+    try:
+        fa, fb = float(a), float(b)
+        if fa == 0 and fb == 0:
+            return True
+        scale = max(abs(fa), abs(fb))
+        return abs(fa - fb) / max(scale, 1e-9) <= tol_pct
+    except (TypeError, ValueError):
+        return str(a).strip().lower() == str(b).strip().lower()
+
+
+def evaluate_chartjs(artifact: dict, gold_table: dict) -> dict:
+    """Chart.js eval against a gold_table dict (§9.2).
+
+    Returns: {chart_type_acc, chart_data_p, chart_data_r, chart_data_f1,
+              numeric_mae, hallucination_row_rate, parse_failed}
+    """
+    dsl = artifact.get("dsl_code") or artifact.get("viz_dsl", "")
+    table = parse_chartjs_to_table(dsl)
+    if table is None:
+        return {
+            "chart_type_acc": 0.0,
+            "chart_data_p": 0.0,
+            "chart_data_r": 0.0,
+            "chart_data_f1": 0.0,
+            "numeric_mae": float("inf"),
+            "hallucination_row_rate": 1.0,
+            "parse_failed": True,
+        }
+
+    gold_type = (gold_table.get("chart_type") or "").lower()
+    pred_type = (table.chart_type or "").lower()
+    type_acc = float(pred_type == gold_type) if gold_type else 0.0
+
+    pred_cells = {_cell_key(c): _cell_value(c) for c in table.cells}
+    gold_cells = {_cell_key(c): _cell_value(c) for c in gold_table.get("cells", [])}
+
+    if not gold_cells:
+        return {
+            "chart_type_acc": type_acc,
+            "chart_data_p": 0.0,
+            "chart_data_r": 0.0,
+            "chart_data_f1": 0.0,
+            "numeric_mae": float("inf"),
+            "hallucination_row_rate": 1.0 if pred_cells else 0.0,
+            "parse_failed": False,
+        }
+
+    tp = 0
+    mae_acc, mae_n = 0.0, 0
+    for k, gv in gold_cells.items():
+        pv = pred_cells.get(k)
+        if pv is None:
+            continue
+        if _values_match(pv, gv):
+            tp += 1
+        try:
+            mae_acc += abs(float(pv) - float(gv))
+            mae_n += 1
+        except (TypeError, ValueError):
+            pass
+
+    n_pred = len(pred_cells)
+    n_gold = len(gold_cells)
+    p = tp / n_pred if n_pred else 0.0
+    r = tp / n_gold if n_gold else 0.0
+    f1 = 2 * p * r / (p + r) if (p + r) else 0.0
+    mae = mae_acc / mae_n if mae_n else float("inf")
+    hallu = max(0, n_pred - tp) / max(n_pred, 1)
+    return {
+        "chart_type_acc": type_acc,
+        "chart_data_p": p,
+        "chart_data_r": r,
+        "chart_data_f1": f1,
+        "numeric_mae": mae,
+        "hallucination_row_rate": hallu,
+        "parse_failed": False,
+    }
