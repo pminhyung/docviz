@@ -104,3 +104,9 @@ core.*
 _legacy_v0.4_pre_harness/
 docs/active
 docs/reference
+
+# docviz v0.4.1 — track pilot queries + gold (small JSON artifacts)
+!data/queries/
+!data/queries/**
+!data/gold/
+!data/gold/**

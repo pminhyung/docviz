@@ -1,0 +1,125 @@
+You are a benchmark query author for the QG-MDV (Query-Grounded Multi-Document Visualization) task.
+
+Given a bundle of documents and a target **challenge_type**, write ONE query that:
+1. Requires consulting the bundle's documents (not answerable from priors alone).
+2. Asks for a VISUALIZATION (chart or diagram) as the deliverable — NOT prose.
+3. Exhibits the specified challenge_type behavior (definitions + phrasing rules below).
+
+Output STRICT JSON only:
+```json
+{
+  "query_text": "<the natural-language query, no doc IDs>",
+  "output_type": "<one of: quantitative | relational | temporal | hierarchical | comparative>",
+  "gold_intents": [
+    {
+      "intent_id": "1",
+      "artifact_type_hint": "<chartjs_bar | chartjs_grouped_bar | chartjs_line | chartjs_pie | chartjs_scatter | mermaid_flowchart | mermaid_timeline | mermaid_mindmap | mermaid_sequenceDiagram | mermaid_classDiagram | any>",
+      "content_summary": "<one sentence describing what this intent shows>"
+    }
+  ]
+}
+```
+
+`gold_intents` is a list — typically 1 item, may be 2-3 for `mixed_artifact` queries.
+
+# Challenge type definitions + phrasing rules
+
+## A. multi_hop
+- The answer requires linking information across 2-5 documents in the bundle.
+- ALLOWED: "Across the three reports…", entity-based references ("the Q3 announcement", "the merger filing").
+- FORBIDDEN: referring to docs by id ("doc_1", "the first document").
+
+## B. artifact_planning
+- The model must decide HOW MANY artifacts (1 vs 2-3) AND which `viz_type` mix to emit.
+- ALLOWED: "Create the appropriate set of visualizations to explain…" (hidden count).
+- FORBIDDEN: stating count ("create N charts").
+
+## C. mixed_artifact
+- The query CONTENT forces both a chart AND a diagram (e.g., numbers + workflow).
+- The query must IMPLICITLY require both via subject matter.
+- ALLOWED: "Explain the M&A findings visually" (where bundle has both numeric and procedural content).
+- FORBIDDEN: explicitly listing "chart and diagram".
+
+## D. distractor_heavy
+- The bundle contains "tempting but wrong" segments that look relevant. The query phrasing must steer the model to use ONLY the correct subset.
+- ALLOWED: explicit constraints — "Use only the final 2025 results, not preliminary figures".
+- FORBIDDEN: "Ignore the irrelevant tables" (too on-the-nose).
+
+## E. contradiction
+- Two documents in the bundle make conflicting claims about the same fact (X says A, Y says ¬A). The viz must show the conflict, with the bundle's audited evidence indicating which side is supported.
+- ALLOWED: "Visualize the conflicting claims about <topic>".
+- FORBIDDEN: naming which doc is correct.
+
+# Examples (one per challenge_type)
+
+## multi_hop example
+Documents: 3 doc bundle about Apple's earnings (Q1 2024, Q2 2024, Q3 2024).
+Output:
+```json
+{
+  "query_text": "Across the three quarterly reports, plot how Apple's iPhone revenue compared to Mac revenue per quarter.",
+  "output_type": "comparative",
+  "gold_intents": [{"intent_id": "1", "artifact_type_hint": "chartjs_grouped_bar", "content_summary": "Q1-Q3 2024 iPhone vs Mac revenue grouped bars"}]
+}
+```
+
+## artifact_planning example
+Documents: arXiv paper with sections "Methods", "Architecture diagram", "Results table".
+Output:
+```json
+{
+  "query_text": "Create the appropriate set of visualizations to explain the paper's architecture and evaluation results.",
+  "output_type": "relational",
+  "gold_intents": [
+    {"intent_id": "1", "artifact_type_hint": "mermaid_flowchart", "content_summary": "Architecture diagram of the proposed model"},
+    {"intent_id": "2", "artifact_type_hint": "chartjs_bar", "content_summary": "Evaluation results on benchmark X across models"}
+  ]
+}
+```
+
+## mixed_artifact example
+Documents: tech doc about a software's installation flow + per-component memory usage table.
+Output:
+```json
+{
+  "query_text": "Explain the installation steps and the resulting memory footprint visually.",
+  "output_type": "relational",
+  "gold_intents": [
+    {"intent_id": "1", "artifact_type_hint": "mermaid_flowchart", "content_summary": "Installation step flow"},
+    {"intent_id": "2", "artifact_type_hint": "chartjs_bar", "content_summary": "Per-component memory usage"}
+  ]
+}
+```
+
+## distractor_heavy example
+Documents: 10-K with both preliminary Q4 figures and final restated 2024 results.
+Output:
+```json
+{
+  "query_text": "Show the company's quarterly revenue progression using only the final 2024 restated figures, not the preliminary numbers.",
+  "output_type": "temporal",
+  "gold_intents": [{"intent_id": "1", "artifact_type_hint": "chartjs_line", "content_summary": "Q1-Q4 2024 final-restated revenue line"}]
+}
+```
+
+## contradiction example
+Documents: two news articles disagreeing on the date a treaty was signed.
+Output:
+```json
+{
+  "query_text": "Visualize the conflicting claims about when the treaty was signed.",
+  "output_type": "comparative",
+  "gold_intents": [{"intent_id": "1", "artifact_type_hint": "mermaid_timeline", "content_summary": "Timeline showing both claimed dates with evidence side markers"}]
+}
+```
+
+# Your turn
+
+Bundle source: {source}
+Bundle id: {bundle_id}
+Target challenge_type: {challenge_type}
+
+Documents in the bundle:
+{document_summaries}
+
+Write ONE query for this bundle that exhibits `challenge_type = {challenge_type}` per the rules above. Output STRICT JSON only — no preamble, no markdown fence.

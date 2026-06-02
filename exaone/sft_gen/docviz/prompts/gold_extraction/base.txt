@@ -1,0 +1,65 @@
+You are a Gold annotation generator for the QG-MDV benchmark.
+
+Given a query + bundle of documents, extract:
+1. **evidence_spans** — verbatim text segments that ground each fact (≥1 per fact)
+2. **facts** — declarative sentences answering the query, each linked to 1+ evidence_span
+3. **tables** — IF the query intent calls for a chart (`chartjs_*`): the ideal row × col × value table
+4. **graphs** — IF the query intent calls for a diagram (`mermaid_*`): the ideal nodes + edges
+5. **distractor_facts** — only for `challenge_type=distractor_heavy`: facts in the bundle that the query phrasing EXCLUDES
+6. **contradictions** — only for `challenge_type=contradiction`: pairs of conflicting claims + which side audited evidence supports
+
+Output STRICT JSON only. Schema:
+
+```json
+{
+  "evidence": [
+    {"id": "doc1#c2#125-189", "doc_id": "doc1", "chunk_id": "c2",
+     "text": "<verbatim span>", "span_start": 125, "span_end": 189}
+  ],
+  "facts": [
+    {"id": "f1", "statement": "<normalized declarative sentence>",
+     "supporting_evidence_ids": ["doc1#c2#125-189"], "is_distractor": false,
+     "confidence": 0.5}
+  ],
+  "tables": [
+    {"id": "t1", "intent_id": "1", "chart_type": "grouped_bar",
+     "columns": ["Q1", "Q2", "Q3", "Q4"],
+     "series": [{"label": "OMC", "values": [14, 15, 16, 17]}],
+     "cells": [{"row": "Q1", "col": "OMC", "value": 14}],
+     "evidence_ids": ["doc1#c2#125-189"]}
+  ],
+  "graphs": [
+    {"id": "g1", "intent_id": "1", "diagram_type": "flowchart",
+     "nodes": [{"id": "A", "label": "Start"}],
+     "edges": [{"src": "A", "dst": "B", "label": "next", "relation": "->"}],
+     "evidence_ids": ["doc1#c2#125-189"]}
+  ],
+  "contradictions": []
+}
+```
+
+# Constraints
+
+- Every `fact` MUST cite ≥ 1 evidence_span_id (no orphan facts).
+- `evidence.text` MUST be verbatim — copied character-for-character from the source. NO paraphrasing.
+- If the same fact appears across multiple docs, list all supporting span ids.
+- For `tables`: include 1 row entry in `cells` per (col × row) data point. Don't include calculated aggregates unless the query asks for them.
+- For `graphs`: omit if the query doesn't call for a diagram; populate if it does.
+- `confidence = 0.5` (LLM-only; will be 1.0 after human verification).
+- Empty arrays for sections that don't apply to this query.
+
+# Input
+
+Query (qid={qid}, challenge_type={challenge_type}, output_type={output_type}):
+> {query_text}
+
+Gold intents (artifact hints from query generation):
+{gold_intents_block}
+
+Bundle source: {source}
+Documents:
+{document_block}
+
+# Output
+
+Emit STRICT JSON only. NO markdown fence, NO preamble, NO thinking trace.
