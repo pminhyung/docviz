@@ -150,14 +150,18 @@ _TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>", re.MU
 
 
 def _qid_by_prompt_content(records: list[dict], dataset: list[dict]) -> dict[int, str]:
-    """Match each trajectory record to a qid via first-user-message body."""
-    # Dataset prompt key: first 120 chars after stripping any leading [Attached documents].
+    """Match each trajectory record to a qid via the LAST 200 chars of the
+    first user message — survives shared prefixes like the IAP PLAN block.
+    Falls back to leading-200 if suffix is too short.
+    """
     def _norm(s: str) -> str:
         if "[Attached documents]" in s:
-            # Skip the bracketed block: take everything after the first blank line.
             parts = s.split("\n\n", 1)
             s = parts[1] if len(parts) > 1 else s
-        return s.strip()[:160]
+        s = s.strip()
+        # Suffix wins: the original query text is at the END (after any
+        # prepended PLAN block from IAP).
+        return s[-220:] if len(s) > 220 else s
 
     text_to_qid = {_norm(row.get("prompt", "")): row.get("qid") for row in dataset}
     out = {}
