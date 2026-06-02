@@ -176,11 +176,12 @@ def _qid_by_prompt_content(records: list[dict], dataset: list[dict]) -> dict[int
     return out
 
 
-def _artifacts_from_trajectory(record: dict) -> list[dict]:
+def _artifacts_from_trajectory(record: dict, sidecars_by_intent: dict | None = None) -> list[dict]:
     """Extract generate_viz artifact specs from a ShareGPT-format trajectory.
 
-    Parses <tool_call>{...}</tool_call> blocks in each `gpt` turn and keeps the
-    ones whose `name == "generate_viz"`. Returns list of artifact dicts.
+    If sidecars_by_intent is given, attach real DSL from the sidecar matched
+    by (viz_type, intent_prefix). For S1-style baselines the trajectory's
+    tool_call args may include dsl_code directly.
     """
     arts: list[dict] = []
     msgs = _normalize_messages(record)
@@ -198,14 +199,20 @@ def _artifacts_from_trajectory(record: dict) -> list[dict]:
             for spec in (args.get("artifacts") or []):
                 if not isinstance(spec, dict):
                     continue
+                dsl = spec.get("dsl_code", "")
+                # If trajectory carries no DSL (B6 case), try sidecars
+                if not dsl and sidecars_by_intent:
+                    key = (spec.get("viz_type", ""), str(spec.get("intent", ""))[:60])
+                    side = sidecars_by_intent.get(key) or sidecars_by_intent.get(
+                        (spec.get("viz_type", ""), ""))
+                    if side:
+                        dsl = side.get("dsl_code", "")
                 arts.append({
                     "viz_type": spec.get("viz_type", ""),
                     "intent": spec.get("intent", ""),
                     "content_brief": spec.get("content_brief", ""),
                     "evidence_ids": spec.get("evidence_ids", []),
-                    "dsl_code": "",   # actual DSL is in sidecar (P1 stub);
-                                       # leave empty so Chart/Graph F1 returns
-                                       # parse_failed=True transparently.
+                    "dsl_code": dsl,
                 })
     return arts
 
@@ -286,7 +293,20 @@ def aggregate(run_dir: Path, sidecar_dir: Path, gold_path: Path,
     dataset = _load_jsonl(dataset_path)
     # Match records to qids by FIRST USER MESSAGE CONTENT (robust across batches).
     pos_to_qid = _qid_by_prompt_content(records, dataset)
-    print(f"[aggregate] {len(records)} records, {len(golds)} gold, {len(pos_to_qid)} matched by prompt")
+    # Build sidecar lookup by (viz_type, intent_prefix) → dsl_code so we can
+    # attach real DSL even when the trajectory's tool_call args omit it.
+    sidecars_by_intent: dict = {}
+    if sidecar_dir.exists():
+        for p in sorted(sidecar_dir.glob("*.json")):
+            try:
+                d = json.loads(p.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                continue
+            key = (d.get("viz_type", ""), str(d.get("intent", ""))[:60])
+            sidecars_by_intent[key] = d
+    print(f"[aggregate] {len(records)} records, {len(golds)} gold, "
+          f"{len(pos_to_qid)} matched by prompt, "
+          f"{len(sidecars_by_intent)} sidecars indexed")
 
     per_record: list[dict] = []
     for i, r in enumerate(records):
@@ -297,8 +317,8 @@ def aggregate(run_dir: Path, sidecar_dir: Path, gold_path: Path,
         if not gold:
             continue
         # Extract artifacts DIRECTLY from trajectory tool_calls (sidecar task_id
-        # is a random UUID in P1 — can't match by id).
-        artifacts = _artifacts_from_trajectory(r)
+        # is a random UUID in P1 — match DSL by viz_type+intent instead).
+        artifacts = _artifacts_from_trajectory(r, sidecars_by_intent)
         # Attach query info for gold_intent lookup
         query = next((d for d in dataset if d.get("qid") == qid), {})
         result = _evaluate_one(query, gold, artifacts)

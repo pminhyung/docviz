@@ -104,33 +104,94 @@ def _resolve_task_id(context: dict | None) -> str:
     return f"adhoc-{uuid.uuid4().hex[:8]}"
 
 
-def _synthesize_dsl(viz_type: str, content_brief: str) -> str:
-    """Synthesize Chart.js or Mermaid DSL from a natural-language content_brief.
+_SYNTH_CLIENT = None
 
-    P1 minimum: emits a stub DSL that the parser can validate. P1 smoke gate
-    only checks that the tool chain runs end-to-end — the DSL synthesizer LLM
-    call lands in P2/P4 when the metric tests need real content.
 
-    For P1 we produce:
-      - chartjs_*: a minimal `{"type": ..., "data": {"labels": [...], "datasets": [{"label": ..., "data": [...]}]}}` skeleton derived heuristically from the content_brief.
-      - mermaid_*: a header line + a single-node placeholder.
+def _get_synth_client():
+    """Lazy-init OpenAI client pointing at the Qwen multi-host pool.
+    Hosts cycled per call via the DOCVIZ_QWEN_HOSTS env (comma-separated)
+    or default 8-host pool. Uses one host for simplicity (vLLM scheduler
+    will load-balance internally)."""
+    global _SYNTH_CLIENT
+    if _SYNTH_CLIENT is None:
+        import openai
+        hosts_env = os.environ.get(
+            "DOCVIZ_SYNTH_HOSTS",
+            "10.1.211.147,10.1.211.148,10.1.211.163,10.1.211.164,"
+            "10.1.211.165,10.1.211.166,10.1.211.167,10.1.211.168")
+        # Pick one randomly (cheap routing — vLLM batches per-host anyway).
+        import random
+        host = random.choice([h.strip() for h in hosts_env.split(",") if h.strip()])
+        _SYNTH_CLIENT = (openai.OpenAI(
+            base_url=f"http://{host}:8000/v1",
+            api_key=os.environ.get("DOCVIZ_SYNTH_API_KEY", "EMPTY"),
+        ), os.environ.get("DOCVIZ_SYNTH_MODEL", "Qwen3.5-397B-A17B-FP8"))
+    return _SYNTH_CLIENT
 
-    Real synthesis (LLM call) goes here in P4.
+
+_DSL_SYNTH_PROMPT = """You are a deterministic DSL emitter for a visualization tool.
+
+viz_type: {viz_type}
+intent: {intent}
+
+content_brief (entities, dates, numbers, relationships to encode):
+{content_brief}
+
+Emit ONLY the DSL — no preamble, no explanation, no markdown fence.
+
+Format requirements:
+- chartjs_*: emit a single JSON object like {{"type": "<bar|line|pie|scatter>", "data": {{"labels": [...], "datasets": [{{"label": "...", "data": [...]}}]}}}}. For grouped_bar emit type=bar with multiple datasets.
+- mermaid_*: emit a mermaid markdown block starting with the kind keyword (flowchart TD / timeline / mindmap / sequenceDiagram / classDiagram). Use real node ids and labels from the content_brief, not placeholders.
+
+Output the DSL only."""
+
+
+def _synthesize_dsl(viz_type: str, content_brief: str, intent: str = "") -> str:
+    """Synthesize Chart.js or Mermaid DSL via a single LLM call.
+
+    Uses a separate Qwen pool host (multi-host load-balanced). Falls back to
+    a minimal valid stub if the LLM call fails or output can't parse — the
+    P0 preflight will reject obviously broken DSL anyway.
     """
+    try:
+        client, model = _get_synth_client()
+        prompt = _DSL_SYNTH_PROMPT.format(
+            viz_type=viz_type,
+            intent=intent[:200],
+            content_brief=content_brief[:2000],
+        )
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=2000,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
+        dsl = (resp.choices[0].message.content or "").strip()
+        # Strip code fences if model wrapped output.
+        if dsl.startswith("```"):
+            import re as _re
+            m = _re.match(r"```[a-z]*\s*\n([\s\S]*?)\n```", dsl)
+            if m:
+                dsl = m.group(1).strip()
+        if dsl:
+            return dsl
+    except Exception as exc:
+        logger.warning(f"DSL synth fallback: {exc}")
+
+    # Fallback stub (matches P1 behavior — preserves chain stability).
     if viz_type.startswith("chartjs_"):
         chart_type = viz_type.removeprefix("chartjs_")
         if chart_type == "grouped_bar":
             chart_type = "bar"
         return json.dumps({
             "type": chart_type,
-            "data": {
-                "labels": ["A", "B"],
-                "datasets": [{"label": content_brief[:50] or "series", "data": [1, 2]}],
-            },
+            "data": {"labels": ["A", "B"],
+                     "datasets": [{"label": content_brief[:50] or "series",
+                                   "data": [1, 2]}]},
         })
     if viz_type.startswith("mermaid_"):
         kind = viz_type.removeprefix("mermaid_")
-        # Use mermaid-compatible header line; placeholder content_brief snippet.
         snippet = content_brief.replace("\n", " ")[:80] or "placeholder"
         if kind == "timeline":
             return f"timeline\n    title {snippet}\n    2024 : event A\n"
@@ -219,7 +280,7 @@ def handle_generate_viz(args: dict | None = None, context: dict | None = None,
         if not brief.strip():
             errors.append(f"artifact {idx}: content_brief is empty")
             continue
-        dsl = _synthesize_dsl(viz_type, brief)
+        dsl = _synthesize_dsl(viz_type, brief, intent=intent)
         ok, err = _preflight_parse(viz_type, dsl)
         sidecar_path = _write_sidecar(sidecar_dir, task_id, {
             "viz_type": viz_type,

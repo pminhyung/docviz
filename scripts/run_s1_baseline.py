@@ -93,10 +93,47 @@ def _worker(row: dict, bundle: dict, pool: HostPool, model: str
     return qid, parsed, ""
 
 
-def _row_to_trajectory(row: dict, parsed: dict | None, err: str) -> dict:
+def _synthesize_dsl_for_baseline(viz_type: str, content_brief: str,
+                                  intent: str, pool: HostPool, model: str) -> str:
+    """Same DSL synth as B6 tool — keeps S1/B6 comparison apples-to-apples."""
+    prompt = f"""You are a deterministic DSL emitter.
+
+viz_type: {viz_type}
+intent: {intent[:200]}
+
+content_brief:
+{content_brief[:2000]}
+
+Emit ONLY the DSL — no preamble, no fence. chartjs_* → JSON spec; mermaid_* → mermaid markdown starting with the kind keyword."""
+    try:
+        client = pool.next()
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2, max_tokens=2000,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
+        dsl = (resp.choices[0].message.content or "").strip()
+        if dsl.startswith("```"):
+            m = re.match(r"```[a-z]*\s*\n([\s\S]*?)\n```", dsl)
+            if m: dsl = m.group(1).strip()
+        return dsl
+    except Exception:
+        return ""
+
+
+def _row_to_trajectory(row: dict, parsed: dict | None, err: str,
+                       pool: HostPool = None, model: str = "") -> dict:
     """Produce a record in the same shape aggregate_pilot.py expects."""
     artifacts_xml = ""
     if parsed:
+        # Synthesize REAL DSL for each artifact (same path B6 uses) so
+        # Chart/Graph F1 evaluation is apples-to-apples.
+        if pool is not None:
+            for spec in parsed.get("artifacts", []):
+                spec["dsl_code"] = _synthesize_dsl_for_baseline(
+                    spec.get("viz_type", ""), spec.get("content_brief", ""),
+                    spec.get("intent", ""), pool, model)
         tc_json = json.dumps({"name": "generate_viz", "arguments": parsed},
                              ensure_ascii=False)
         artifacts_xml = f"<tool_call>{tc_json}</tool_call>"
@@ -148,7 +185,7 @@ def main(dataset_path: Path, bundles_path: Path, out_path: Path,
             row = futures[fut]
             done += 1
             qid, parsed, err = fut.result()
-            traj = _row_to_trajectory(row, parsed, err)
+            traj = _row_to_trajectory(row, parsed, err, pool=pool, model=model)
             fout.write(json.dumps(traj, ensure_ascii=False) + "\n")
             fout.flush()
             if parsed:
