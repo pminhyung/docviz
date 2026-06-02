@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -41,13 +42,17 @@ def _load_jsonl(path: Path) -> list[dict]:
 
 
 def _load_run_records(run_dir: Path) -> list[dict]:
-    """Prefer trajectories.jsonl; fall back to concatenated batch_*.jsonl."""
-    traj = run_dir / "trajectories.jsonl"
-    if traj.exists() and traj.stat().st_size > 0:
-        return _load_jsonl(traj)
+    """Concatenate batch_*.jsonl (authoritative). trajectories.jsonl may be
+    incomplete if the run had any merge race; per-batch JSONL is always full.
+    """
     rows: list[dict] = []
     for batch in sorted(run_dir.glob("batch_*.jsonl")):
         rows.extend(_load_jsonl(batch))
+    if rows:
+        return rows
+    traj = run_dir / "trajectories.jsonl"
+    if traj.exists() and traj.stat().st_size > 0:
+        return _load_jsonl(traj)
     return rows
 
 
@@ -74,6 +79,83 @@ def _load_sidecars(sidecar_dir: Path) -> dict[str, list[dict]]:
         tid = d.get("task_id") or p.stem.split("__a")[0]
         out[tid].append(d)
     return out
+
+
+_SHAREGPT_ROLE_MAP = {"human": "user", "gpt": "assistant",
+                       "system": "system", "tool": "tool"}
+
+
+def _normalize_messages(record: dict) -> list[dict]:
+    """ShareGPT {from, value} → OpenAI {role, content, tool_calls} adapter."""
+    out = []
+    for m in record.get("conversations", []):
+        if "from" in m:
+            role = _SHAREGPT_ROLE_MAP.get(m.get("from"), m.get("from"))
+            content = m.get("value", "")
+            out.append({"role": role, "content": content})
+        else:
+            out.append(m)
+    return out
+
+
+_TOOL_CALL_RE = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>", re.MULTILINE)
+
+
+def _qid_by_prompt_content(records: list[dict], dataset: list[dict]) -> dict[int, str]:
+    """Match each trajectory record to a qid via first-user-message body."""
+    # Dataset prompt key: first 120 chars after stripping any leading [Attached documents].
+    def _norm(s: str) -> str:
+        if "[Attached documents]" in s:
+            # Skip the bracketed block: take everything after the first blank line.
+            parts = s.split("\n\n", 1)
+            s = parts[1] if len(parts) > 1 else s
+        return s.strip()[:160]
+
+    text_to_qid = {_norm(row.get("prompt", "")): row.get("qid") for row in dataset}
+    out = {}
+    for i, r in enumerate(records):
+        msgs = _normalize_messages(r)
+        first_user = next((str(m.get("content", "")) for m in msgs
+                            if m.get("role") == "user"), "")
+        key = _norm(first_user)
+        qid = text_to_qid.get(key)
+        if qid:
+            out[i] = qid
+    return out
+
+
+def _artifacts_from_trajectory(record: dict) -> list[dict]:
+    """Extract generate_viz artifact specs from a ShareGPT-format trajectory.
+
+    Parses <tool_call>{...}</tool_call> blocks in each `gpt` turn and keeps the
+    ones whose `name == "generate_viz"`. Returns list of artifact dicts.
+    """
+    arts: list[dict] = []
+    msgs = _normalize_messages(record)
+    for m in msgs:
+        if m.get("role") != "assistant":
+            continue
+        for blob in _TOOL_CALL_RE.findall(str(m.get("content", ""))):
+            try:
+                tc = json.loads(blob)
+            except json.JSONDecodeError:
+                continue
+            if tc.get("name") != "generate_viz":
+                continue
+            args = tc.get("arguments") or {}
+            for spec in (args.get("artifacts") or []):
+                if not isinstance(spec, dict):
+                    continue
+                arts.append({
+                    "viz_type": spec.get("viz_type", ""),
+                    "intent": spec.get("intent", ""),
+                    "content_brief": spec.get("content_brief", ""),
+                    "evidence_ids": spec.get("evidence_ids", []),
+                    "dsl_code": "",   # actual DSL is in sidecar (P1 stub);
+                                       # leave empty so Chart/Graph F1 returns
+                                       # parse_failed=True transparently.
+                })
+    return arts
 
 
 def _evaluate_one(query: dict, gold: dict, artifacts: list[dict]) -> dict:
@@ -147,32 +229,23 @@ def aggregate(run_dir: Path, sidecar_dir: Path, gold_path: Path,
     if not records:
         print(f"[aggregate] no records in {run_dir}")
         return {"n_records": 0}
-    sidecars = _load_sidecars(sidecar_dir)
     golds = {g["qid"]: g for g in _load_jsonl(gold_path)}
     dataset = _load_jsonl(dataset_path)
-    dataset_by_idx = {i: row for i, row in enumerate(dataset)}
-    print(f"[aggregate] {len(records)} records, {len(golds)} gold, {len(sidecars)} sidecar groups")
+    # Match records to qids by FIRST USER MESSAGE CONTENT (robust across batches).
+    pos_to_qid = _qid_by_prompt_content(records, dataset)
+    print(f"[aggregate] {len(records)} records, {len(golds)} gold, {len(pos_to_qid)} matched by prompt")
 
     per_record: list[dict] = []
-    for r in records:
-        qid = _qid_from_record(r, dataset_by_idx)
+    for i, r in enumerate(records):
+        qid = pos_to_qid.get(i)
         if not qid:
             continue
         gold = golds.get(qid)
         if not gold:
             continue
-        # Find this record's task_id via metadata then match sidecars
-        md = r.get("metadata") or {}
-        task_id = md.get("task_id") or f"task_{r.get('prompt_index', 0)}"
-        artifacts = sidecars.get(task_id, [])
-        if not artifacts:
-            # Try matching by qid in sidecar payload
-            for tid, arts in sidecars.items():
-                if any(a.get("qid") == qid for a in arts):
-                    artifacts = arts
-                    break
-        # Filter out failed preflights
-        artifacts = [a for a in artifacts if a.get("preflight_ok", True)]
+        # Extract artifacts DIRECTLY from trajectory tool_calls (sidecar task_id
+        # is a random UUID in P1 — can't match by id).
+        artifacts = _artifacts_from_trajectory(r)
         # Attach query info for gold_intent lookup
         query = next((d for d in dataset if d.get("qid") == qid), {})
         result = _evaluate_one(query, gold, artifacts)
@@ -181,7 +254,8 @@ def aggregate(run_dir: Path, sidecar_dir: Path, gold_path: Path,
             "challenge_type": query.get("challenge_type"),
             "output_type": query.get("output_type"),
             "source": query.get("bundle_id", "?").split("_")[0],
-            "n_sidecar_artifacts": len(artifacts),
+            "n_emitted_artifacts": len(artifacts),
+            "agent_completed": r.get("completed", False),
         })
         per_record.append(result)
 
