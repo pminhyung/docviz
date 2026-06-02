@@ -298,3 +298,80 @@ This concludes the in-session Goal cycle. The pilot diagnostic established
 robust B6 wins on 2 challenge types and closed the strict-gate gap from
 −0.197 to +0.003 short. Next session: cross-backbone scale verification
 on DeepSeek + GPT-5-mini.
+
+---
+
+# Cycle 7 — Cross-backbone verification (Qwen + DeepSeek)
+
+Replicated the cycle-6 B6+Aggressive-routing protocol on DeepSeek-V4-Flash
+(2 local hosts) at 300-scale, using Qwen 8-host pool for DSL synthesis.
+
+## Per-backbone result
+
+| backbone | B6+Aggr | S1 | Δ |
+|---|---|---|---|
+| Qwen3.5-397B | **0.4705** | 0.4537 | +0.017 (gate 0.003 short) |
+| DeepSeek-V4-Flash | 0.4136 | **0.4392** | **−0.026** (S1 wins) |
+| **Backbone-averaged** | 0.4420 | 0.4465 | **−0.005** ← gate FAIL |
+
+## Key finding
+
+The Qwen +0.017 win is **Qwen-specific**. On DeepSeek the same B6+Aggr
+routing LOSES by −0.026. Backbone-averaged Δ = −0.005 (effectively tied,
+slight S1 advantage).
+
+This invalidates the per-category routing rules derived from Qwen-only
+diagnostics — they over-fit to Qwen's specific tool-use pattern (likely
+amplified by the V19 chat-template adapter).
+
+## Goal §16 strict gate verdict — DEFINITIVE NEGATIVE
+
+- Qwen Δ +0.017 < +0.020 ✗
+- DeepSeek Δ −0.026 ✗
+- Backbone-avg Δ −0.005 ✗
+
+After 7 cycles, 2 backbones, 300-scale x2, the strict gate is NOT met
+on any backbone individually nor on the average. The paper cannot
+defend "consistent SOTA across frontier backbones".
+
+## 7-cycle total progression (Qwen)
+
+| cycle | remediation | Δ |
+|---|---|---|
+| 1 | baseline | −0.177 |
+| 2 | + IAP | −0.090 |
+| 3 | + real DSL | −0.080 |
+| 4 (50) | + eqctx pilot | +0.097 (artifact) |
+| 4 (300) | + eqctx scale-up | −0.072 |
+| 5 (300) | + DCR | −0.003 |
+| 6 (300) | + Aggressive routing | +0.017 |
+| 7 (Qwen+DS avg) | + cross-backbone | **−0.005** |
+
+## Paper-ready honest findings
+
+1. **No universal SOTA**: B6 does not consistently outperform S1 on
+   frontier models in QG-MDV at 300-scale.
+2. **Model-specific advantages**: Qwen-favored architectural patterns
+   (V19-adapter + retrieval) help B6; DeepSeek-favored patterns don't.
+3. **Robust win categories on Qwen only**: multi_hop ex-financial,
+   artifact_planning (+0.042 each on Qwen 300-scale).
+4. **Hybrid routing helps Qwen** but doesn't transfer to DeepSeek.
+5. **Cross-LLM claim is unsupported** by this evidence.
+
+## Final paper positioning options
+
+a. **Model-specific niche**: "DocViz-Agent demonstrates measurable
+   advantage on multi_hop and artifact_planning queries when paired
+   with V19-style chat-template adapters on Qwen3.5-class models;
+   the advantage does not replicate on DeepSeek-V4-Flash."
+b. **Architectural study**: "We investigated 7 remediations + 2 backbones;
+   the agentic pipeline's tool-overhead is not justified by quality
+   gains at scale. Finding contradicts the implicit assumption that
+   agent-augmented retrieval beats direct generation in QG-MDV."
+c. **Reframe to interpretability / sidecar**: "DocViz-Agent's value is
+   not raw accuracy but traceability — every artifact comes with a
+   verified retrieval trail. Show case studies, not aggregate F1."
+
+The Goal cycle is now FULLY exhausted within this session — every
+direction explored, scale and cross-backbone verified, novel ideas
+implemented. The negative result is robust and paper-defensible.
