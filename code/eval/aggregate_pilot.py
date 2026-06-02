@@ -37,6 +37,54 @@ from code.metrics.evidence_metrics import evaluate_evidence_explicit
 from code.metrics.hungarian_intent import hungarian_match
 
 
+_TOKEN_RE = re.compile(r"\b[a-zA-Z][\w\-]{2,}\b")
+
+
+def _tokens(s: str) -> set[str]:
+    if not s:
+        return set()
+    return {t.lower() for t in _TOKEN_RE.findall(s)}
+
+
+def evidence_f1_implicit_overlap(artifact: dict, gold_evidence: list[dict],
+                                  jaccard_threshold: float = 0.10) -> float:
+    """Implicit Evidence F1 via token-overlap Jaccard.
+
+    Pairs each artifact (intent + content_brief tokens) against each gold
+    evidence span (text tokens). A pair "matches" if Jaccard ≥ threshold.
+    F1 over the matched-set.
+
+    Fast no-deps alternative to the sentence-transformer path. Calibrated
+    low (0.10) because evidence spans are usually short and verbose vs
+    the agent's terse intent strings.
+    """
+    if not gold_evidence:
+        return 0.0
+    art_text = " ".join([str(artifact.get("intent", "")),
+                          str(artifact.get("content_brief", "")),
+                          str(artifact.get("dsl_code", ""))])
+    art_tokens = _tokens(art_text)
+    if not art_tokens:
+        return 0.0
+    matched_evidence = 0
+    for e in gold_evidence:
+        e_tokens = _tokens(str(e.get("text", "")))
+        if not e_tokens:
+            continue
+        inter = len(art_tokens & e_tokens)
+        union = len(art_tokens | e_tokens)
+        if union == 0:
+            continue
+        if inter / union >= jaccard_threshold:
+            matched_evidence += 1
+    # Treat each matched evidence as recall; precision = matched/1 artifact
+    r = matched_evidence / len(gold_evidence)
+    p = 1.0 if matched_evidence > 0 else 0.0
+    if p + r == 0:
+        return 0.0
+    return 2 * p * r / (p + r)
+
+
 def _load_jsonl(path: Path) -> list[dict]:
     return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
 
@@ -204,10 +252,11 @@ def _evaluate_one(query: dict, gold: dict, artifacts: list[dict]) -> dict:
             if matched_graph:
                 mm = evaluate_mermaid(art, matched_graph)
                 graph_f1s.append(mm["edge_f1"])
-        # Evidence F1 (explicit only — fast path; implicit needs embedder, P5)
-        if art.get("evidence_ids"):
-            ev = evaluate_evidence_explicit(art["evidence_ids"], gold_evidence_ids)
-            evid_f1s.append(ev.evidence_f1)
+        # Evidence F1 (implicit — token-overlap; explicit ids are ephemeral
+        # tool_call_ids that don't match gold span ids by construction)
+        gold_evidence = gold.get("evidence") or []
+        if gold_evidence:
+            evid_f1s.append(evidence_f1_implicit_overlap(art, gold_evidence))
 
     return {
         "intent_coverage": hung.intent_coverage,
