@@ -1,0 +1,43 @@
+# Tool: generate_viz
+
+- Emits 1-3 grounded visualization artifacts (charts or diagrams) into a sidecar that the orchestrator delivers as the task's final output. The model never produces DSL directly — it provides a structured `content_brief` and `viz_type`, and the tool synthesizes the DSL internally.
+- Pass `artifacts` as an array of 1-3 `ArtifactSpec` items. Default is 1 artifact unless the query explicitly asks for two distinct deliverables (e.g. "show the counts AND the workflow").
+
+## ArtifactSpec fields
+
+- **`viz_type`** (string, required): one of the 10 enum values below. Pick the one whose primitive matches the query's analytic intent.
+- **`intent`** (string, required, ≤200 chars): one-sentence summary of what this artifact shows (used by the post-hoc evaluator and the Hungarian intent matcher).
+- **`content_brief`** (string, required, ≤2000 chars): exhaustive natural-language description of the entities, dates, numeric quantities, units, axis labels, relationships, and short quotes that the visualization MUST encode. The synthesizer cannot see the source documents — only this brief. Be specific.
+- **`evidence_ids`** (array of strings, required for B6 full / B6_NoTMG / B6_NoCIS; optional for B6_NoSAO): citation `Index` values from `doc_search` / `ReadFullDocument` results that ground the datapoints. Format: `"<tool_call_id>.<n>"` exactly as returned. Empty list is acceptable only in the −SAO ablation.
+
+## viz_type pool (10 enum values)
+
+| viz_type | Primitive | When to pick |
+|---|---|---|
+| `chartjs_bar` | single-series bar chart | one category dimension, one numeric metric |
+| `chartjs_grouped_bar` | multi-series bar | two category dimensions or one + time |
+| `chartjs_line` | line chart | continuous trend over time |
+| `chartjs_pie` | pie chart | parts of a whole (≤7 slices) |
+| `chartjs_scatter` | scatter plot | two numeric dimensions, correlation |
+| `mermaid_flowchart` | directed graph | process, decision flow, dependency |
+| `mermaid_timeline` | dated events | chronological sequence with date labels |
+| `mermaid_mindmap` | hierarchical tree | taxonomy, breakdown, conceptual map |
+| `mermaid_sequenceDiagram` | actor messages | interaction protocol, swimlanes |
+| `mermaid_classDiagram` | entities + relations | ontology, schema |
+
+## Soft prior — query type → viz_type mapping
+
+Use as a default, override when the data shape disagrees:
+- Quantitative → chartjs_bar / chartjs_grouped_bar / chartjs_line
+- Comparative → chartjs_grouped_bar / chartjs_bar
+- Temporal → chartjs_line / mermaid_timeline
+- Hierarchical → mermaid_mindmap / mermaid_classDiagram
+- Relational / process → mermaid_flowchart / mermaid_sequenceDiagram
+
+## Hard precondition
+
+Before invoking `generate_viz`, you MUST have called `doc_search` or `ReadFullDocument` at least once and inspected the result. A `generate_viz` invocation without a prior retrieval call is treated as ungrounded and may be rejected by the orchestrator's preflight.
+
+## Returns
+
+The tool returns a short text envelope (≤200 chars) plus one citation `Index` per emitted artifact. The actual DSL is persisted in a sidecar — the model does not see it. After receiving the envelope, emit `<final_answer>success` to mark task completion.

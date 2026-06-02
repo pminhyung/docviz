@@ -14,6 +14,7 @@ PROMPT_TOOL_IDS = [
     "web_extract",
     "doc_tool",
     "code_tool",
+    "generate_viz",
     "get_canvas_status",
     "create_canvasdoc",
     "update_canvasdoc",
@@ -57,6 +58,8 @@ EXAONE_TOOLSET: dict = {
     "hwpx_tools":   ["hwpx_page_layout"],
     "xlsx_tools":   ["xlsx_sheet_layout"],
     "img_tools": [],
+    # docviz B6 — DSL synthesis tool. Exposed in qa_mode="docviz" only.
+    "viz_tools":    ["generate_viz"],
 }
 
 
@@ -211,6 +214,22 @@ def _register_template_tools(registry) -> list[str]:
     return names
 
 
+def _register_viz_tools(registry) -> list[str]:
+    """Register the viz_tools custom tools (docviz B6 — generate_viz)."""
+    from exaone.viz_tools.handle_generate_viz import (
+        GENERATE_VIZ_SCHEMA, handle_generate_viz,
+    )
+    name = "generate_viz"
+    registry.register(
+        name=name,
+        toolset=EXAONE_TOOLSET_NAME,
+        schema=GENERATE_VIZ_SCHEMA["function"],
+        handler=handle_generate_viz,
+        emoji="📊",
+    )
+    return [name]
+
+
 def register_exaone_tools() -> None:
     """Register ExaoneAgent built-in + custom template tools."""
     global _registered
@@ -252,6 +271,7 @@ def register_exaone_tools() -> None:
         tool_names.extend(_register_template_tools(registry))
         tool_names.extend(_register_docqa_and_parsing_tools(registry))
         tool_names.extend(_register_visual_and_layout_tools(registry))
+        tool_names.extend(_register_viz_tools(registry))
 
         create_custom_toolset(EXAONE_TOOLSET_NAME, "ExaoneAgent custom tools", tools=tool_names)
         logger.info(

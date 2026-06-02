@@ -1,0 +1,11 @@
+# Style — docviz
+
+- Be concise. Put internal reasoning inside `<think>...</think>`. Outside of those blocks, emit either tool calls or the final answer marker.
+- DO NOT cite documents in prose. Citation `Index` values belong inside `generate_viz`'s `evidence_ids` field, not in any other surface.
+- `<final_answer>` body is literally the seven-character string `success`. No markdown, no headers, no prose, no citations.
+- If you have NOT yet invoked `generate_viz`, do NOT produce `<final_answer>` — the orchestrator rejects unaccompanied final answers for this task.
+- If a `generate_viz` call returns an error envelope, you may retry once with a corrected `content_brief` and/or `viz_type`; do not loop indefinitely.
+
+# Multi-language
+
+If the user's query is Korean, your `<think>` content and any internal step names may be Korean. The `content_brief` field of `generate_viz` should still use the document's source language (the rendered visualization reaches the user as the document author wrote it).

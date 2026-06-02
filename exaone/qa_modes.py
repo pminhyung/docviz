@@ -1,7 +1,24 @@
 """qa_mode definitions and validation for ExaoneAgent."""
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
+
+
+# docviz B6 pillar ablations (v0.4.1 §5.3). Resolved at agent init.
+DOCVIZ_VARIANT_ENV = "DOCVIZ_VARIANT"
+DOCVIZ_VARIANTS = {
+    "full":   "docviz",          # B6 full (CIS + TMG + SAO active)
+    "nocis":  "docviz_nocis",    # − CIS pillar
+    "nosao":  "docviz_nosao",    # − SAO pillar
+    "notmg":  "docviz_notmg",    # − TMG pillar (no generate_viz exposure)
+}
+
+
+def _resolve_docviz_identity() -> str:
+    """Return the identity filename stem for the currently-selected docviz variant."""
+    variant = os.environ.get(DOCVIZ_VARIANT_ENV, "full").strip().lower()
+    return DOCVIZ_VARIANTS.get(variant, "docviz")
 
 
 @dataclass(frozen=True)
@@ -92,6 +109,20 @@ QA_MODES: dict[str, QaModeConfig] = {
         ],
         identity_name="taskbot",
         style_name="taskbot",
+    ),
+    # docviz — query-grounded multi-document visualization agent (v0.4.1 B6).
+    # Identity file selected at agent init via DOCVIZ_VARIANT env (full /
+    # nocis / nosao / notmg) for §5.3 pillar ablation. Same style across all
+    # variants. Toolset = ir-shim docqa + viz_tools.
+    "docviz": QaModeConfig(
+        name="docviz",
+        toolset=[
+            "parsing_tools",
+            "docqa_tools",
+            "viz_tools",
+        ],
+        identity_name=_resolve_docviz_identity(),
+        style_name="docviz",
     ),
 }
 
