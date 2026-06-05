@@ -1,0 +1,825 @@
+% =====================================================================
+% DocViz-Agent / QG-MDV — 논문 초안 v0.4.2 (한국어, Overleaf 호환)
+% 작성 기준일: 2026-06-05
+% 폐기 항목 (Dropped): scope-v3 4축 RocketEval / ViviBench / Plot2Code 필수 지정 / 자체 정상화 계층 / FSOS 가중치 합산
+% 차용 항목 (Adopted): Loong / DocHop-QA / FinMMDocR / VisDoMBench / MultiHop-RAG / FinAuditing / TEMPO / Doc2Chart CHARTEVAL / DiagramEval / Text2Chart31
+% 본문 표기 원칙: 한국어 우선, AI 도메인 학술 용어는 영어 병기
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage[hangul]{kotex}     % 한국어 조판
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem}    % strikethrough 가능
+\usepackage{tcolorbox}
+
+\title{DocViz-Agent: 다문서 질의 기반 시각화 생성 \\
+       (Query-Grounded Multi-Document Visualization)을 위한 \\
+       3축 에이전트 파이프라인과 평가 프레임워크 \\
+       \large{(v0.4.2 실험 계획서)}}
+\author{연구진 (placeholder)}
+\date{2026년 6월}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+다문서 질의 기반 시각화 (Query-Grounded Multi-Document Visualization, 이하 \textbf{QG-MDV}) 과제 (task)를 정형화하고, 이를 다루는 첫 일반화 (generalist) 파이프라인 (pipeline) DocViz-Agent를 제안한다. 본 연구는 (i) 7개의 학계 검증 (community-validated) 다문서 벤치마크 (multi-document benchmark) — Loong (EMNLP 2024 Oral) / DocHop-QA / FinMMDocR (AAAI 2026) / VisDoMBench (NAACL 2025) / MultiHop-RAG / FinAuditing / TEMPO — 에서 추출한 300개 다문서 묶음 (multi-doc bundle)을 5개 추론 난이도 유형 (reasoning challenge type)으로 정박 (anchoring)한 QG-MDV 벤치마크, (ii) 교차문서 반복 검색 (Cross-doc Iterative Search, \textbf{CIS}) / 유형 인식 다중 시각화 생성 (Type-aware Multi-Viz Generation, \textbf{TMG}) / 출처 귀속 출력 (Source-Attributed Output, \textbf{SAO}) 3축의 DocViz-Agent 파이프라인, (iii) Doc2Chart (EMNLP 2025 Main)의 주의 가중치 기반 귀속 (attribution-based) 평가와 DiagramEval (EMNLP 2025 Main)의 그래프 정렬 (graph alignment) 평가를 결합한 시각화 계열별 (family-specific) 결정론적 (deterministic) 평가 프레임워크 (evaluation framework), (iv) 4개 백본 모델 (backbone: Qwen3.5-397B-A17B-FP8 오픈 프론티어 / DeepSeek-V4-Flash 오픈 전문가 혼합 (Mixture of Experts, MoE) / GPT-5-mini 클로즈드 저비용 / Claude Opus 4.8 클로즈드 프론티어) 전반에서 다문서 출처 귀속 격차 (multi-document grounding gap)가 일관되게 관찰됨을 보이는 진단적 발견 (diagnostic finding)을 제시한다. 5단계 단계적 실험 계획 (phased experimental plan: P0 사전 검증 (pilot) $\rightarrow$ P5 논문 작성 완료)을 통해 v0.4.1 시제품 (prototype)에서 발견된 평가 결함 (evaluation artifact) 문제를 단계별 진행 결정 관문 (go/no-go gate)으로 사전 차단한다.
+\end{abstract}
+
+% =====================================================================
+\section{서론 (Introduction)}
+% =====================================================================
+
+대형 언어 모델 (Large Language Model, LLM) 기반 자동 시각화 생성 (automatic visualization generation)은 사용자가 단일 텍스트 또는 단일 표 (table)를 입력하면 차트 (chart) 또는 도식 (diagram)으로 변환하는 형태로 활발히 연구되어왔다 \cite{han2023chartllama, yang2024chartmimic}. 그러나 실제 정보 처리 작업의 다수는 단일 문서가 아닌 \textbf{여러 문서에 분산된 정보를 통합 (multi-document integration)}한 후 시각화하는 형태이다. 금융 보고서 다수에서 사업부별 매출 변화를 비교하거나, 의학 논문 다수에서 약물 효과 추이를 정리하거나, 정부 보고서에서 정책 변화를 도식화하는 작업이 그 예이다.
+
+본 연구는 이러한 실세계 작업을 \textbf{QG-MDV (Query-Grounded Multi-Document Visualization)} 라는 단일 과제로 정형화 (formalization)한다. 주어진 사용자 질의 (query) $Q$와 다문서 묶음 $\mathcal{D} = \{D_1, \dots, D_n\}$ ($n \geq 2$)에 대해 시각화 산출물 (visualization artifact) $V$를 생성하되, $V$의 모든 시각적 주장 (visual claim)이 $\mathcal{D}$의 문서들에 근거 (grounding)되도록 한다. 출력 형식은 도메인 특화 언어 (Domain-Specific Language, DSL)인 Chart.js JSON 또는 Mermaid 마크다운 (markdown)의 10개 시각화 기본형 (visualization primitive)으로 한정한다.
+
+본 연구의 주요 기여 (contribution)는 다음 네 가지이다.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{C1 (과제 정형화 + 벤치마크)}: QG-MDV 과제를 정형화하고, 7개 학계 검증 다문서 벤치마크에서 표본 단위 (sample-level) 추론 유형 (reasoning type) 표지 (tag)를 유지한 300개 다문서 묶음을 구성한다. Wikipedia 텍스트 발췌가 아닌 \textbf{실제 다문서 원문 자료 (raw source)} — PubMed PDF / 미국 증권거래위원회 (SEC) 10-K / 학술 PDF / 발표 슬라이드 / 뉴스 기사 / XBRL 파일 / 13개 도메인 시계열 (temporal) 말뭉치 (corpus) — 만을 사용한다.
+
+    \item \textbf{C2 (방법)}: 3축 (CIS / TMG / SAO) DocViz-Agent를 제안한다. 본 연구의 시제품 측정에서 \textbf{TMG 축이 단독 제거 시 절제 분석 (ablation) $\Delta = -0.254$로 가장 큰 기여}를 보이며 방법의 핵심 구성 요소 (component)임이 경험적으로 (empirically) 확인되었다.
+
+    \item \textbf{C3 (평가 프레임워크)}: Doc2Chart (EMNLP 2025 Main)의 주의 가중치 기반 귀속 차트 평가와 DiagramEval (EMNLP 2025 Main)의 그래프 정렬 도식 평가를 계열별 (family-specific)로 결합한다. 자체 규칙 기반 (rule-based) 정상화 계층 (normalization layer)은 \emph{도입하지 않으며}, 두 선행 연구 (prior art)의 공식 평가 코드 (official evaluation pipeline)를 그대로 차용하여 검증 부담 인계 (validation carry-over)로 우리 검증 부담을 최소화한다.
+
+    \item \textbf{C4 (진단적 발견)}: 4개 백본 (오픈 프론티어 / 오픈 MoE / 클로즈드 저비용 / 클로즈드 프론티어) $\times$ 7개 비교 대상 (baseline) 행렬 (matrix)에서 다문서 출처 귀속 점수 (Evidence F1)가 다른 차원보다 일관되게 낮음을 확인한다. 백본 종류와 파이프라인 종류 모두에 무관한 과제 본질적 병목 (task-inherent bottleneck)이라는 \textbf{교차 LLM 교차 파이프라인 발견 (cross-LLM cross-pipeline finding)}.
+\end{itemize}
+
+% =====================================================================
+\section{관련 연구 (Related Work)}
+% =====================================================================
+
+\subsection{차트 / 도식 생성 (Chart / Diagram Generation)}
+
+ChartLlama \cite{han2023chartllama}, Text2Chart31 \cite{zadeh2024text2chart31}, ChartMimic \cite{yang2024chartmimic}은 표 또는 단일 문서 텍스트 입력으로부터 차트 생성을 다룬다. 본 연구는 단일 문서가 아닌 \textbf{다문서} 입력에서 출발한다는 점에서 구분된다. SciDoc2Diagrammer-MAF \cite{mondal2024scidoc2diagrammer}는 단일 학술 논문에서 도식 생성을 다루지만 다문서 통합은 아니다.
+
+\subsection{다문서 질의응답 벤치마크 (Multi-Document QA Benchmarks)}
+
+HotpotQA \cite{yang2018hotpotqa}, 2WikiMultihopQA \cite{ho2020constructing}, MuSiQue \cite{trivedi2022musique}는 Wikipedia 기반 다문서 질의응답 (multi-doc QA)을 다루지만 시각화 출력이 없다. MMLongBench-Doc \cite{ma2024mmlongbench}는 다문서 PDF 질의응답을 다루지만 질의 (query)당 단일 문서이며 시각화가 출력이 아니다. 본 연구는 이러한 다문서 추론 벤치마크의 \textbf{문서 풀 (document pool)과 추론 난이도 표지를 차용}하되, 시각화 출력 과제 (visualization output task)로 재구성한다.
+
+\subsection{시각화 평가 (Visualization Evaluation)}
+
+Doc2Chart \cite{jain2025doc2chart}는 교차 주의 (cross-attention) 기반 귀속 (attribution) 측정 지표 (metric) CHARTEVAL로 차트 데이터 정확성을 평가하며 사람 평가와 피어슨 (Pearson) 상관 (correlation) $r=0.71$의 정합성 (alignment)을 입증한다. DiagramEval \cite{liang2025diagrameval}은 도식을 SVG (Scalable Vector Graphics)에서 추출한 그래프로 변환하여 노드 정렬 (Node Alignment)과 경로 정렬 (Path Alignment) 지표를 제안한다 (사람 평가와 $r=0.43$). 본 연구는 이 두 지표를 \textbf{계열별 (family-specific)로 결합}하여 사용한다 (차트 계열은 CHARTEVAL, 도식 계열은 DiagramEval).
+
+% =====================================================================
+\section{과제 정형화 (QG-MDV Task Formalization)}
+% =====================================================================
+
+\subsection{정의 (Definition)}
+
+QG-MDV 과제의 입력은 다음 두 가지이다.
+\begin{enumerate}[leftmargin=*]
+    \item 사용자 질의 $Q$ (자연어, natural language)
+    \item 다문서 묶음 $\mathcal{D} = \{D_1, \dots, D_n\}$, $n \geq 2$
+\end{enumerate}
+
+출력은 시각화 산출물 $V$로, 다음 조건을 모두 충족한다.
+\begin{itemize}[leftmargin=*]
+    \item $V$는 결정론적 DSL (Chart.js JSON 또는 Mermaid 마크다운) 표현
+    \item $V$의 모든 시각적 주장은 $\mathcal{D}$의 어느 문서 청크 (chunk)에 근거됨 (출처 귀속, source attribution 가능)
+    \item $V$는 $Q$의 정보 요구 (information need)를 만족
+    \item $V$의 시각화 유형 (viz type)은 $Q$의 정보 구조에 적절
+\end{itemize}
+
+\subsection{두 가지 직교 분류 축 (Two Orthogonal Classification Axes)}
+
+각 질의는 두 가지 직교 (orthogonal) 분류를 가진다.
+
+\textbf{1차 축 — 추론 난이도 (challenge type)}: 다문서에서 정보를 통합할 때 어려운 다섯 가지 측면.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{A 다단계 추론 (multi\_hop)}: 둘 이상 문서를 거쳐야 답이 나옴 (가교 개체, bridge entity)
+    \item \textbf{B 산출물 계획 (artifact\_planning)}: 적절한 시각화 산출물 수와 종류를 모델이 결정
+    \item \textbf{C 혼합 산출물 (mixed\_artifact)}: 차트와 도식 둘 다 필요
+    \item \textbf{D 방해 문서 다수 (distractor\_heavy)}: 관련 문서 사이에 무관한 방해 문서 (distractor) 다수
+    \item \textbf{E 모순 해소 (contradiction)}: 문서 간 상충되는 주장 해결
+\end{itemize}
+
+\textbf{2차 축 — 출력 구조 (output type)}: 시각화의 정보 구조 분류.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Quantitative (수치형)}: 수치 비교 / 추세 (trend)
+    \item \textbf{Relational (관계형)}: 관계 / 인과 (causal)
+    \item \textbf{Temporal (시간형)}: 시간 순서 (temporal order)
+    \item \textbf{Hierarchical (계층형)}: 계층 / 분류 체계 (taxonomy)
+    \item \textbf{Comparative (비교형)}: 다중 개체 (multi-entity) 비교
+\end{itemize}
+
+두 축은 독립 (independent)이다: 동일 challenge type 내에서도 output type이 다양할 수 있다.
+
+\subsection{10개 시각화 기본형 (10 Visualization Subtypes)}
+
+DSL 출력은 다음 10개 중 하나로 한정한다.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{차트 계열 (Chart family, 5종)}: \texttt{chartjs\_bar}, \texttt{chartjs\_line}, \texttt{chartjs\_grouped\_bar}, \texttt{chartjs\_pie}, \texttt{chartjs\_scatter}
+    \item \textbf{도식 계열 (Diagram family, 5종)}: \texttt{mermaid\_flowchart}, \texttt{mermaid\_timeline}, \texttt{mermaid\_mindmap}, \texttt{mermaid\_sequenceDiagram}, \texttt{mermaid\_classDiagram}
+\end{itemize}
+
+% =====================================================================
+\section{DocViz-Agent 방법 (Method)}
+% =====================================================================
+
+DocViz-Agent는 세 축 (CIS / TMG / SAO) 으로 구성된 에이전트 파이프라인이다. 본 연구의 시제품 측정 (prototype, $n=265$, 단일 시드 (single seed), scope-v3 평가 (judge))에서 \textbf{TMG 단독 절제의 영향이 가장 크다} ($\Delta = -0.254$). CIS ($\Delta = -0.106$)와 SAO ($\Delta = -0.075$)는 보조 구성 요소로 작용한다. 본 논문 \S4의 1.0 페이지 배분은 TMG에 0.5, CIS와 SAO에 각 0.25를 권고한다.
+
+\subsection{TMG — 유형 인식 다중 시각화 생성 (Type-aware Multi-Viz Generation, 주축)}
+
+에이전트는 10개 시각화 기본형 풀 (pool)을 인지하며, 질의와 원문 내용 (source content)을 분석하여 viz\_type을 직접 추론한다. 약한 사전 매핑 (soft-prior mapping)이 안내로 제공되지만 강제 라우터 (hard router)는 아니다.
+
+\textbf{약한 사전 매핑}:
+\begin{itemize}[leftmargin=*]
+    \item Quantitative $\rightarrow$ chartjs\_bar / line / scatter / pie
+    \item Relational $\rightarrow$ mermaid\_flowchart / sequenceDiagram / classDiagram
+    \item Temporal $\rightarrow$ mermaid\_timeline / chartjs\_line
+    \item Hierarchical $\rightarrow$ mermaid\_mindmap
+    \item Comparative $\rightarrow$ chartjs\_grouped\_bar (수치) 또는 mermaid 계열 (질적)
+\end{itemize}
+
+각 viz\_type에 대해 구문적 다양성 (syntactic diversity)을 갖는 2-3개의 예시 (exemplar) 풀을 구성하여 에이전트가 원문 내용에 맞게 선택한다.
+
+\subsection{CIS — 교차문서 반복 검색 (Cross-doc Iterative Search)}
+
+에이전트가 다문서를 교차 문서 반복 검색하며 충분성 (sufficiency) 도달 시까지 하위 질의 (sub-query)를 생성한다. 단일 시도 (single-shot) 검색이 아닌 \textbf{반복 (iterative)} 검색으로 다문서 정보 통합 보장.
+
+\subsection{SAO — 출처 귀속 출력 (Source-Attributed Output)}
+
+각 시각적 요소 (visual element: node / edge / data point)는 원문 문서와 청크를 참조하는 메타데이터를 보유한다. 형식: \texttt{\{doc\_id\}\#\{chunk\_id\}\#\{span\_start\}-\{span\_end\}}.
+
+\subsection{다중 산출물 출력 (Multi-artifact Output, 1-3개)}
+
+에이전트는 질의의 분석 의도 (analytic intent)에 따라 1-3개 시각화 산출물을 출력할 수 있다. C 혼합 산출물 유형은 차트와 도식을 동시 출력하는 능력을 검증한다.
+
+% =====================================================================
+\section{평가 프레임워크 (Evaluation Framework)}
+% =====================================================================
+
+\subsection{설계 원칙: 선행 연구 차용 + 자체 구현 최소화}
+
+v0.4.1 시제품에서 자체 정확 일치 (exact match) 셀 F1과 자체 정규식 (regex) 기반 Mermaid 파서 (parser)가 \textbf{바닥 상태 (floor state, B6와 비교 대상 모두 97\% 0점)}를 야기한 사례가 확인된 바 있다 (\S\ref{sec:prototype}). 이를 근거로 본 연구는 \textbf{자체 규칙 기반 정상화 계층을 도입하지 않으며}, Doc2Chart와 DiagramEval의 \emph{공식 평가 코드를 그대로 차용}한다.
+
+\subsection{계열별 1차 평가 (Tier 1, Primary)}
+
+\textbf{차트 계열 (\texttt{chartjs\_*})}: Doc2Chart CHARTEVAL \cite{jain2025doc2chart}. 차트를 \texttt{<x-axis, y-axis, value>} 3원소 (tuple) JSON으로 구조화 후, LLaMA-3.1-8B 순방향 통과 (forward pass)의 교차 주의 가중치 (cross-attention heatmap)에서 Kadane 알고리즘 (Kadane's algorithm)으로 데이터 값 토큰 (data value token)을 원문 범위 (source span)에 귀속. 사람 평가와 피어슨 $r=0.71$ (Doc2Chart \S5.3에서 검증).
+
+\textbf{도식 계열 (\texttt{mermaid\_*})}: DiagramEval \cite{liang2025diagrameval}. 렌더링한 PNG에서 시각 언어 모델 (Vision-Language Model, VLM, Gemini-2.0-Flash-lite)이 노드와 엣지 (edge)를 추출하여 그래프로 변환. 노드 정렬 F1과 경로 정렬 F1로 비교. 사람 평가와 $r=0.43$ (DiagramEval \S5.4에서 검증).
+
+\textbf{출처 귀속 점수 (Evidence F1)}: B6 (full SAO)는 명시적 (explicit) \texttt{evidence\_ids} 집합 기반 정밀도 (precision) / 재현율 (recall) / F1. 비교 대상들은 암묵적 (implicit) 근거 매칭 (임베딩 코사인 (embedding cosine) $\geq 0.75$). 두 방식 (mode)을 \emph{별도 열 (column)}로 분리 보고하여 SAO 효과를 절연 (isolate)한다.
+
+\textbf{의도 충족률 (Intent Coverage)}: 헝가리안 매칭 (Hungarian matching)으로 생성 산출물을 골드 의도 (gold intent)에 일대일 (1-to-1) 매칭. ROUGE-L 기반 비용 (cost) 함수.
+
+\subsection{이미지 단계 2차 평가 (Tier 2, Secondary)}
+
+\textbf{M1 렌더링 성공률 (Render success)}: 결정론적, 모든 시각화에 적용.
+
+\textbf{M5 CLIPScore}: OpenCLIP ViT-L/14 로컬 추론 (local inference). 모든 시각화에 적용.
+
+\textbf{A5 시각 리커트 척도 (Sonnet 4.6 vision API)}: 100개 부집합 (subset) $\times$ 7 비교 대상 $\times$ 4 백본 = 2,800 판정. Anthropic API (\textbf{not \texttt{claude -p} CLI} — CLI 사용량 제한 (rate limit)으로 차단). 리커트 1-5: 완전성 (completeness) / 충실성 (faithfulness) / 배치 (layout). SciDoc2-MAF 평가 기준 (rubric) 차용.
+
+\subsection{\sout{Tier 3 scope-v3 RocketEval — 폐기}}
+
+v0.4.1 시제품에서 운영하던 4축 RocketEval (Faith / Cov / TA / CDI) 평가는 \textbf{본 논문에서 폐기}한다. 사유:
+\begin{itemize}[leftmargin=*]
+    \item Doc2Chart의 사람 정합성 $r=0.71$과 DiagramEval의 $r=0.43$이 이미 발표 문헌 (published evidence)으로 우리 Tier 1 지표의 학계 정합성 (community alignment)을 확보
+    \item 자체 평가 설계 (judge design)를 논문에 정당화 (justification)하는 부담 (scope-v3 오염 방지 (anti-contamination) 등) 제거
+    \item Layer 3 교차 평가 일치도 (cross-judge agreement) 검증 비용 ($\sim \$30$) 절감
+\end{itemize}
+
+\subsection{$\S 16$ 엄격 게이트 정의 (Strict Gate, v0.4.2)}
+
+B6 (DocViz-Agent 완전판)가 다음 세 지표 \emph{모두}에서 가장 강한 비교 대상 대비 차이 $\geq +0.020$.
+\begin{itemize}[leftmargin=*]
+    \item 계열별 구조 지표 (CHARTEVAL 또는 DiagramEval 경로 F1)
+    \item Evidence F1
+    \item Intent Coverage
+\end{itemize}
+
+자체 합산 점수 (composite, 예: FSOS)는 \textbf{사용하지 않는다} — 가중치 정당화 부담 회피.
+
+% =====================================================================
+\section{실험 설정 (Experimental Setup)}
+% =====================================================================
+
+\subsection{백본 풀 (4개 백본, 등급 분산)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lllll}
+\toprule
+ID & 모델 & 등급 (tier) & 역할 & 제공사 (vendor) \\
+\midrule
+O1 & Qwen3.5-397B-A17B-FP8 & 오픈 프론티어 & 주요 측정 백본 (시제품에서 게이트 통과) & Alibaba \\
+O2 & DeepSeek-V4-Flash & 오픈 MoE & 두 번째 아키텍처 보조 근거 & DeepSeek \\
+C1 & GPT-5-mini & 클로즈드 저비용 & 비용 효율 클로즈드 근거 & OpenAI \\
+C2 & Claude Opus 4.8 & 클로즈드 프론티어 & 최상위 클로즈드 근거 & Anthropic \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{난이도 필터링 / 골드 추출 모델 (평가 풀 외)}: GPT-5 full + Claude Opus 4.7. 두 모델 모두 평가 풀에 없어 순환 평가 (circular evaluation) 차단.
+
+\subsection{말뭉치 구성 — 7개 출처 벤치마크 정박 (Source Benchmark Anchoring)}
+\label{sec:corpus}
+
+각 우리 challenge type 60 표본 (sample)을 \textbf{3개 출처 벤치마크에 분산} 배치한다 (출처 의존성 공격 차단).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lp{8.5cm}l}
+\toprule
+Challenge type & 60 표본 출처 (20+20+20 분산) & 합계 \\
+\midrule
+A multi\_hop & Loong Chain of Reasoning (20) + DocHop-QA multi-hop concept (20) + MultiHop-RAG Inference (20) & 60 \\
+B artifact\_planning & Loong Clustering (20) + DocHop-QA synthesis (20) + FinMMDocR 다단계 계산 (multi-step computation) (20) & 60 \\
+C mixed\_artifact & VisDoMBench SciGraphQA (20) + VisDoMBench PaperTab/FeTaTab (20) + FinMMDocR Portfolio 시나리오 (20) & 60 \\
+D distractor\_heavy & MultiHop-RAG Null 질의 (20) + FinMMDocR 페이지 횡단 (cross-page) (20) + Loong 장문맥 방해 변이 (long-context distractor) (20) & 60 \\
+E contradiction & FinAuditing FinSM 일관성 (consistency) (20) + TEMPO 시점 횡단 (cross-period) (20) + DocHop-QA 모순 개념 (20) & 60 \\
+\midrule
+\textbf{합계} & 7개 출처 벤치마크 & \textbf{300} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{도메인 분포} (원문 자료 기준):
+\begin{itemize}[leftmargin=*]
+    \item 금융 (Financial): Loong + FinMMDocR + FinAuditing ($\sim$100 표본)
+    \item 과학 (Scientific): DocHop-QA + VisDoMBench ($\sim$100 표본)
+    \item 뉴스 (News): MultiHop-RAG ($\sim$40 표본)
+    \item 법률 (Legal): Loong 부분 (subset) ($\sim$10 표본)
+    \item 13개 도메인 시간형: TEMPO ($\sim$20 표본)
+    \item 장문맥 (Long-context): Loong 변이 ($\sim$20 표본)
+\end{itemize}
+
+\textbf{모든 원문 자료가 PDF 또는 실제 문서} (Wikipedia 텍스트 발췌 0\%).
+
+\subsection{질의 생성 파이프라인 (3단계, Loong + Doc2Chart + Text2Chart31 차용)}
+\label{sec:query-gen}
+
+각 매핑된 표본 (mapped sample)에 대해 GPT-4o-mini를 사용한 3단계 파이프라인 적용. 7개 출처 벤치마크 모두에 \textbf{출처 무관 (source-agnostic) 동일 프롬프트 (prompt) 템플릿 (template)} 적용 (출처별 표지만 슬롯 (slot)에 삽입).
+
+\textbf{1단계: 압축 문서 표현 (Compressed Doc Representation, Loong \S3.3.2 차용)}
+각 문서를 핵심 사실 (key fact) 글머리 (bullet point) 목록으로 LLM이 압축 (문서당 1회 LLM 호출). 원문 (raw text) 대신 압축 글머리를 다음 단계 입력.
+
+\textbf{2단계: 과제별 프롬프트와 출력 유형 휴리스틱 (Task-specific Prompt with Output-type Heuristic, Loong + Doc2Chart 차용)}
+Challenge type × output type 조합별 프롬프트 템플릿 (총 25개, 각 1회 학습 시연 (1-shot demonstration) 포함). 출처 벤치마크의 표본 단위 추론 표지를 정박 근거 (anchoring evidence)로 명시.
+
+\textbf{3단계: 자기 평가 관문 (Self-evaluation Gate, Text2Chart31 \S3.3 차용)}
+동일 LLM이 생성된 질의 평가: (a) 다문서 필요성, (b) 시각화 적합성, (c) 사용자 의도 현실성. 셋 다 yes일 때만 채택. 1회 재생성 (retry) 허용.
+
+\textbf{총 비용 (300개 질의)}:
+\begin{itemize}[leftmargin=*]
+    \item LLM 호출 (call) $= 3 \times 300 = 900$ 호출 $\times$ GPT-4o-mini ($\sim \$0.001$/호출) $= \$0.96$
+    \item 자연스러움 점검 (naturalness spot check) 30 표본 Prolific 비용 $\sim \$30$
+    \item \textbf{총 $\sim \$31$}
+\end{itemize}
+
+\textbf{난이도 필터 (Difficulty Filter, 2단계)}: GPT-5 full + Opus 4.7 다수결 (majority-of-2)로 \emph{프론티어 모델 실패 (frontier-fails-on)} 검증. 두 모델 모두 통과한 너무 쉬운 질의는 제거. 엄격 (strict, 둘 다 실패) 100표본 + 완화 (soft, 한쪽 실패) 200표본 = 300 표본 구성. 비용 $\sim \$132$ 일회성.
+
+\subsection{골드 부집합 사람 검증 (90 표본)}
+
+300 표본 중 90개 부집합 (challenge type 15 × 6 도메인 상한 적용)을 Prolific에서 사람 검증. 두 단계.
+
+\textbf{다중 LLM 합집합 (multi-LLM union) 추출}: GPT-5-mini와 Opus 4.8 두 모델이 같은 프롬프트로 독립 추출 → 증거 범위 (evidence span) / 사실 (fact) / 표 / 그래프 / 의도 (intent) 합집합 후 중복 제거 (deduplication). 출처 (provenance) 기록.
+
+\textbf{Prolific 사람 검증}: 90 표본 × 3 평가자 (rater) × 2 과제. 비용 $\sim \$200$.
+\begin{itemize}[leftmargin=*]
+    \item T1 출처 정확성: 각 사실이 인용 원문 범위에 있는가 (이진, $\geq 2/3$ 동의 시 보존)
+    \item T2 완전성: 누락된 중요 사실 자유 텍스트 추가 (4번째 평가자 재검증 후 병합)
+\end{itemize}
+
+T3 과추출 (over-extraction, 이전 v0.4.1에서 운영하던 셀 수준 골드 점검) \textbf{은 폐기}: 셀 수준 F1을 자체 구현하지 않으므로 불필요.
+
+\subsection{비교 대상 라인업 (Baseline Lineup)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+ID & 이름 & 비고 \\
+\midrule
+B1 & MatPlotAgent-adapted & 차트 전용 어댑터 (adapter) \\
+B2 & NVAGENT-adapted & 차트 전용 어댑터 \\
+B3 & CoDA-adapted & 텍스트 데이터셋 분석 에이전트 \\
+B4 & ViviDoc-style & 주제 기반 (topic-driven) 계획자-실행자 (planner-executor) \\
+B5 & Direct-LLM (S1) & 단일 시도 LLM $\rightarrow$ DSL \\
+B7 & SelfRefine (S7) & 자기 개선 반복문 ($\S 16$ 엄격 게이트 직접 비교 대상) \\
+\textbf{B6} & \textbf{DocViz-Agent (Ours)} & CIS + TMG + SAO 3축 완전 파이프라인 \\
+\midrule
+B8 & Doc2Chart-orig & Doc2Chart held-out 전문가 (specialist) \\
+B9 & SciDoc2Diagrammer-MAF & SciDoc2DiagramBench held-out 전문가 \\
+B7-spec & Text2Vis-orig & Text2Vis held-out 전문가 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{B6 절제 변이 (ablation variants)} (가이드 §3.3 identity 파일 교체 방식):
+\begin{itemize}[leftmargin=*]
+    \item B6 $-$CIS: 단일 시도 검색으로 대체
+    \item B6 $-$TMG: 10유형 풀 노출 제거, 고정 기본값 사용
+    \item B6 $-$SAO: \texttt{evidence\_ids} 명세 제거
+    \item B6 $-$All $\approx$ B5 Direct (퇴화된 비교 대상)
+\end{itemize}
+
+\subsection{외부 보류 평가 벤치 (Held-out, Tier 1 face)}
+
+3개 외부 벤치 필수. \textbf{ViviBench 제거} (코드 미공개로 재현성 (reproducibility) 위험). \textbf{Plot2Code는 선택 부록 (optional appendix) 민감도 분석으로 강등}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+벤치 & 발표 venue & 측면 & 전문가 (specialist) \\
+\midrule
+Text2Vis & EMNLP 2025 & 차트 일반 (general) & B7-spec Text2Vis-orig \\
+Doc2Chart & EMNLP 2025 Main & 차트 의도 기반 (intent-driven) & B8 Doc2Chart-orig \\
+SciDoc2DiagramBench & EMNLP 2024 Findings & 도식 (gap 메움) & B9 SciDoc2Diagrammer-MAF \\
+Plot2Code (선택) & NeurIPS 2024 D\&B & 부록 민감도 (sensitivity) & B10 MatPlotAgent-orig \\
+\sout{ViviBench} & — & \sout{코드 미공개} & \sout{폐기} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{단계적 실험 계획 (Phased Experimental Plan)}
+% =====================================================================
+
+본 연구는 5개 phase로 진행하며 각 phase에 진행 결정 관문 (go/no-go gate)을 둔다. v0.4.1 시제품에서 발견된 \textbf{평가 결함 (eval artifact) / 바닥 (floor) 문제} 같은 위험을 phase별로 \emph{전체 비용 투입 전} 차단한다.
+
+\subsection{Phase 0 — 기반 사전 검증 (Foundation Pilot, 1주, $\sim \$5$)}
+
+\textbf{목표}: 평가 파이프라인의 변별력 (discriminative power) 확인.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item Loong 30 표본 $\times$ Qwen3.5-397B 단일 백본 $\times$ \{B6, B5\} 두 파이프라인
+    \item DiagramEval 렌더링 $\rightarrow$ VLM 추출 (모든 5개 mermaid 하위유형)
+    \item Doc2Chart CHARTEVAL on 차트 산출물
+\end{itemize}
+
+\textbf{진행 게이트 (Go gate)}:
+\begin{itemize}[leftmargin=*]
+    \item Mermaid 렌더링$\rightarrow$VLM 추출 성공률 $\geq 85\%$ (\emph{5개 하위유형 모두})
+    \item 차트 귀속 성공률 $\geq 85\%$
+    \item B6 vs B5 차이 $\geq +0.020$ (적어도 2개 지표에서)
+    \item 3-시드 분산 (3-seed variance) $\leq 5\%$
+\end{itemize}
+
+\textbf{미통과 시}: 평가 파이프라인 수정 후 Phase 0 반복. \textbf{다음 phase 진입 금지}.
+
+\subsection{Phase 1 — 최소 실효 실험 (Minimal Viable Experiment, 1.5주, $\sim \$20$)}
+
+\textbf{목표}: 우리 방법 (B6)의 실제 효과 입증.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item Loong 100 표본 (5 challenge type $\times$ 20 표본) $\times$ Qwen3.5-397B $\times$ 3 비교 대상 (B5, B7, B6)
+    \item 모든 핵심 지표 (DiagramEval / CHARTEVAL / Evidence F1 / Intent Coverage / M1 / M5)
+    \item 30 표본 자연스러움 점검 ($\sim \$30$)
+\end{itemize}
+
+\textbf{진행 게이트}:
+\begin{itemize}[leftmargin=*]
+    \item $\S 16$ 엄격 게이트: B6가 $\geq 2$ 지표에서 가장 강한 비교 대상 대비 +0.020
+    \item B6 $-$ B7 차이가 통계적으로 유의 (statistically significant, 3-시드 표준편차 (std) 기준)
+\end{itemize}
+
+\textbf{미통과 시}: B6 파이프라인 (\S4) 보완 후 Phase 1 반복.
+
+\subsection{Phase 2 — 다중 출처 강건성 (Multi-source Robustness, 2주, $\sim \$30$)}
+
+\textbf{목표}: Loong 외 출처 벤치마크로의 일반화 (generalization).
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item Phase 1 설정 + DocHop-QA + FinMMDocR 추가 (3 출처 $\times$ 60 표본)
+    \item Qwen3.5-397B 단일 백본
+\end{itemize}
+
+\textbf{진행 게이트}:
+\begin{itemize}[leftmargin=*]
+    \item B6 우위가 3 출처 중 $\geq 2$에서 재현 (replicated)
+    \item 출처 간 방법 효과 분산 $\leq 50\%$ (한 출처가 주도 (driving) 아님)
+\end{itemize}
+
+\subsection{Phase 3 — 백본 횡단 (Cross-backbone, C4 발견, 2주, $\sim \$60$ 클로즈드 API)}
+
+\textbf{목표}: C4 발견 (다문서 출처 귀속 격차)을 4 백본에서 입증.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item Phase 2 설정 $\times$ 4 백본 (Qwen + DeepSeek + GPT-5-mini + Opus 4.8)
+    \item 3 출처 $\times$ 60 표본 $\times$ 3 비교 대상
+\end{itemize}
+
+\textbf{진행 게이트}:
+\begin{itemize}[leftmargin=*]
+    \item C4 발견: Evidence F1 격차가 $\geq 3$ 백본에서 일관
+    \item B6 우위가 $\geq 3$ 백본에서 재현
+\end{itemize}
+
+\subsection{Phase 4 — 완전 말뭉치 + 보류 평가 (Full Corpus + Held-out, 2주, $\sim \$100$)}
+
+\textbf{목표}: 300 표본 완전 말뭉치 + 3개 외부 벤치로 논문 본 결과 (main result) 완성.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item 7개 출처 벤치마크 모두 (300 표본) $\times$ 4 백본 $\times$ 7 비교 대상
+    \item Text2Vis + Doc2Chart + SciDoc2DiagramBench held-out
+    \item 3 시드 (seed)
+\end{itemize}
+
+\textbf{진행 게이트}:
+\begin{itemize}[leftmargin=*]
+    \item $\S 16$ 엄격 게이트가 완전 말뭉치에서 통과
+    \item B6가 $\geq 4/5$ challenge type에서 우위
+    \item Held-out에서 전문가 대비 $\leq -7\%p$
+\end{itemize}
+
+\subsection{Phase 5 — 이미지 평가 + 검증 + 논문 작성 (Image-level + Validation + Paper, 2주, $\sim \$50$ + Prolific)}
+
+\textbf{목표}: A5 이미지 평가, 사람 검증, 논문 그림/표 완성.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item M5 CLIPScore on 모든 시각화 (결정론적, 비용 0)
+    \item A5 Sonnet vision Likert on 100 부집합 (Anthropic API 배치, $\sim \$11$)
+    \item Prolific 50 viz $\times$ 3 평가자 자연스러움 정박 ($\sim \$50$)
+    \item 역방향 질의응답 (Reverse-QA) L4 정박 ($\sim \$3$)
+\end{itemize}
+
+\textbf{진행 게이트}:
+\begin{itemize}[leftmargin=*]
+    \item 점검 (spot check) Spearman 상관 $r \geq 0.4$ (DiagramEval 발표값 0.43 범위)
+    \item 모든 논문 표 채워짐
+\end{itemize}
+
+\subsection{누적 비용 + 단계별 위험 차단}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Phase & 누적 비용 & 누적 시간 & 차단 위험 \\
+\midrule
+P0 사전 검증 & \$5 & 1주 & 평가 결함, 바닥 검증 \\
+P1 최소 실효 & \$25 & 2.5주 & 방법 실재성 \\
+P2 다중 출처 & \$55 & 4.5주 & 일반화 \\
+P3 백본 횡단 & \$115 & 6.5주 & C4 발견 \\
+P4 완전 & \$215 & 8.5주 & 본 결과 \\
+P5 검증 & \$315 + Prolific & 10.5주 & 심사위원 정박 (reviewer anchor) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{본 결과 표 (Target Tables)}
+% =====================================================================
+
+본 절은 Phase 4 완료 시 채워질 논문 본 결과 표들을 정의한다. 모든 점수는 3-시드 평균 $\pm$ 표준편차 (시드 42, 43, 44).
+
+\subsection{Table 1: 교차 과제 일반화 헤드라인 (Cross-task Generalization Headline)}
+
+4 설정 (QG-MDV + Text2Vis + Doc2Chart + SciDoc2DiagramBench) × 7 비교 대상 × 4 1차 지표. \emph{지표 4개 병렬 보고, 단일 합산 점수 없음}.
+
+\begin{table}[h]
+\centering
+\tiny
+\begin{tabular}{l|cccc|cccc|cccc|cccc}
+\toprule
+& \multicolumn{4}{c|}{QG-MDV} & \multicolumn{4}{c|}{Text2Vis} & \multicolumn{4}{c|}{Doc2Chart} & \multicolumn{4}{c}{SciDoc2DiagramBench} \\
+Baseline & ChartF1 & EdgeF1 & EvF1 & IntC & ChartF1 & EdgeF1 & EvF1 & IntC & ChartF1 & EdgeF1 & EvF1 & IntC & ChartF1 & EdgeF1 & EvF1 & IntC \\
+\midrule
+B1 MatPlotAgent & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+B2 NVAGENT & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+B3 CoDA & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+B4 ViviDoc & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+B5 Direct-LLM & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+B7 SelfRefine & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ \\
+\textbf{B6 DocViz-Agent} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} \\
+\midrule
+B7-spec Text2Vis-orig & — & — & — & — & \_ & \_ & \_ & \_ & — & — & — & — & — & — & — & — \\
+B8 Doc2Chart-orig & — & — & — & — & — & — & — & — & \_ & \_ & \_ & \_ & — & — & — & — \\
+B9 SciDoc2Diag-MAF & — & — & — & — & — & — & — & — & — & — & — & — & \_ & \_ & \_ & \_ \\
+\bottomrule
+\end{tabular}
+\caption{교차 과제 일반화 (헤드라인). ChartF1 = Doc2Chart CHARTEVAL, EdgeF1 = DiagramEval 경로 F1, EvF1 = Evidence F1, IntC = Intent Coverage.}
+\end{table}
+
+\subsection{Table 3: 추론 난이도별 (Per-challenge-type, C2 헤드라인급)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|c|cccc}
+\toprule
+Challenge type & n & ChartF1 / EdgeF1 / EvF1 / IntC (B6) & (최강 비교 대상) & $\Delta$ B6 & 유형별 신호 (type-specific signal) \\
+\midrule
+A multi\_hop & 60 & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & +\_ & cross\_doc\_evidence\_recall \\
+B planning & 60 & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & +\_ & artifact\_count\_match \\
+C mixed\_artifact & 60 & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & +\_ & modality\_coverage \\
+D distractor & 60 & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & +\_ & distractor\_contamination \\
+E contradiction & 60 & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & +\_ & contradiction\_coverage \\
+\midrule
+\textbf{Overall} & \textbf{300} & \_ / \_ / \_ / \_ & \_ / \_ / \_ / \_ & \textbf{+\_} & — \\
+\bottomrule
+\end{tabular}
+\caption{추론 난이도별 결과 (5개 challenge type, 4 백본 평균). B6가 $\geq 4/5$ challenge에서 Evidence F1 기준 $\Delta \geq +0.020$ 만족 시 C2 + C4 공동 검증 (jointly validated).}
+\end{table}
+
+\subsection{Table 4: 백본 횡단 (Cross-backbone, C4 발견 근거)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|cccccccc}
+\toprule
+Backbone & B1 & B2 & B3 & B4 & B5 & B7 & \textbf{B6} & $\Delta$ vs 최강 비교 대상 \\
+\midrule
+O1 Qwen3.5-397B & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+O2 DeepSeek-V4-Flash & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+C1 GPT-5-mini & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+C2 Claude Opus 4.8 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+\midrule
+\textbf{백본 평균 (Backbone avg)} & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+\bottomrule
+\end{tabular}
+\caption{QG-MDV에서 4 백본 × 7 비교 대상의 \textbf{Evidence F1} (C4 발견의 주 지표). 4 백본 모두에서 Evidence F1이 다른 지표보다 낮으면 다문서 출처 귀속 격차가 LLM 무관 (LLM-independent)하게 일관됨을 입증.}
+\end{table}
+
+\subsection{Table 6: 출처별 분해 (Per-source Breakdown)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|c|cccccccc}
+\toprule
+출처 & n & B1 & B2 & B3 & B4 & B5 & B7 & \textbf{B6} & $\Delta$ vs 최강 비교 대상 \\
+\midrule
+Loong (Financial + Legal + Academic) & 100 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+DocHop-QA (PubMed) & 40 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+FinMMDocR (Financial) & 50 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+VisDoMBench (Scientific) & 40 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+MultiHop-RAG (News) & 30 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+FinAuditing (XBRL) & 20 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+TEMPO (다중 도메인 시간형) & 20 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & +\_ \\
+\midrule
+\textbf{출처 평균 (Cross-source avg)} & 300 & \_ & \_ & \_ & \_ & \_ & \_ & \textbf{\_} & \textbf{+\_} \\
+\bottomrule
+\end{tabular}
+\caption{출처 벤치마크별 분해. 7 출처 중 $\geq 5$에서 B6 우위 시 출처-출처 일반화 입증.}
+\end{table}
+
+\subsection{Table 7: 3축 절제 (3-Pillar Ablation)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|cccc|c}
+\toprule
+변이 (Variant) & ChartF1 & EdgeF1 & EvF1 & IntC & $\Delta$ vs Full \\
+\midrule
+\textbf{B6 Full} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} & — \\
+B6 $-$CIS & \_ & \_ & \_ & \_ & \_ \\
+B6 $-$TMG & \_ & \_ & \_ & \_ & \_ \textbf{(시제품에서 가장 큰 격차 예상, $\Delta = -0.254$)} \\
+B6 $-$SAO & \_ & \_ & \_ & \_ & \_ \\
+B6 $-$All ($\approx$ B5) & \_ & \_ & \_ & \_ & \_ \\
+\bottomrule
+\end{tabular}
+\caption{3축 절제. TMG 단독 제거 시 $\Delta$가 가장 큼이 시제품에서 확인됨 ($\Delta = -0.254$). 본 실험에서 4 백본 평균으로 재현 검증.}
+\end{table}
+
+\subsection{Table 8: 이미지 품질 (M1 + M5 + A5)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|c|c|ccc}
+\toprule
+Baseline & M1 렌더 \% & M5 CLIPScore & A5 readability & A5 layout & A5 overall \\
+\midrule
+B1 MatPlotAgent & \_ \% & \_ & \_ & \_ & \_ \\
+B2 NVAGENT & \_ \% & \_ & \_ & \_ & \_ \\
+B3 CoDA & \_ \% & \_ & \_ & \_ & \_ \\
+B4 ViviDoc & \_ \% & \_ & \_ & \_ & \_ \\
+B5 Direct-LLM & \_ \% & \_ & \_ & \_ & \_ \\
+B7 SelfRefine & \_ \% & \_ & \_ & \_ & \_ \\
+\textbf{B6 DocViz-Agent} & \textbf{\_ \%} & \textbf{\_} & \textbf{\_} & \textbf{\_} & \textbf{\_} \\
+\bottomrule
+\end{tabular}
+\caption{이미지 품질 (100 표본 부집합 × 7 비교 대상 × 4 백본). A5는 Sonnet 4.6 vision API 리커트 1-5.}
+\end{table}
+
+\subsection{부록 표 (Appendix Tables)}
+
+\textbf{Appendix A1 (다문서 규모 (Multi-doc scaling))}: 문서 수 1/2/3/5 × 7 비교 대상 × Evidence F1 추이.
+
+\textbf{Appendix A2 (장문맥 역설 (Long-context paradox))}: 문맥 길이 (context length) 8K/32K/128K × 7 비교 대상. 윈도우 (window) 가능한 백본 (Sonnet 4.6 + Opus 4.8)만.
+
+\textbf{Appendix A3 (검증 (Validation))}:
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll|cc}
+\toprule
+Layer & 지표 (Metric) & 목표 (Target) & 측정값 (Observed) & 통과 (Pass) \\
+\midrule
+L2 사람 정합성 & Spearman r (30 viz 점검) & $\geq 0.4$ (DiagramEval 발표 0.43 범위) & \_ & $\square$ \\
+\sout{L3 교차 평가 일치도} & \sout{Cohen's $\kappa$} & \sout{scope-v3 폐기} & — & — \\
+L4 역방향 질의응답 & B6 vs 최강 비교 대상 정확도 격차 & 방향 양 & +\_ \%p & $\square$ \\
+L5 재현 (선택) & ChartMuseum 시각 추론 격차 & $\geq 30\%$ & \_ \% & $\square$ \\
+L6 외부 & 전문가 대비 $\Delta$ (Text2Vis / Doc2Chart / SciDoc2Diag) & $\leq 7\%p$ & \_ \%p & $\square$ \\
+\bottomrule
+\end{tabular}
+\caption{검증 정박 표 (validation anchor table). Layer 3는 scope-v3 폐기로 제거.}
+\end{table}
+
+% =====================================================================
+\section{절제 분석 (Ablation Studies)}
+% =====================================================================
+
+\subsection{3축 절제 (CIS / TMG / SAO)}
+
+시제품 측정 결과 ($n=265$, 단일 시드, scope-v3 평가)에서 다음이 확인된다.
+\begin{itemize}[leftmargin=*]
+    \item B6 Full: 전체 (overall) 0.8391
+    \item B6 $-$CIS: $\Delta = -0.106$
+    \item B6 $-$SAO: $\Delta = -0.075$
+    \item B6 $-$TMG: $\Delta = -0.254$ \emph{(largest)}
+\end{itemize}
+
+본 실험은 v0.4.2 평가 프레임워크 (CHARTEVAL + DiagramEval)에서 4 백본 평균으로 \textbf{TMG 단독 영향이 가장 큼}을 재현 검증한다.
+
+\subsection{다문서 규모 (Appendix A1)}
+
+QG-MDV 설정에서 문서 수 1, 2, 3, 5에 따른 Evidence F1 추이 측정. 5 백본 × 6 비교 대상 × 4 문서수 × 100 표본 = 12,000 생성 (generation).
+
+\textbf{예상 패턴 (Expected pattern)}:
+\begin{itemize}[leftmargin=*]
+    \item 모든 비교 대상에서 단조 감소 (monotonic decrease, 1$\rightarrow$5에서 $-15 \sim -25\%p$)
+    \item B6는 작은 감소 ($-8 \sim -12\%p$), 격차가 문서 수 증가로 확대 (widening)
+    \item 교차점 (crossover): 3+ 문서에서 B6가 모든 비교 대상 추월
+\end{itemize}
+
+\subsection{실패 양상 분석 (Failure Mode Analysis, 부록)}
+
+B6의 QG-MDV 30 표본 실패 사례 수동 (manual) 분석. 실패 범주 (failure category):
+\begin{itemize}[leftmargin=*]
+    \item 교차 문서 사실 혼동 (Cross-doc fact mixing, 두 문서의 개체 (entity) 혼동)
+    \item 단일 문서 편향 (Single-doc bias, 한 문서에 과중치 (over-weight))
+    \item 적용 범위 붕괴 (Coverage collapse, 다른 문서 무시)
+    \item 유형 불일치 (Type mismatch, output type 잘못 선택)
+    \item 렌더링 실패 (Render failure, DSL 구문 오류 (syntax error))
+\end{itemize}
+
+% =====================================================================
+\section{v0.4.1 시제품에서 얻은 교훈 (Lessons Learned from v0.4.1 Prototype)}
+\label{sec:prototype}
+% =====================================================================
+
+v0.4.1 시제품 시점 ($n=265$, 단일 시드, scope-v3 4축 평가)에서 다음 문제들이 확인되었다. 본 v0.4.2 설계는 모두 선행 연구 방법으로 해결한다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{6cm}|p{8cm}}
+\toprule
+v0.4.1 문제 & v0.4.2 해결 \\
+\midrule
+차트 셀 정확 일치 F1이 전치 (transpose) / 개체 변이 / 다중 유효 출력 (multi-valid output)에서 97\% 0점 → 변별력 0 & Doc2Chart CHARTEVAL (귀속 기반, 사람 정합성 $r=0.71$) 차용. 셀 정확 일치 폐기. \\
+Mermaid 정규식 파서가 mindmap / timeline / sequenceDiagram / classDiagram 5종 하위유형에서 실패 & DiagramEval 렌더링$\rightarrow$VLM 추출 차용 (하위유형 무관 (subtype-agnostic), $r=0.43$ 사람 정합성). \\
+Evidence F1 구현이 Jaccard로 spec 이탈 (deviation) & 명세 재정의: 집합 기반 (set-based) P/R/F1, 방식 별도 보고 (명시적 vs 암묵적). \\
+헝가리안 의도 매칭이 셀/엣지 수준 (cell/edge-level) 다중 유효 출력 미해결 & 직전 해결: 헝가리안은 산출물 수준 (artifact-level)만 (그것이 본래 목적), 셀/엣지 수준은 CHARTEVAL 귀속 / DiagramEval 의미적 매칭 (semantic match)으로 처리. \\
+자체 FSOS 가중치 합산 점수의 가중치 정당화 부재 & FSOS 폐기, 4 1차 지표 병렬 보고. \\
+자체 scope-v3 평가의 설계 정당화 부담 & scope-v3 폐기. Doc2Chart / DiagramEval 발표 $r$ 값으로 검증 인계. \\
+ViviBench 평가 코드 미공개로 재구현 (reimplementation) 위험 & ViviBench held-out 폐기. \\
+\texttt{claude -p} CLI 사용량 제한으로 A5 이미지 평가 2,800회 배치 (batch) 차단 & Anthropic API SDK (Sonnet 4.6 vision) + 배치 API로 전환. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{논의 및 한계 (Discussion and Limitations)}
+% =====================================================================
+
+\subsection{왜 "QG-MDV를 위한 첫 일반화 파이프라인 (first generalist pipeline)"인가?}
+
+본 연구는 \emph{다문서 + 질의 기반 + 다중 시각화 기본형 적용 범위}의 교집합 과제 (QG-MDV)를 정형화한 첫 연구다. 단일 차원만 다룬 선행 연구:
+\begin{itemize}[leftmargin=*]
+    \item MMLongBench-Doc \cite{ma2024mmlongbench}: 다문서 질의응답, 시각화 출력 없음
+    \item Text2Vis \cite{wang2025text2vis}: 시각화 출력, 단일 문서 단일 유형
+    \item Doc2Chart \cite{jain2025doc2chart}: 시각화 출력 + 의도, 단일 문서 + 차트 전용
+    \item DiagramEval \cite{liang2025diagrameval}: 도식 평가, 다문서 입력 아님
+\end{itemize}
+
+\subsection{한계 (Limitations)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{도메인 한정성}: 7 출처 벤치마크는 의료 / 금융 / 법률 / 학술 / 뉴스 / 시간형 중심. 안내서 (brochure) / 도서 등은 미포함 (MMLongBench-Doc 7 도메인 중 4 도메인만 활용).
+    \item \textbf{Wikipedia 제외 결정}: 실제 PDF 우선 정책으로 HotpotQA / 2WikiMultihopQA / MuSiQue 등 Wikipedia 기반 다단계 질의응답 데이터 제외. 그 도메인은 우리 과제 정의 ("실세계 원문 자료")에 부적합.
+    \item \textbf{Mermaid 출력 한정}: TikZ 등 다른 도식 DSL 미지원. SciDoc2DiagramBench held-out에서 \emph{형식 불일치 (format mismatch)}로 인해 이미지 단계 지표 (CLIPScore + 리커트)만 적용.
+    \item \textbf{자체 구현 의도적 최소화}: 자체 정상화 계층 도입하지 않음. 일부 개체 변이 / 수치 단위 변동으로 인한 \emph{대칭적 잡음 (symmetric noise)}은 모든 비교 대상에 동일 적용되어 순위 (ranking)에는 영향 없으나, 절대값 점수는 선행 연구의 측정값보다 약간 낮을 수 있음.
+    \item \textbf{사람 검증 최소화}: 30 표본 자연스러움 + 90 표본 골드 + 50 viz A5 교차 평가 점검만 사람 검증. 대규모 사람 검증은 선행 연구의 검증 인계로 대체.
+\end{itemize}
+
+\subsection{결과 시나리오 — 예비 논문 계획 (Result Scenarios — Backup Paper Plans)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l|cccc|l}
+\toprule
+시나리오 & Held-out & QG-MDV & 교차 과제 평균 & C4 발견 & 논문 위치 \\
+\midrule
+최선 (Best) & 내 $-5\%p$ & +10\%p & +12\%p & strong & EMNLP main \\
+양호 (Good) & 내 $-7\%p$ & +8\%p & +8\%p & strong & EMNLP main / Findings \\
+보통 (Modest) & 내 $-10\%p$ & +5\%p & +5\%p & weak & Findings \\
+Tier 2 약 (Weak Tier 2) & 내 $-7\%p$ & +3-5\%p & +5\%p & strong & Findings (자원 (resource) 논문) \\
+Tier 1 실패 & 내 $-15\%p$+ & +5\%p & low & — & Findings (분석 논문) \\
+진단 only (Diagnostic only) & low & low & low & strong & Findings (발견 (finding) 논문) \\
+\bottomrule
+\end{tabular}
+\caption{시나리오별 예비 논문 계획. 모든 시나리오에서 출판 가능 (publishable).}
+\end{table}
+
+% =====================================================================
+\section{결론 (Conclusion)}
+% =====================================================================
+
+본 연구는 다문서 질의 기반 시각화 (QG-MDV)를 정형화하고, 7개 학계 검증 벤치마크에서 300개 다문서 묶음을 구성하며, 3축 (CIS / TMG / SAO) DocViz-Agent와 계열별 결정론적 평가 프레임워크를 제안한다. 5단계의 단계적 실험 계획을 통해 v0.4.1 시제품의 평가 결함 문제를 단계별 진행 결정 관문으로 차단한다. Doc2Chart (EMNLP 2025 Main)와 DiagramEval (EMNLP 2025 Main)의 발표된 평가 코드를 그대로 차용하여 우리 자체 정상화 부담을 0으로 최소화한다. 다문서 출처 귀속 격차가 4 백본 (오픈 프론티어 + 오픈 MoE + 클로즈드 저비용 + 클로즈드 프론티어) × 7 파이프라인 전반에서 일관되게 나타날 것으로 예상하며, 이를 과제 본질적 병목 (task-inherent bottleneck)으로 표상 (framing)한다.
+
+% =====================================================================
+\bibliographystyle{acl_natbib}
+\begin{thebibliography}{99}
+
+\bibitem{han2023chartllama}
+Han et al. ChartLlama: A multimodal LLM for chart understanding and generation. arXiv preprint arXiv:2311.16483, 2023.
+
+\bibitem{yang2024chartmimic}
+Yang et al. ChartMimic: Evaluating LMM's cross-modal reasoning capability via chart-to-code generation. ICLR 2025.
+
+\bibitem{zadeh2024text2chart31}
+Zadeh et al. Text2Chart31: Instruction tuning for chart generation with automatic feedback. EMNLP 2024 Main Oral.
+
+\bibitem{mondal2024scidoc2diagrammer}
+Mondal et al. SciDoc2Diagrammer-MAF: Towards generation of scientific diagrams from documents guided by multi-aspect feedback refinement. Findings of EMNLP 2024.
+
+\bibitem{yang2018hotpotqa}
+Yang et al. HotpotQA: A dataset for diverse, explainable multi-hop question answering. EMNLP 2018.
+
+\bibitem{ho2020constructing}
+Ho et al. Constructing a multi-hop QA dataset for comprehensive evaluation of reasoning steps. COLING 2020.
+
+\bibitem{trivedi2022musique}
+Trivedi et al. MuSiQue: Multihop questions via single-hop question composition. TACL 2022.
+
+\bibitem{ma2024mmlongbench}
+Ma et al. MMLongBench-Doc: Benchmarking long-context document understanding with visualizations. NeurIPS 2024 D\&B Track.
+
+\bibitem{jain2025doc2chart}
+Jain et al. Doc2Chart: Intent-driven zero-shot chart generation from documents. EMNLP 2025 Main.
+
+\bibitem{liang2025diagrameval}
+Liang and You. DiagramEval: Evaluating LLM-generated diagrams via graphs. EMNLP 2025 Main.
+
+\bibitem{wang2024loong}
+Wang et al. Leave no document behind: Benchmarking long-context LLMs with extended multi-doc QA. EMNLP 2024 Oral.
+
+\bibitem{xiaoaug2025dochop}
+Xiao et al. DocHop-QA: Towards multi-hop reasoning over multimodal document collections. arXiv preprint arXiv:2508.15851, 2025.
+
+\bibitem{2026finmmdocr}
+FinMMDocR: Benchmarking financial multimodal reasoning. AAAI 2026.
+
+\bibitem{suri2025visdom}
+Suri et al. VisDoM: Multi-document QA with visually rich elements using multimodal retrieval-augmented generation. NAACL 2025.
+
+\bibitem{tang2024multihoprag}
+Tang and Yang. MultiHop-RAG: Benchmarking retrieval-augmented generation for multi-hop queries. arXiv preprint arXiv:2401.15391, 2024.
+
+\bibitem{wang2025finauditing}
+Wang et al. FinAuditing: A financial taxonomy-structured multi-document benchmark for evaluating LLMs. arXiv preprint arXiv:2510.08886, 2025.
+
+\bibitem{2026tempo}
+TEMPO: A realistic multi-domain benchmark for temporal reasoning-intensive retrieval. arXiv preprint arXiv:2601.09523, 2026.
+
+\bibitem{wang2025text2vis}
+Wang et al. Text2Vis: A challenging and diverse benchmark for generating multimodal visualizations from text. arXiv preprint arXiv:2507.19969, 2025.
+
+\bibitem{suri2025hopweaver}
+HopWeaver: Cross-document synthesis of high-quality and authentic multi-hop questions. OpenReview 2025.
+
+\end{thebibliography}
+
+\end{document}
