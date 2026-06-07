@@ -358,6 +358,14 @@ def main():
     ap.add_argument("--b7-traj", type=Path, help="SelfRefine baseline (s1-style trajectory)")
     ap.add_argument("--b6-recovered", type=str, default=None,
                     help="JSON of forced-emission recovered artifacts (recover_b6_viz)")
+    # v0.4.3 ablation arms (B6 variants). Each scored like B6; the SEF/VSC
+    # effect gates compare them to B6 full.
+    ap.add_argument("--b6-nosef-traj", type=Path)
+    ap.add_argument("--b6-nosef-sidecar", type=Path, default=Path("/nonexistent"))
+    ap.add_argument("--b6-nosef-recovered", type=str, default=None)
+    ap.add_argument("--b6-novsc-traj", type=Path)
+    ap.add_argument("--b6-novsc-sidecar", type=Path, default=Path("/nonexistent"))
+    ap.add_argument("--b6-novsc-recovered", type=str, default=None)
     ap.add_argument("--queries", type=Path, default=REPO / "data/queries/loong_phase1_working.jsonl")
     ap.add_argument("--gold", type=Path, default=REPO / "data/gold/loong_phase1_working.jsonl")
     ap.add_argument("--out", type=Path, default=REPO / "outputs/v0.5_harness/PHASE1_GATE.json")
@@ -405,6 +413,45 @@ def main():
         }
         print("== GATE (B6 vs strongest baseline) ==",
               json.dumps(res["gate"], ensure_ascii=False, indent=2))
+
+    # v0.4.3 SEF/VSC ablation gates ---------------------------------------
+    def _score_variant(traj, sidecar, rec_path):
+        rec = (json.loads(Path(rec_path).read_text())
+               if rec_path and Path(rec_path).exists() else {})
+        return score_run(traj, sidecar, args.queries, args.gold,
+                         recovered=rec, clipscore=args.clipscore)
+
+    abl: dict = {}
+    if args.b6_nosef_traj:
+        nosef = _score_variant(args.b6_nosef_traj, args.b6_nosef_sidecar,
+                               args.b6_nosef_recovered)
+        res["B6_nosef"] = {k: v for k, v in nosef.items() if k != "per"}
+        # negative = SEF helps; plan gate: ≥0.030 drop on some metric.
+        d = {m: nosef[m] - b6[m] for m in metrics}
+        abl["delta_nosef_minus_full"] = d
+        abl["sef_effect_proven"] = any(v <= -0.030 for v in d.values())
+        print("== B6 −SEF ==", json.dumps(res["B6_nosef"], ensure_ascii=False, indent=2))
+    if args.b6_novsc_traj:
+        novsc = _score_variant(args.b6_novsc_traj, args.b6_novsc_sidecar,
+                               args.b6_novsc_recovered)
+        res["B6_novsc"] = {k: v for k, v in novsc.items() if k != "per"}
+        fr = b6["vsc_violation_rates"]; nr = novsc["vsc_violation_rates"]
+        keys = ("render_fail", "dimension_mismatch", "broken_edge", "unsupported_marker")
+        ratios = {}
+        for k in keys:
+            f, n = fr.get(k, 0.0), nr.get(k, 0.0)
+            ratios[k] = (n / f) if f > 0 else (float("inf") if n > 0 else 1.0)
+        abl["vsc_violation_full"] = fr
+        abl["vsc_violation_novsc"] = nr
+        abl["vsc_violation_ratio_novsc_over_full"] = {k: ratios[k] for k in keys}
+        # plan gate: −VSC violations ≥2× full on some aspect.
+        abl["vsc_effect_proven"] = any(r >= 2.0 for r in ratios.values())
+        print("== B6 −VSC ==", json.dumps(res["B6_novsc"], ensure_ascii=False, indent=2))
+    if abl:
+        res["ablation"] = abl
+        print("== ABLATION (SEF/VSC effect gates) ==",
+              json.dumps(abl, ensure_ascii=False, indent=2, default=str))
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(res, ensure_ascii=False, indent=2))
     print("wrote", args.out)

@@ -132,6 +132,20 @@ def test_cross_refs_endpoints_valid(sample_sefs):
             assert xr.from_bid != xr.to_bid
 
 
+def test_sef_render_preserves_full_text(sample_sefs):
+    """SEF input must be a superset of the full parse — every block's text is
+    present so doc_search / get_document_chunks retrieve the same content as the
+    markdown root (regression guard for the claims-only defect)."""
+    from code.sef.render import sef_to_chunks
+    for sef in sample_sefs:
+        blocks_text = sum(len(b.text_md or b.text_html) for b in sef.blocks)
+        if blocks_text == 0:
+            continue
+        chunk_text = sum(len(c) for c in sef_to_chunks(sef))
+        # chunks carry full block text + annotations → never less than the text
+        assert chunk_text >= blocks_text, f"{sef.doc_id}: text lost in render"
+
+
 def test_serialization_roundtrip(sample_sefs):
     for sef in sample_sefs[:2]:
         d = sef.to_dict()
