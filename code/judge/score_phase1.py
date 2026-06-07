@@ -242,7 +242,8 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
                              "dsl_code": dsl, "evidence_ids": ev,
                              # v0.4.3 VSC fields recorded at generation time (B6)
                              "vsc_violations": (sc.get("vsc_violations", {}) if sc else {}),
-                             "vsc_repaired": (sc.get("vsc_repaired", False) if sc else False)})
+                             "vsc_repaired": (sc.get("vsc_repaired", False) if sc else False),
+                             "source_eids": (sc.get("source_eids", []) if sc else [])})
         # forced-emission recovery: if the agent skipped generate_viz, use the
         # post-hoc synthesized artifact from its final prose (recover_b6_viz).
         if not is_s1 and (not arts or not any(a.get("dsl_code", "").strip() for a in arts)) and qid in recovered:
@@ -251,7 +252,8 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
                      "dsl_code": rc.get("dsl_code", ""), "evidence_ids": rc.get("evidence_ids", []),
                      # carry VSC fields from VSC-routed recovery (tab:vsc on recovered outputs)
                      "vsc_violations": rc.get("vsc_violations", {}),
-                     "vsc_repaired": rc.get("vsc_repaired", False)}]
+                     "vsc_repaired": rc.get("vsc_repaired", False),
+                     "source_eids": rc.get("source_eids", [])}]
         g = gold.get(qid)
         if g is None:
             continue
@@ -296,6 +298,11 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
         ev_ids = a0["evidence_ids"] if a0 else []
         idx2doc = {} if is_s1 else _index_to_doc(r)
         pred_docs = {idx2doc.get(e, "") for e in ev_ids}
+        # B6 SAO grounding lives in source_eids ("{doc}#{bid}#{cuid}"); the doc
+        # stem maps directly to gold evidence doc_id. Use them when present so
+        # the SAO axis is actually measured (recovery emits no evidence_ids).
+        src_eids = (a0.get("source_eids") if a0 else None) or []
+        pred_docs |= {str(e).split("#")[0] for e in src_eids if e}
         pred_docs.discard("")
         gold_docs = {str(e.get("doc_id")) for e in (g.get("evidence") or []) if e.get("doc_id")}
         if pred_docs and gold_docs:
