@@ -65,8 +65,22 @@ def _san(node_id: str) -> str:
 
 
 def _q(label: str) -> str:
-    """Quote a label body for mermaid (downgrade inner quotes)."""
-    return label.replace('"', "'").replace("\n", " ").strip()
+    """Sanitize a label body for a quoted mermaid node (`id["..."]`).
+
+    Inside double quotes most chars are literal; only an inner `"` (delimiter
+    clash) and `[`/`]` (shape-token confusion in some renderers) break parsing.
+    """
+    s = (label or "").replace('"', "'").replace("\n", " ")
+    s = s.replace("[", "(").replace("]", ")")
+    return s.strip() or "node"
+
+
+def _class_label(label: str) -> str:
+    """classDiagram member label (`n : label`) — a second `:` ends the member
+    and `{}` open a class body, so strip both. Used unquoted by mermaid."""
+    s = (label or "").replace("\n", " ").replace(":", " -")
+    s = s.replace("{", "(").replace("}", ")").replace('"', "'")
+    return " ".join(s.split()).strip() or "item"
 
 
 def diagram_to_mermaid(spec: DiagramSpec) -> str:
@@ -125,7 +139,9 @@ def _mindmap(spec: DiagramSpec) -> str:
         children.setdefault(e.from_id, []).append(e.to_id)
     id_label = {n.id: n.label for n in spec.nodes}
     root = roots[0]
-    lines.append(f"  root(({_q(root.label)}))")
+    # node text wrapped in ["..."] so special chars (: <= ( etc.) stay literal —
+    # bare mindmap node text breaks the whitespace-sensitive parser.
+    lines.append(f'  root(("{_q(root.label)}"))')
     seen = {root.id}
 
     def walk(nid: str, depth: int):
@@ -133,13 +149,13 @@ def _mindmap(spec: DiagramSpec) -> str:
             if c in seen:
                 continue
             seen.add(c)
-            lines.append("  " * (depth + 1) + _q(id_label.get(c, c)))
+            lines.append("  " * (depth + 1) + f'["{_q(id_label.get(c, c))}"]')
             walk(c, depth + 1)
     walk(root.id, 1)
     # orphan nodes attach to root level
     for n in spec.nodes:
         if n.id not in seen:
-            lines.append("    " + _q(n.label))
+            lines.append(f'    ["{_q(n.label)}"]')
     return "\n".join(lines) + "\n"
 
 
@@ -158,7 +174,7 @@ def _classdiagram(spec: DiagramSpec) -> str:
     for n in spec.nodes:
         lines.append(f"    class {_san(n.id)}")
         if n.label and _san(n.id) != n.label:
-            lines.append(f'    {_san(n.id)} : {_q(n.label)}')
+            lines.append(f'    {_san(n.id)} : {_class_label(n.label)}')
     for e in spec.edges:
         rel = _q(e.rel_label)
         if rel:
