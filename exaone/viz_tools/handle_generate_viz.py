@@ -409,6 +409,32 @@ def _build_artifact_vsc(viz_type: str, brief: str, intent: str,
             "source_eids": out.source_eids, "vsc_enabled": True}
 
 
+def _build_artifact_spec_only(viz_type: str, brief: str, intent: str,
+                              evidence_ids: list[str]) -> dict:
+    """−VSC ablation (redefined): canonical spec → deterministic DSL, but NO
+    validator / repair loop. Keeps the spec's source_eids (SAO) so the ablation
+    isolates the *contract* from source-attribution — removing VSC must not also
+    remove the SAO grounding that drives Evidence F1."""
+    _repo_root_on_path()
+    from code.vsc import parse_spec, spec_to_dsl
+    spec_obj = _synthesize_spec(viz_type, brief, intent, evidence_ids)
+    if spec_obj is None:
+        dsl = _synthesize_dsl(viz_type, brief, intent=intent)
+        return {"viz_type": viz_type, "dsl": dsl, "vsc_enabled": False,
+                "vsc_ok": None, "vsc_violations": {}, "repaired": False,
+                "source_eids": [], "spec_synth_failed": True}
+    try:
+        spec = parse_spec(spec_obj)
+    except ValueError:
+        dsl = _synthesize_dsl(viz_type, brief, intent=intent)
+        return {"viz_type": viz_type, "dsl": dsl, "vsc_enabled": False,
+                "vsc_ok": None, "vsc_violations": {}, "repaired": False,
+                "source_eids": []}
+    return {"viz_type": spec.viz_type, "dsl": spec_to_dsl(spec),
+            "vsc_enabled": False, "vsc_ok": None, "vsc_violations": {},
+            "repaired": False, "source_eids": spec.source_eids()}
+
+
 def _write_sidecar(
     sidecar_dir: Path, task_id: str, artifact: dict, idx: int
 ) -> Path:
@@ -478,13 +504,13 @@ def handle_generate_viz(args: dict | None = None, context: dict | None = None,
             art.update({"intent": intent, "evidence_ids": list(evidence_ids),
                         "preflight_ok": ok, "preflight_error": err})
         else:
-            # −VSC ablation: direct DSL emission, no contract / repair.
-            dsl = _synthesize_dsl(viz_type, brief, intent=intent)
-            ok, err = _preflight_parse(viz_type, dsl)
-            art = {"viz_type": viz_type, "intent": intent,
-                   "evidence_ids": list(evidence_ids), "dsl": dsl,
-                   "preflight_ok": ok, "preflight_error": err,
-                   "vsc_enabled": False}
+            # −VSC ablation (redefined): canonical spec → DSL, no contract/repair.
+            # Spec + source_eids retained so VSC is isolated from SAO.
+            art = _build_artifact_spec_only(viz_type, brief, intent,
+                                            list(evidence_ids))
+            ok, _e = _preflight_parse(art["viz_type"], art["dsl"])
+            art.update({"intent": intent, "evidence_ids": list(evidence_ids),
+                        "preflight_ok": ok, "preflight_error": ""})
 
         sidecar_path = _write_sidecar(sidecar_dir, task_id, art, idx)
         emitted.append({

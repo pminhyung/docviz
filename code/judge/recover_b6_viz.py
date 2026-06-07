@@ -19,7 +19,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 import sys; sys.path.insert(0, str(REPO))
 from exaone.viz_tools.handle_generate_viz import (
-    _synthesize_dsl, _build_artifact_vsc, _sef_eids_for_task, _vsc_enabled,
+    _synthesize_dsl, _build_artifact_vsc, _build_artifact_spec_only,
+    _sef_eids_for_task, _vsc_enabled,
 )
 
 _TC = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>")
@@ -96,9 +97,14 @@ def main():
                          "vsc_enabled": True, "vsc_ok": art.get("vsc_ok"),
                          "vsc_violations": art.get("vsc_violations", {}),
                          "vsc_repaired": art.get("repaired", False)}
-        dsl = _synthesize_dsl(vt, brief, intent=intent)
-        return qid, {"viz_type": vt, "dsl_code": dsl, "intent": intent,
-                     "evidence_ids": [], "vsc_enabled": False}
+        # −VSC (redefined): spec → DSL, no contract; keep source_eids (SAO).
+        sef_eids = _sef_eids_for_task(qid, None)
+        citable = sorted(sef_eids)[:60] if sef_eids else []
+        art = _build_artifact_spec_only(vt, brief, intent, citable)
+        return qid, {"viz_type": art["viz_type"], "dsl_code": art["dsl"],
+                     "intent": intent, "evidence_ids": [],
+                     "source_eids": art.get("source_eids", []),
+                     "vsc_enabled": False}
 
     recovered = {}
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
