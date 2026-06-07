@@ -3,6 +3,7 @@ exaone/tools.py — ExaoneAgent built-in/custom tool registration.
 """
 
 import logging
+import os
 from tools.registry import tool_result
 
 logger = logging.getLogger(__name__)
@@ -61,6 +62,15 @@ EXAONE_TOOLSET: dict = {
     # docviz B6 — DSL synthesis tool. Exposed in qa_mode="docviz" only.
     "viz_tools":    ["generate_viz"],
 }
+
+# ReadFullDocument is whole-document summarization; its auxiliary EXTRACTOR call
+# can time out and a retrieval-only task (e.g. docviz QG-MDV) covers scope+search
+# with doc_search + get_document_chunks. EXAONE_DISABLE_RFD=1 drops it from the
+# agent's catalog for those runs — other modes (docqa/mm_docqa/taskbot) keep it.
+if os.environ.get("EXAONE_DISABLE_RFD", "").lower() in ("1", "true", "yes"):
+    EXAONE_TOOLSET["docqa_tools"] = [
+        t for t in EXAONE_TOOLSET["docqa_tools"] if t != "ReadFullDocument"
+    ]
 
 
 _registered = False
@@ -127,6 +137,10 @@ def _register_docqa_and_parsing_tools(registry) -> list[str]:
         ("get_document_chunks", GET_DOCUMENT_CHUNKS_SCHEMA, handle_get_document_chunks, "📄"),
         ("ReadFullDocument",    READ_FULL_DOCUMENT_SCHEMA,  handle_read_full_document,  "📘"),
     ]
+    # Airtight RFD disable (see EXAONE_TOOLSET note): also skip registration so
+    # it cannot leak via any all-registered-tools path.
+    if os.environ.get("EXAONE_DISABLE_RFD", "").lower() in ("1", "true", "yes"):
+        specs = [s for s in specs if s[0] != "ReadFullDocument"]
 
     names: list[str] = []
     for name, schema, handler, emoji in specs:

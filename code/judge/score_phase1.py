@@ -37,6 +37,20 @@ from code.metrics.hungarian_intent import hungarian_match
 from code.metrics.evidence_metrics import evaluate_evidence_explicit
 from code.judge.render import render_mermaid
 
+
+def _vsc_flags(viz_type: str, dsl: str, render_ok: bool) -> dict:
+    """tab:vsc per-artifact violation flags (v0.4.3). R1 reuses the render pass
+    already run (no double render); R2/R3/R4 are structural via VSC's validator.
+    Uniform across all arms — measures how often each arm emits a contract-
+    violating artifact. R5 (invalid source ref) is B6-only and read from the B6
+    sidecar's recorded vsc_violations, not recomputed here."""
+    from code.vsc import validate_dsl
+    res = validate_dsl(viz_type, dsl, render=False)
+    flags = res.by_rule()          # R2/R3/R4 (+R1=0,R5=0 from structural pass)
+    flags["R1"] = 0 if render_ok else 1
+    return flags
+
+
 _TC = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>")
 _ROLE = {"human": "user", "gpt": "assistant", "tool": "tool", "system": "system"}
 
@@ -225,13 +239,19 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
                 dsl = (a.get("dsl_code") or "") or (sc.get("dsl_code", "") if sc else "")
                 ev = a.get("evidence_ids") or (sc.get("evidence_ids", []) if sc else [])
                 arts.append({"viz_type": a.get("viz_type", ""), "intent": a.get("intent", ""),
-                             "dsl_code": dsl, "evidence_ids": ev})
+                             "dsl_code": dsl, "evidence_ids": ev,
+                             # v0.4.3 VSC fields recorded at generation time (B6)
+                             "vsc_violations": (sc.get("vsc_violations", {}) if sc else {}),
+                             "vsc_repaired": (sc.get("vsc_repaired", False) if sc else False)})
         # forced-emission recovery: if the agent skipped generate_viz, use the
         # post-hoc synthesized artifact from its final prose (recover_b6_viz).
         if not is_s1 and (not arts or not any(a.get("dsl_code", "").strip() for a in arts)) and qid in recovered:
             rc = recovered[qid]
             arts = [{"viz_type": rc.get("viz_type", ""), "intent": rc.get("intent", ""),
-                     "dsl_code": rc.get("dsl_code", ""), "evidence_ids": rc.get("evidence_ids", [])}]
+                     "dsl_code": rc.get("dsl_code", ""), "evidence_ids": rc.get("evidence_ids", []),
+                     # carry VSC fields from VSC-routed recovery (tab:vsc on recovered outputs)
+                     "vsc_violations": rc.get("vsc_violations", {}),
+                     "vsc_repaired": rc.get("vsc_repaired", False)}]
         g = gold.get(qid)
         if g is None:
             continue
@@ -243,10 +263,12 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
         viz_type = a0["viz_type"] if a0 else ""
         # render success (per subtype)
         cs = None  # M5 CLIPScore (image↔query), reported not gating
+        render_success = False
         if a0 and a0.get("dsl_code") and viz_type.startswith("mermaid_"):
             render_tot[viz_type] += 1
             png = f"/tmp/_ph1_render/{qid}.png"
             rr = render_mermaid(a0["dsl_code"], png)
+            render_success = bool(rr["ok"])
             if rr["ok"]:
                 render_ok[viz_type] += 1
                 if clipscore:
@@ -282,9 +304,18 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
             ef = (2 * p * rc / (p + rc)) if (p + rc) else 0.0
         else:
             ef = 0.0
+        # tab:vsc violation flags (R1 render + R2/R3/R4 structural). R5 + repaired
+        # from the B6 sidecar when present (B6-only).
+        vsc = {}
+        if a0 and a0.get("dsl_code"):
+            vsc = _vsc_flags(viz_type, a0["dsl_code"], render_success)
+            sc_v = a0.get("vsc_violations") or {}
+            if sc_v.get("R5"):
+                vsc["R5"] = sc_v["R5"]
         per.append({"qid": qid, "viz_type": viz_type, "has_viz": bool(a0 and a0.get("dsl_code")),
                     "node_f1": nf, "path_f1": pf, "intent_cov": ic, "evidence_f1": ef,
-                    "clipscore": cs})
+                    "clipscore": cs, "vsc": vsc,
+                    "vsc_repaired": bool(a0 and a0.get("vsc_repaired"))})
 
     # dedup per qid: prefer the record that emitted viz, then higher node_f1
     best = {}
@@ -298,6 +329,15 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
         xs = [p[k] for p in per]
         return mean(xs) if xs else 0.0
     cs_xs = [p["clipscore"] for p in per if p.get("clipscore") is not None]
+    # tab:vsc — violation rate per rule over artifacts that emitted a DSL.
+    n_viz = sum(p["has_viz"] for p in per) or 1
+    vsc_rate = {}
+    for rule, name in (("R1", "render_fail"), ("R2", "dimension_mismatch"),
+                       ("R3", "broken_edge"), ("R4", "unsupported_marker"),
+                       ("R5", "invalid_source_ref")):
+        hits = sum(1 for p in per if p.get("vsc", {}).get(rule, 0))
+        vsc_rate[name] = hits / n_viz
+    vsc_rate["repaired_rate"] = sum(1 for p in per if p.get("vsc_repaired")) / n_viz
     return {
         "n_scored": len(per), "n_with_viz": sum(p["has_viz"] for p in per),
         "node_f1": avg("node_f1"), "path_f1": avg("path_f1"),
@@ -305,6 +345,7 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
         "clipscore": (mean(cs_xs) if cs_xs else None), "n_clipscore": len(cs_xs),
         "render_by_subtype": {k: f"{render_ok[k]}/{render_tot[k]}" for k in render_tot},
         "render_rate": (sum(render_ok.values())/sum(render_tot.values())) if render_tot else 0.0,
+        "vsc_violation_rates": vsc_rate,
         "per": per,
     }
 

@@ -38,6 +38,25 @@ VIZ_TYPE_POOL = [
 ]
 
 
+def _repo_root_on_path():
+    """Ensure `code.*` (sef/vsc/metrics) is importable from this tool."""
+    import sys
+    from pathlib import Path as _P
+    root = str(_P(__file__).resolve().parents[2])
+    if root not in sys.path:
+        sys.path.insert(0, root)
+
+
+def _vsc_enabled() -> bool:
+    """v0.4.3: VSC active unless the −VSC ablation is selected.
+
+    DOCVIZ_VARIANT=novsc → direct-DSL emission with no contract/repair (the
+    ablation arm). Any other variant runs the full Visual Specification Contract.
+    """
+    variant = os.environ.get("DOCVIZ_VARIANT", "full").strip().lower()
+    return variant != "novsc"
+
+
 GENERATE_VIZ_SCHEMA: dict = {
     "type": "function",
     "function": {
@@ -232,6 +251,164 @@ def _preflight_parse(viz_type: str, dsl: str) -> tuple[bool, str]:
         return False, f"preflight_exception: {exc}"
 
 
+# =====================================================================
+# VSC path (v0.4.3 §4.5) — canonical spec synthesis + deterministic DSL +
+# contract validation + one-shot repair. Active unless DOCVIZ_VARIANT=novsc.
+# =====================================================================
+
+_SPEC_SYNTH_PROMPT = """You are a deterministic visual-spec emitter.
+
+viz_type: {viz_type}
+intent: {intent}
+
+content_brief (entities, dates, numbers, relationships to encode):
+{content_brief}
+
+evidence ids you may cite as source_eid (use ONLY these, verbatim):
+{evidence_ids}
+
+Emit ONLY a JSON object (no prose, no code fence) — the CANONICAL SPEC, not DSL.
+
+For chartjs_* viz_type:
+{{"viz_type":"{viz_type}","x_label":"...","y_label":"...","title":"...",
+  "datapoints":[{{"series":"...","category":"...","value":<number>,"unit":"...","source_eid":"<one evidence id>"}}, ...]}}
+  - Every (series, category) pair distinct. value is a bare number from the brief.
+
+For mermaid_* viz_type:
+{{"viz_type":"{viz_type}","title":"...",
+  "nodes":[{{"id":"n1","label":"...","source_eid":"<evidence id>"}}, ...],
+  "edges":[{{"from":"n1","to":"n2","rel_label":"...","source_eid":"<evidence id>"}}, ...]}}
+  - Every edge.from and edge.to MUST be an id present in nodes.
+  - Keep the specific facts (dates/numbers/named entities) from the brief; do not abstract them away.
+
+Output the JSON object only."""
+
+
+def _strip_fence(text: str) -> str:
+    t = (text or "").strip()
+    if t.startswith("```"):
+        import re as _re
+        m = _re.match(r"```[a-z]*\s*\n([\s\S]*?)\n```", t)
+        if m:
+            return m.group(1).strip()
+    return t
+
+
+def _synthesize_spec(viz_type: str, content_brief: str, intent: str,
+                     evidence_ids: list[str]) -> Optional[dict]:
+    """Internal LLM → canonical visual spec dict (TMG, paper §4.5a). None on fail."""
+    try:
+        client, model = _get_synth_client()
+        prompt = _SPEC_SYNTH_PROMPT.format(
+            viz_type=viz_type, intent=intent[:200],
+            content_brief=content_brief[:2000],
+            evidence_ids=", ".join(map(str, evidence_ids)) or "(none provided)",
+        )
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2, max_tokens=2000,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
+        obj = json.loads(_strip_fence(resp.choices[0].message.content or ""))
+        if isinstance(obj, dict):
+            obj.setdefault("viz_type", viz_type)
+            return obj
+    except Exception as exc:
+        logger.warning(f"spec synth failed: {exc}")
+    return None
+
+
+def _make_repair_fn():
+    """Return a VSC repair_fn that re-synthesizes the spec from the repair prompt."""
+    def repair_fn(spec, violations, prompt):
+        from code.vsc import parse_spec
+        try:
+            client, model = _get_synth_client()
+            spec_json = json.dumps(_spec_to_obj(spec), ensure_ascii=False)
+            msg = (f"{prompt}\n\nCurrent spec JSON:\n{spec_json}\n\n"
+                   "Return the corrected spec JSON object only.")
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": msg}],
+                temperature=0.1, max_tokens=2000,
+                extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+            )
+            obj = json.loads(_strip_fence(resp.choices[0].message.content or ""))
+            return parse_spec(obj)
+        except Exception as exc:
+            logger.warning(f"spec repair failed: {exc}")
+            return None
+    return repair_fn
+
+
+def _spec_to_obj(spec) -> dict:
+    """Serialize a ChartSpec/DiagramSpec back to the TMG JSON shape for repair."""
+    import dataclasses
+    from code.vsc import ChartSpec, DiagramSpec
+    if isinstance(spec, ChartSpec):
+        return {"viz_type": spec.viz_type, "x_label": spec.x_label,
+                "y_label": spec.y_label, "title": spec.title,
+                "datapoints": [dataclasses.asdict(dp) for dp in spec.datapoints]}
+    if isinstance(spec, DiagramSpec):
+        return {"viz_type": spec.viz_type, "title": spec.title,
+                "nodes": [dataclasses.asdict(n) for n in spec.nodes],
+                "edges": [{"from": e.from_id, "to": e.to_id,
+                           "rel_label": e.rel_label, "source_eid": e.source_eid}
+                          for e in spec.edges]}
+    return {}
+
+
+def _sef_eids_for_task(task_id: str, context: dict | None) -> Optional[set[str]]:
+    """Resolve the SEF reference ids for R5 validation, if available.
+
+    Order: context['sef_eids'] → DOCVIZ_SEF_DIR/{task_id}.json (SEF dict). When
+    absent (e.g. −SEF arm, or SEF not yet routed) R5 is skipped gracefully.
+    """
+    if context and isinstance(context.get("sef_eids"), (list, set)):
+        return set(context["sef_eids"])
+    sef_dir = os.environ.get("DOCVIZ_SEF_DIR")
+    if sef_dir:
+        p = Path(sef_dir) / f"{task_id}.json"
+        if p.exists():
+            try:
+                sef = json.loads(p.read_text())
+                eids: set[str] = set()
+                for blk in sef.get("blocks", []):
+                    eids.add(blk.get("bid"))
+                    for cu in blk.get("claim_units", []):
+                        eids.add(cu.get("cuid"))
+                return {e for e in eids if e}
+            except Exception as exc:
+                logger.warning(f"SEF load failed for {task_id}: {exc}")
+    return None
+
+
+def _build_artifact_vsc(viz_type: str, brief: str, intent: str,
+                        evidence_ids: list[str],
+                        sef_eids: Optional[set[str]]) -> dict:
+    """Full VSC artifact: spec → deterministic DSL → validate → 1-shot repair."""
+    _repo_root_on_path()
+    from code.vsc import parse_spec, run_vsc, spec_to_dsl
+    spec_obj = _synthesize_spec(viz_type, brief, intent, evidence_ids)
+    if spec_obj is None:
+        # spec synth failed → fall back to direct DSL stub so the chain is stable
+        dsl = _synthesize_dsl(viz_type, brief, intent=intent)
+        return {"viz_type": viz_type, "dsl": dsl, "vsc_ok": False,
+                "repaired": False, "vsc_violations": {}, "source_eids": [],
+                "vsc_enabled": True, "spec_synth_failed": True}
+    try:
+        spec = parse_spec(spec_obj)
+    except ValueError as exc:  # bad viz_type → R4; record and stub
+        return {"viz_type": viz_type, "dsl": "", "vsc_ok": False,
+                "repaired": False, "vsc_violations": {"R4": 1},
+                "source_eids": [], "vsc_enabled": True, "spec_error": str(exc)}
+    out = run_vsc(spec, sef_eids=sef_eids, repair_fn=_make_repair_fn(), render=True)
+    return {"viz_type": out.viz_type, "dsl": out.dsl, "vsc_ok": out.ok,
+            "repaired": out.repaired, "vsc_violations": out.violations,
+            "source_eids": out.source_eids, "vsc_enabled": True}
+
+
 def _write_sidecar(
     sidecar_dir: Path, task_id: str, artifact: dict, idx: int
 ) -> Path:
@@ -246,6 +423,13 @@ def _write_sidecar(
         "dsl_code": artifact["dsl"],
         "preflight_ok": artifact["preflight_ok"],
         "preflight_error": artifact.get("preflight_error", ""),
+        # v0.4.3 VSC fields (SAO source_eids + contract result). Absent-safe for
+        # the −VSC arm, where these stay at their disabled defaults.
+        "vsc_enabled": artifact.get("vsc_enabled", False),
+        "vsc_ok": artifact.get("vsc_ok", None),
+        "vsc_violations": artifact.get("vsc_violations", {}),
+        "vsc_repaired": artifact.get("repaired", False),
+        "source_eids": artifact.get("source_eids", []),
         "emitted_at": int(time.time()),
     }
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
@@ -263,6 +447,8 @@ def handle_generate_viz(args: dict | None = None, context: dict | None = None,
 
     task_id = _resolve_task_id(context)
     sidecar_dir = _sidecar_dir()
+    use_vsc = _vsc_enabled()
+    sef_eids = _sef_eids_for_task(task_id, context) if use_vsc else None
     emitted: list[dict] = []
     errors: list[str] = []
 
@@ -280,22 +466,34 @@ def handle_generate_viz(args: dict | None = None, context: dict | None = None,
         if not brief.strip():
             errors.append(f"artifact {idx}: content_brief is empty")
             continue
-        dsl = _synthesize_dsl(viz_type, brief, intent=intent)
-        ok, err = _preflight_parse(viz_type, dsl)
-        sidecar_path = _write_sidecar(sidecar_dir, task_id, {
-            "viz_type": viz_type,
-            "intent": intent,
-            "evidence_ids": list(evidence_ids),
-            "dsl": dsl,
-            "preflight_ok": ok,
-            "preflight_error": err,
-        }, idx)
+
+        if use_vsc:
+            # Full VSC (paper §4.5): spec → deterministic DSL → validate → repair.
+            art = _build_artifact_vsc(viz_type, brief, intent,
+                                      list(evidence_ids), sef_eids)
+            # M1 = contract satisfied post-repair; preflight mirrors it.
+            ok = bool(art["vsc_ok"])
+            err = "" if ok else "vsc_violation:" + ",".join(
+                f"{k}={v}" for k, v in art.get("vsc_violations", {}).items() if v)
+            art.update({"intent": intent, "evidence_ids": list(evidence_ids),
+                        "preflight_ok": ok, "preflight_error": err})
+        else:
+            # −VSC ablation: direct DSL emission, no contract / repair.
+            dsl = _synthesize_dsl(viz_type, brief, intent=intent)
+            ok, err = _preflight_parse(viz_type, dsl)
+            art = {"viz_type": viz_type, "intent": intent,
+                   "evidence_ids": list(evidence_ids), "dsl": dsl,
+                   "preflight_ok": ok, "preflight_error": err,
+                   "vsc_enabled": False}
+
+        sidecar_path = _write_sidecar(sidecar_dir, task_id, art, idx)
         emitted.append({
             "idx": idx,
-            "viz_type": viz_type,
+            "viz_type": art["viz_type"],
             "intent": intent,
             "sidecar": str(sidecar_path),
             "preflight_ok": ok,
+            "vsc_ok": art.get("vsc_ok"),
         })
 
     if not emitted:

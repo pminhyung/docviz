@@ -134,7 +134,7 @@ dots.mocr 1차 + 2차 출력을 입력으로 받아 SEF JSON을 생성한다. �
 
 \textbf{(d) 수치 정규화 (normalized\_value 필드)}: ``\$3.2B'', ``3.2 billion'', ``3,200,000,000'' 등을 모두 ``3.2e9'' (float)으로 통일. 단위 추출 후 \texttt{unit} 필드에 별도 보존. 정규화 실패 시 \texttt{normalized\_value = null}.
 
-\textbf{(e) Picture 메타데이터 생성 (Picture 범주 블록)}: 2차 호출의 SVG 코드를 보존. SVG 품질 검사 — lxml로 well-formedness + viewBox 속성 존재 — 통과 시 \texttt{svg\_quality\_score \geq 0.5}. 통과한 경우만 SVG 내부 \texttt{<text>} 요소 + \texttt{<rect>} 좌표 기반으로 데이터 표를 결정론적으로 추출 (막대/선 차트 한정). \texttt{safe\_to\_use\_numerics = true}는 데이터 표 추출 성공 시. 추출 실패 시 SVG 코드만 보존하고 \texttt{extracted\_data\_table = null, safe\_to\_use\_numerics = false}.
+\textbf{(e) Picture 메타데이터 생성 (Picture 범주 블록)}: 2차 호출의 SVG 코드를 보존. SVG 품질 검사 — lxml로 well-formedness + viewBox 속성 존재 — 통과 시 \texttt{svg\_quality\_score} $\geq$ \texttt{0.5}. 통과한 경우만 SVG 내부 \texttt{<text>} 요소 + \texttt{<rect>} 좌표 기반으로 데이터 표를 결정론적으로 추출 (막대/선 차트 한정). \texttt{safe\_to\_use\_numerics = true}는 데이터 표 추출 성공 시. 추출 실패 시 SVG 코드만 보존하고 \texttt{extracted\_data\_table = null, safe\_to\_use\_numerics = false}.
 
 \textbf{(f) Table 파싱 (Table 범주 블록)}: dots.mocr 출력의 HTML을 lxml로 파싱하여 헤더 + 행 행렬 생성. 단위는 헤더의 괄호 안 (예: ``Revenue (B USD)'')에서 정규식으로 추출.
 

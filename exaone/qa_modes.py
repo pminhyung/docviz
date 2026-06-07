@@ -5,13 +5,19 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-# docviz B6 pillar ablations (v0.4.1 §5.3). Resolved at agent init.
+# docviz B6 axis ablations. v0.4.1 §5.3 (CIS/TMG/SAO) + v0.4.3 §7 (SEF/VSC).
+# Resolved at agent init. SEF/VSC are tool/input-level, not prompt-level, so
+# they reuse the base "docviz" identity; the tool reads DOCVIZ_VARIANT to toggle
+# behavior (novsc → direct-DSL, no repair) and the document layer routes input
+# (nosef → plain markdown instead of SEF JSON).
 DOCVIZ_VARIANT_ENV = "DOCVIZ_VARIANT"
 DOCVIZ_VARIANTS = {
-    "full":   "docviz",          # B6 full (CIS + TMG + SAO active)
+    "full":   "docviz",          # B6 full (CIS + SEF + TMG + SAO + VSC active)
     "nocis":  "docviz_nocis",    # − CIS pillar
     "nosao":  "docviz_nosao",    # − SAO pillar
     "notmg":  "docviz_notmg",    # − TMG pillar (no generate_viz exposure)
+    "nosef":  "docviz",          # − SEF (B6 gets plain markdown; routed upstream)
+    "novsc":  "docviz",          # − VSC (direct DSL, no contract/repair; tool toggle)
 }
 
 

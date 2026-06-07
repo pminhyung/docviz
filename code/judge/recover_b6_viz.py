@@ -18,7 +18,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 import sys; sys.path.insert(0, str(REPO))
-from exaone.viz_tools.handle_generate_viz import _synthesize_dsl
+from exaone.viz_tools.handle_generate_viz import (
+    _synthesize_dsl, _build_artifact_vsc, _sef_eids_for_task, _vsc_enabled,
+)
 
 _TC = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>")
 
@@ -66,12 +68,37 @@ def main():
     targets = {qid: v for qid, v in noviz.items() if qid not in has}
     print(f"viz-present {len(has)} | recovering {len(targets)}")
 
+    # Recovery must mirror the generate_viz tool: full VSC (spec → deterministic
+    # DSL → validate → repair) unless the −VSC ablation is selected. Native
+    # emission is ~27%, so MOST B6 outputs are recovered here — if recovery
+    # bypassed VSC, the VSC contribution (tab:vsc, −VSC ablation, SAO) would be
+    # measured on a minority of outputs. SEF eids (DOCVIZ_SEF_DIR/{qid}.json)
+    # ground R5/source_eids even though the brief is the agent's prose.
+    use_vsc = _vsc_enabled()
+    print(f"recovery mode: {'VSC' if use_vsc else 'direct-DSL (−VSC)'}")
+
     def synth(item):
         qid, (q, prose) = item
         vt = q["gold_intents"][0]["artifact_type_hint"]
+        intent = q["text"][:200]
         brief = (prose or q["text"])[:2000]
-        dsl = _synthesize_dsl(vt, brief, intent=q["text"][:200])
-        return qid, {"viz_type": vt, "dsl_code": dsl, "intent": q["text"][:200], "evidence_ids": []}
+        if use_vsc:
+            # The agent emitted no evidence_ids (that's why we're recovering), so
+            # the spec synthesizer has nothing valid to cite and would invent ids
+            # that fail R5. Feed the task's real SEF eids as the citable set so
+            # source_eids ground in actual SEF blocks (recovered-grounded SAO).
+            sef_eids = _sef_eids_for_task(qid, None)
+            citable = sorted(sef_eids)[:60] if sef_eids else []
+            art = _build_artifact_vsc(vt, brief, intent, citable, sef_eids)
+            return qid, {"viz_type": art["viz_type"], "dsl_code": art["dsl"],
+                         "intent": intent, "evidence_ids": [],
+                         "source_eids": art.get("source_eids", []),
+                         "vsc_enabled": True, "vsc_ok": art.get("vsc_ok"),
+                         "vsc_violations": art.get("vsc_violations", {}),
+                         "vsc_repaired": art.get("repaired", False)}
+        dsl = _synthesize_dsl(vt, brief, intent=intent)
+        return qid, {"viz_type": vt, "dsl_code": dsl, "intent": intent,
+                     "evidence_ids": [], "vsc_enabled": False}
 
     recovered = {}
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
