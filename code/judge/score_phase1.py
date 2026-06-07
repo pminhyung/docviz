@@ -278,8 +278,8 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
                         from code.metrics.clipscore import compute_clipscore
                         rec = {"query": (q_by_id.get(qid, {}) or {}).get("text", ""),
                                "viz_type": viz_type, "viz_dsl": a0["dsl_code"]}
-                        r = compute_clipscore(png, rec)
-                        cs = r.score if r.success else None
+                        cr = compute_clipscore(png, rec)
+                        cs = cr.score if cr.success else None
                     except Exception:
                         cs = None
         # node/path F1
