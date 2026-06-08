@@ -181,7 +181,12 @@ def _index_to_doc(r) -> dict:
             for mi in re.finditer(r'"Index"\s*:\s*"([^"]+)"[\s\S]{0,400}?"title"\s*:\s*\\?"?([^"\\]+?\.pdf)', v):
                 idx2doc[mi.group(1)] = Path(mi.group(2)).stem
             continue
-        for res in (tr.get("content", {}) or {}).get("results", []):
+        if not isinstance(tr, dict):  # tool result was a JSON string literal, not an object
+            continue
+        content = tr.get("content")
+        if not isinstance(content, dict):  # content may be a plain string for some tools
+            continue
+        for res in content.get("results", []):
             iid = res.get("Index")
             txt = res.get("text", "")
             mt = re.search(r'"title"\s*:\s*"?([^",}]+?\.pdf)', txt)
