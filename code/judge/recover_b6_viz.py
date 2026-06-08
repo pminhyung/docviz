@@ -76,7 +76,7 @@ def main():
     # measured on a minority of outputs. SEF eids (DOCVIZ_SEF_DIR/{qid}.json)
     # ground R5/source_eids even though the brief is the agent's prose.
     use_vsc = _vsc_enabled()
-    print(f"recovery mode: {'VSC' if use_vsc else 'direct-DSL (−VSC)'}")
+    print(f"recovery mode: {'VSC' if use_vsc else 'spec-only (−VSC)'}")
 
     def synth(item):
         qid, (q, prose) = item
