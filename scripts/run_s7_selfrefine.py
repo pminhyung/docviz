@@ -14,7 +14,7 @@ arm (B5/B6/B7) sees identically.
 
 Faithful deviation (disclosed): the official notebook feeds the *rendered
 image* to GPT-4V for visual self-feedback. Our served Qwen3.5-397B is
-text-only (not a VLM), so — exactly like Self-Refine's text tasks (gsm, code
+given the docs as text, so — like Self-Refine's text tasks (gsm, code
 optimization, readability) — the self-feedback reasons over the emitted DSL
 text + the source documents, not over a rendered image. This is the only
 adaptation; the loop structure and prompt intent are the official ones.
@@ -73,11 +73,11 @@ Output STRICT JSON only (no preamble, no fences):
   "intent": "<one-sentence summary of what this visualization shows>",
   "viz_dsl": "<the raw DSL: mermaid_* -> mermaid markdown starting with the kind keyword; chartjs_* -> JSON spec>"}}"""
 
-# ── Stage 2: refine (official visual-self-refine wording, text-only) ──────────
+# ── Stage 2: refine (official visual-self-refine wording) ────────────────────
 # Verbatim structure of madaan/self-refine Visual-Self-Refine-GPT4V:
 #   "First, understand the current picture. Then, think about how can it be
 #    improved. Then, rewrite the Tikz code to improve the image."
-# We swap image->DSL text (Qwen is not a VLM) and the source docs are provided
+# We swap image->DSL text (docs given as text) and the source docs are provided
 # so the model can ground — NO dimension checklist / coaching is added (that
 # would be an unfair advantage not present in the original fixed pipeline).
 REFINE_PROMPT = """This is the {viz_type} visualization DSL for the query, shown below.

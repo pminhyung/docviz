@@ -76,15 +76,14 @@ def _detect_kind(dsl_code: str) -> str:
     return "mermaid_unknown"
 
 
-def _extract_nodes_edges(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+def _extract_flow(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+    """flowchart/graph: `id["label"]` nodes + `A --> B` edges (the bracket form)."""
     seen_nodes: dict[str, str] = {}
     for nid, label in _NODE_RE.findall(dsl_code):
         if nid not in seen_nodes:
             seen_nodes[nid] = label.strip()
-
     edges: List[Edge] = []
     for src, arrow, dst in _EDGE_RE.findall(dsl_code):
-        # Promote referenced ids to nodes even if never declared with []/()
         for ref in (src, dst):
             if ref not in seen_nodes:
                 seen_nodes[ref] = ""
@@ -93,9 +92,117 @@ def _extract_nodes_edges(dsl_code: str) -> tuple[List[Node], List[Edge]]:
         if lm:
             label = lm.group(1).strip()
         edges.append(Edge(src=src, dst=dst, label=label, relation=arrow.strip()))
-
     nodes = [Node(id=nid, label=lbl) for nid, lbl in seen_nodes.items()]
     return nodes, edges
+
+
+# classDiagram: `class X` decl + `X : member label` + `X <rel> Y : label`.
+_CLASS_DECL = re.compile(r"^\s*class\s+([A-Za-z_]\w*)\s*\{?\s*$")
+_CLASS_MEMBER = re.compile(r"^\s*([A-Za-z_]\w*)\s*:\s*(.+?)\s*$")
+_CLASS_REL = re.compile(
+    r"^\s*([A-Za-z_]\w*)\s*(?:--|\.\.|<\|--|--\|>|\*--|o--|-->|<--)\s*"
+    r"([A-Za-z_]\w*)\s*(?::\s*(.+))?\s*$")
+
+
+def _extract_class(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+    labels: dict[str, str] = {}
+    edges: List[Edge] = []
+    for ln in dsl_code.splitlines():
+        if (m := _CLASS_REL.match(ln)):
+            a, b, rel = m.group(1), m.group(2), (m.group(3) or "").strip()
+            labels.setdefault(a, ""); labels.setdefault(b, "")
+            edges.append(Edge(src=a, dst=b, label=rel, relation="--"))
+        elif (m := _CLASS_DECL.match(ln)):
+            labels.setdefault(m.group(1), "")
+        elif (m := _CLASS_MEMBER.match(ln)):
+            # `X : label` — the member text is the node's real content label
+            labels[m.group(1)] = m.group(2).strip()
+    nodes = [Node(id=k, label=v or k) for k, v in labels.items()]
+    return nodes, edges
+
+
+def _extract_timeline(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+    """timeline: `Period : Event : Event` per line. Nodes = every text segment
+    (the real labels); edges = period → each event."""
+    nodes: List[Node] = []
+    edges: List[Edge] = []
+    seen: set[str] = set()
+    i = 0
+    for ln in dsl_code.splitlines():
+        s = ln.strip()
+        if not s or s.startswith("timeline") or s.startswith("title"):
+            continue
+        parts = [p.strip() for p in s.split(":") if p.strip()]
+        if not parts:
+            continue
+        ids = []
+        for p in parts:
+            i += 1
+            nid = f"t{i}"
+            if p not in seen:
+                seen.add(p)
+                nodes.append(Node(id=nid, label=p))
+                ids.append(nid)
+        for j in range(1, len(ids)):
+            edges.append(Edge(src=ids[0], dst=ids[j], label="", relation="--"))
+    return nodes, edges
+
+
+# sequenceDiagram: `participant X as Label` + `X->>Y: msg`.
+_SEQ_PART = re.compile(r"^\s*(?:participant|actor)\s+([A-Za-z_]\w*)\s*(?:as\s+(.+))?\s*$")
+_SEQ_MSG = re.compile(r"^\s*([A-Za-z_]\w*)\s*(?:-+>>?|--?>>?|-x|->)\s*([A-Za-z_]\w*)\s*:\s*(.+?)\s*$")
+
+
+def _extract_sequence(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+    labels: dict[str, str] = {}
+    edges: List[Edge] = []
+    for ln in dsl_code.splitlines():
+        if (m := _SEQ_PART.match(ln)):
+            labels[m.group(1)] = (m.group(2) or m.group(1)).strip()
+        elif (m := _SEQ_MSG.match(ln)):
+            a, b, msg = m.group(1), m.group(2), m.group(3).strip()
+            labels.setdefault(a, a); labels.setdefault(b, b)
+            edges.append(Edge(src=a, dst=b, label=msg, relation="->"))
+    nodes = [Node(id=k, label=v) for k, v in labels.items()]
+    return nodes, edges
+
+
+def _extract_mindmap(dsl_code: str) -> tuple[List[Node], List[Edge]]:
+    """mindmap: indentation-based. Node text = each line stripped of shape
+    wrappers (root((..)), ["..."], (..)). Edges by indentation parent→child."""
+    nodes: List[Node] = []
+    edges: List[Edge] = []
+    stack: list[tuple[int, str]] = []  # (indent, node_id)
+    i = 0
+    for ln in dsl_code.splitlines():
+        if not ln.strip() or ln.strip().startswith("mindmap"):
+            continue
+        indent = len(ln) - len(ln.lstrip())
+        txt = ln.strip()
+        # strip shape wrappers: root((X)) / ["X"] / (X) / [X] / {{X}}
+        m = re.match(r'^[A-Za-z_]\w*\(\((.+)\)\)$', txt) or \
+            re.match(r'^\[?\(*\{*"?(.+?)"?\}*\)*\]?$', txt)
+        label = (m.group(1) if m else txt).strip().strip('"')
+        i += 1; nid = f"m{i}"
+        nodes.append(Node(id=nid, label=label))
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        if stack:
+            edges.append(Edge(src=stack[-1][1], dst=nid, label="", relation="--"))
+        stack.append((indent, nid))
+    return nodes, edges
+
+
+def _extract_nodes_edges(dsl_code: str, kind: str) -> tuple[List[Node], List[Edge]]:
+    if kind == "mermaid_classDiagram":
+        return _extract_class(dsl_code)
+    if kind == "mermaid_timeline":
+        return _extract_timeline(dsl_code)
+    if kind == "mermaid_sequenceDiagram":
+        return _extract_sequence(dsl_code)
+    if kind == "mermaid_mindmap":
+        return _extract_mindmap(dsl_code)
+    return _extract_flow(dsl_code)
 
 
 def parse_mermaid_to_graph(dsl_code: str) -> Optional[NormalizedGraph]:
@@ -104,13 +211,11 @@ def parse_mermaid_to_graph(dsl_code: str) -> Optional[NormalizedGraph]:
         return None
 
     kind = _detect_kind(dsl_code)
-    nodes, edges = _extract_nodes_edges(dsl_code)
+    nodes, edges = _extract_nodes_edges(dsl_code, kind)
 
-    # For hierarchical diagrams without explicit node syntax, fall back to
-    # line-by-line preservation so downstream metrics can still recover the
-    # textual content for evidence_f1.
+    # Fallback only if a per-kind extractor still found nothing (malformed DSL).
     extra_lines: List[str] = []
-    if kind in {"mermaid_timeline", "mermaid_mindmap"} and len(nodes) == 0:
+    if len(nodes) == 0:
         extra_lines = [ln.rstrip() for ln in dsl_code.splitlines() if ln.strip()]
         extra_lines = extra_lines[:200]  # cap so metric prompts stay bounded
 
