@@ -34,8 +34,44 @@ sys.path.insert(0, str(_DE))
 from eval.evaluator import DiagramEvaluator  # noqa: E402
 from eval.graph import DiagramGraph  # noqa: E402
 
-HOSTS = [f"10.1.211.{h}" for h in (148, 163, 164, 165, 166, 167, 168)]
+_ALL_HOSTS = [f"10.1.211.{h}" for h in (148, 163, 164, 165, 166, 167, 168)]
+# DGEVAL_HOSTS="148,163" restricts the pool; default = all, then health-filtered.
+if os.environ.get("DGEVAL_HOSTS"):
+    _ALL_HOSTS = [f"10.1.211.{h.strip()}" for h in os.environ["DGEVAL_HOSTS"].split(",")]
+HOSTS = list(_ALL_HOSTS)
 MODEL = os.environ.get("DGEVAL_MODEL", "Qwen3.5-397B-A17B-FP8")
+
+
+def _live_hosts(hosts):
+    """Keep only hosts whose VISION endpoint actually answers — a dead host (OOM)
+    still serves /models but APIConnectionErrors on image calls, and pinning a
+    worker thread to it fails every sample. Re-checked at each run start."""
+    import base64 as _b64
+    import openai as _oai
+    png = "/tmp/_dgeval_health.png"
+    if not os.path.exists(png):
+        try:
+            render_mermaid("flowchart TD\n A[X]-->B[Y]", png)
+        except Exception:
+            pass
+    try:
+        img = _b64.b64encode(open(png, "rb").read()).decode()
+    except Exception:
+        return hosts
+    live = []
+    for h in hosts:
+        try:
+            c = _oai.OpenAI(base_url=f"http://{h}:8000/v1", api_key="EMPTY", timeout=45)
+            c.chat.completions.create(
+                model=MODEL, max_tokens=50, temperature=0.6,
+                extra_body={"chat_template_kwargs": {"enable_thinking": True}},
+                messages=[{"role": "user", "content": [
+                    {"type": "text", "text": "ok?"},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}}]}])
+            live.append(h)
+        except Exception:
+            pass
+    return live
 
 _CFG_DIR = Path(tempfile.mkdtemp(prefix="dgeval_cfg_"))
 _local = threading.local()
@@ -162,10 +198,14 @@ def main():
         dsls = _load_dsls(a.recovered, None)
     items = [(qid, dsl, (gold.get(qid, {}).get("graphs") or [{}])[0])
              for qid, dsl in dsls.items() if qid in gold]
-    print(f"scoring {len(items)} viz via DiagramEval Qwen-VL ({len(HOSTS)} hosts, {a.workers} workers)")
+    global HOSTS
+    HOSTS = _live_hosts(HOSTS) or HOSTS
+    workers = min(a.workers, max(1, len(HOSTS) * 2))  # ≤2 per live host (avoid OOM)
+    print(f"scoring {len(items)} viz via DiagramEval Qwen-VL "
+          f"(live hosts {[h.split('.')[-1] for h in HOSTS]}, {workers} workers)")
 
     results = {}
-    with ThreadPoolExecutor(max_workers=a.workers) as ex:
+    with ThreadPoolExecutor(max_workers=workers) as ex:
         futs = [ex.submit(score_one, qid, dsl, gg) for qid, dsl, gg in items]
         for i, f in enumerate(as_completed(futs), 1):
             r = f.result(); results[r["qid"]] = r
