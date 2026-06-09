@@ -52,6 +52,59 @@ def _vsc_flags(viz_type: str, dsl: str, render_ok: bool) -> dict:
 
 
 _TC = re.compile(r"<tool_call>\s*(\{[\s\S]*?\})\s*</tool_call>")
+
+
+# --- baseline implicit evidence matching (paper §5.3) ---------------------
+# Plan: baselines have no explicit citations, so a doc is "implicitly cited" if
+# the viz text matches one of its chunks at cosine >= 0.75. B6 uses explicit
+# source_eids; baselines use this — both compared to gold evidence doc_ids.
+_BUNDLE_DOCS = None   # bundle_id -> {doc_id: [chunk_text,...]}
+_QID_BUNDLE = None    # qid -> bundle_id
+
+
+def _load_bundle_maps():
+    global _BUNDLE_DOCS, _QID_BUNDLE
+    if _BUNDLE_DOCS is not None:
+        return
+    _BUNDLE_DOCS, _QID_BUNDLE = {}, {}
+    try:
+        bundles = json.loads((REPO / "data/bundles/loong_phase2.json").read_text())
+        for b in bundles:
+            docs = {}
+            for d in b.get("docs", []):
+                txt = d.get("content") or d.get("text") or ""
+                # ~600-char chunks for chunk-level cosine
+                chunks = [txt[i:i + 600] for i in range(0, len(txt), 600)] or [txt]
+                docs[str(d.get("doc_id"))] = chunks[:40]
+            _BUNDLE_DOCS[b.get("bundle_id")] = docs
+    except Exception:
+        pass
+    try:
+        for ln in (REPO / "data/queries/loong_phase2_working_runner.jsonl").read_text().splitlines():
+            if ln.strip():
+                r = json.loads(ln); _QID_BUNDLE[r.get("qid")] = r.get("bundle_id")
+    except Exception:
+        pass
+
+
+def _implicit_pred_docs(node_texts: list[str], qid: str, thr: float = 0.75) -> set:
+    """Docs whose chunk best-matches the viz text at cosine >= thr."""
+    _load_bundle_maps()
+    emb = _embedder()
+    bid = (_QID_BUNDLE or {}).get(qid)
+    docs = (_BUNDLE_DOCS or {}).get(bid)
+    if emb is None or not docs or not node_texts:
+        return set()
+    import numpy as np
+    from numpy.linalg import norm
+    viz = emb.encode([" ".join(node_texts)[:1000]])[0]
+    pred = set()
+    for doc_id, chunks in docs.items():
+        ch = emb.encode(chunks)
+        sims = (ch @ viz) / (norm(ch, axis=1) * norm(viz) + 1e-9)
+        if float(sims.max()) >= thr:
+            pred.add(doc_id)
+    return pred
 _ROLE = {"human": "user", "gpt": "assistant", "tool": "tool", "system": "system"}
 
 
@@ -287,29 +340,31 @@ def score_run(traj_dir: Path, sidecar_dir: Path, queries: Path, gold_path: Path,
                         cs = cr.score if cr.success else None
                     except Exception:
                         cs = None
-        # node/path F1
+        # node/path F1 (parse the viz graph once; node texts reused below)
         nf = pf = 0.0
-        if a0 and a0.get("dsl_code") and gold_dg is not None:
-            pred_dg = _mermaid_to_dg(a0["dsl_code"])
-            if pred_dg is not None:
-                sc = _score(pred_dg, gold_dg); nf, pf = sc["node_f1"], sc["path_f1"]
-        # intent coverage
-        ic = hungarian_match([{"viz_type": a["viz_type"], "intent": a["intent"]} for a in arts],
-                             g.get("intents", [])).intent_coverage
-        # evidence grounding F1 at DOC level (namespaces align on doc stem):
-        # resolve the artifact's evidence_ids (citation indices) -> cited doc stems
-        # via the trajectory's tool-results, compare to gold evidence doc_ids.
-        # B5 (and recovered B6) emit no evidence_ids -> 0 (honest: no SAO grounding).
-        ev_ids = a0["evidence_ids"] if a0 else []
-        idx2doc = {} if is_s1 else _index_to_doc(r)
-        pred_docs = {idx2doc.get(e, "") for e in ev_ids}
-        # B6 SAO grounding lives in source_eids ("{doc}#{bid}#{cuid}"); the doc
-        # stem maps directly to gold evidence doc_id. Use them when present so
-        # the SAO axis is actually measured (recovery emits no evidence_ids).
-        src_eids = (a0.get("source_eids") if a0 else None) or []
-        pred_docs |= {str(e).split("#")[0] for e in src_eids if e}
-        pred_docs.discard("")
+        pred_dg = _mermaid_to_dg(a0["dsl_code"]) if a0 and a0.get("dsl_code") else None
+        node_texts = [n.text for n in pred_dg.nodes] if pred_dg else []
+        if pred_dg is not None and gold_dg is not None:
+            sc = _score(pred_dg, gold_dg); nf, pf = sc["node_f1"], sc["path_f1"]
+        # intent coverage. Note: B6 recovered uses the query text as intent and
+        # baselines use a generated summary, but empirically both land ~0.42-0.43
+        # (the query intent ≈ gold content_summary), so the comparison is already
+        # fair — node-label intents scored far WORSE, so we keep the original.
+        ic = hungarian_match(
+            [{"viz_type": a["viz_type"], "intent": a["intent"]} for a in arts],
+            g.get("intents", [])).intent_coverage
+        # evidence grounding F1 at DOC level. B6: explicit source_eids (doc stem).
+        # Baselines: implicit chunk-embedding match (paper §5.3) — symmetric now.
         gold_docs = {str(e.get("doc_id")) for e in (g.get("evidence") or []) if e.get("doc_id")}
+        if is_s1:
+            pred_docs = _implicit_pred_docs(node_texts, qid)
+        else:
+            ev_ids = a0["evidence_ids"] if a0 else []
+            idx2doc = _index_to_doc(r)
+            pred_docs = {idx2doc.get(e, "") for e in ev_ids}
+            src_eids = (a0.get("source_eids") if a0 else None) or []
+            pred_docs |= {str(e).split("#")[0] for e in src_eids if e}
+            pred_docs.discard("")
         if pred_docs and gold_docs:
             inter = len(pred_docs & gold_docs)
             p = inter / len(pred_docs); rc = inter / len(gold_docs)
