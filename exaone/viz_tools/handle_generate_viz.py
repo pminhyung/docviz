@@ -141,8 +141,11 @@ def _get_synth_client():
         # Pick one randomly (cheap routing — vLLM batches per-host anyway).
         import random
         host = random.choice([h.strip() for h in hosts_env.split(",") if h.strip()])
+        # host may carry an explicit port ("localhost:8001" → weak 4B backbone);
+        # a bare host defaults to the :8000 cluster port.
+        base_url = f"http://{host}/v1" if ":" in host else f"http://{host}:8000/v1"
         _SYNTH_CLIENT = (openai.OpenAI(
-            base_url=f"http://{host}:8000/v1",
+            base_url=base_url,
             api_key=os.environ.get("DOCVIZ_SYNTH_API_KEY", "EMPTY"),
         ), os.environ.get("DOCVIZ_SYNTH_MODEL", "Qwen3.5-397B-A17B-FP8"))
     return _SYNTH_CLIENT
