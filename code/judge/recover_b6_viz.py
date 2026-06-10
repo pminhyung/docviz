@@ -50,6 +50,9 @@ def main():
     ap.add_argument("--queries", type=Path, default=REPO / "data/queries/loong_phase1_working.jsonl")
     ap.add_argument("--out", type=Path, default=REPO / "outputs/v0.5_harness/b6_recovered.json")
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--recover-all", action="store_true",
+                    help="synthesize a DSL for every qid (fair 100-sample B6, "
+                         "covers native emissions whose sidecar has no qid link)")
     args = ap.parse_args()
 
     qrows = [json.loads(l) for l in args.queries.read_text().splitlines() if l.strip()]
@@ -60,14 +63,20 @@ def main():
             recs += [json.loads(l) for l in b.read_text().splitlines() if l.strip()]
 
     # qids already having viz (from any trajectory)
-    has, noviz = set(), {}
+    has, noviz, allq = set(), {}, {}
     for r in recs:
         q = t2q.get(_norm(next((m.get("value", "") for m in r.get("conversations", []) if m.get("from") == "human"), "")))
         if not q: continue
+        allq.setdefault(q["qid"], (q, _final_prose(r)))
         if _has_viz(r): has.add(q["qid"])
         else: noviz.setdefault(q["qid"], (q, _final_prose(r)))
-    targets = {qid: v for qid, v in noviz.items() if qid not in has}
-    print(f"viz-present {len(has)} | recovering {len(targets)}")
+    # --recover-all: synthesize a DSL for EVERY qid (native generate_viz writes its
+    # DSL to a sidecar with no qid back-link, so the ~13% native emissions are
+    # otherwise unscoreable → B6 measured on fewer samples than baselines, unfairly).
+    # generate_viz uses this same synthesizer, so recovering all is uniform + fair.
+    targets = allq if args.recover_all else {qid: v for qid, v in noviz.items() if qid not in has}
+    print(f"viz-present {len(has)} | recovering {len(targets)}"
+          + (" (ALL qids — fair 100-sample B6)" if args.recover_all else ""))
 
     # Recovery must mirror the generate_viz tool: full VSC (spec → deterministic
     # DSL → validate → repair) unless the −VSC ablation is selected. Native

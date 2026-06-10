@@ -4,6 +4,7 @@
 # scheduler and accumulated chromium zombies → hangs. Resumes (skips existing).
 set -uo pipefail
 cd "$(dirname "$0")/.."
+export DGEVAL_CLUSTER="${DGEVAL_CLUSTER:-h100}"   # 8-host H100 pool (vs_task_only key)
 G=data/gold/loong_phase2_working.jsonl
 R=outputs/v0.5_harness
 
@@ -17,10 +18,10 @@ for seed in 42 43 44; do
     echo "=== $arm s$seed ($(date +%H:%M)) ==="
     if [ "$arm" = "b5" ] || [ "$arm" = "b7" ]; then
       python -u code/judge/diagrameval_score.py --baseline-traj data/phase2_${arm}_s${seed} \
-        --gold $G --out "$out" --workers 4 > /tmp/dge_${arm}_s${seed}.log 2>&1 || true
+        --gold $G --out "$out" --workers 16 > /tmp/dge_${arm}_s${seed}.log 2>&1 || true
     else
       python -u code/judge/diagrameval_score.py --recovered $R/rec_${arm}_s${seed}.json \
-        --gold $G --out "$out" --workers 4 > /tmp/dge_${arm}_s${seed}.log 2>&1 || true
+        --gold $G --out "$out" --workers 16 > /tmp/dge_${arm}_s${seed}.log 2>&1 || true
     fi
     clean
     echo "done $arm s$seed → $(grep -aoE 'done: ok [0-9]+/[0-9]+.*' /tmp/dge_${arm}_s${seed}.log 2>/dev/null | tail -1)"

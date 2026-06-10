@@ -34,12 +34,22 @@ sys.path.insert(0, str(_DE))
 from eval.evaluator import DiagramEvaluator  # noqa: E402
 from eval.graph import DiagramGraph  # noqa: E402
 
-_ALL_HOSTS = [f"10.1.211.{h}" for h in (148, 163, 164, 165, 166, 167, 168)]
-# DGEVAL_HOSTS="148,163" restricts the pool; default = all, then health-filtered.
+# Named clusters. "qwen" = local 10.1.211 pool; "h100" = the H100 pool (needs the
+# vs_task_only key). Select with DGEVAL_CLUSTER, or override hosts with DGEVAL_HOSTS.
+_CLUSTERS = {
+    "qwen": [f"10.1.211.{h}" for h in (148, 163, 164, 165, 166, 167, 168)],
+    # H100 pool (cluster-h100-25..32 → these IPs); requires the vs_task_only key.
+    "h100": [f"10.1.211.{h}" for h in range(163, 171)],
+}
+_CLUSTER = os.environ.get("DGEVAL_CLUSTER", "qwen")
+_ALL_HOSTS = list(_CLUSTERS.get(_CLUSTER, _CLUSTERS["qwen"]))
 if os.environ.get("DGEVAL_HOSTS"):
-    _ALL_HOSTS = [f"10.1.211.{h.strip()}" for h in os.environ["DGEVAL_HOSTS"].split(",")]
+    # full host (has '.'/'-') used as-is; bare last-octet → local qwen subnet
+    _ALL_HOSTS = [h.strip() if ("." in h or "-" in h) else f"10.1.211.{h.strip()}"
+                  for h in os.environ["DGEVAL_HOSTS"].split(",")]
 HOSTS = list(_ALL_HOSTS)
 MODEL = os.environ.get("DGEVAL_MODEL", "Qwen3.5-397B-A17B-FP8")
+API_KEY = os.environ.get("DGEVAL_API_KEY") or ("vs_task_only" if _CLUSTER == "h100" else "EMPTY")
 
 
 def _live_hosts(hosts):
@@ -61,7 +71,7 @@ def _live_hosts(hosts):
     live = []
     for h in hosts:
         try:
-            c = _oai.OpenAI(base_url=f"http://{h}:8000/v1", api_key="EMPTY", timeout=45)
+            c = _oai.OpenAI(base_url=f"http://{h}:8000/v1", api_key=API_KEY, timeout=45)
             c.chat.completions.create(
                 model=MODEL, max_tokens=50, temperature=0.6,
                 extra_body={"chat_template_kwargs": {"enable_thinking": True}},
@@ -81,7 +91,7 @@ def _config_for_host(host: str) -> str:
     """Write a per-host DiagramEval config (api_type=nvidia → OpenAI-compatible)."""
     d = _CFG_DIR / host
     d.mkdir(exist_ok=True)
-    (d / "key.yaml").write_text("openai_api_key: EMPTY\n")
+    (d / "key.yaml").write_text(f"openai_api_key: {API_KEY}\n")
     base = dict(api_type="nvidia", model=MODEL, key_file="key.yaml",
                 api_key="openai_api_key", base_url=f"http://{host}:8000/v1",
                 temperature=0, max_tokens=4000)
