@@ -34,18 +34,17 @@ sys.path.insert(0, str(_DE))
 from eval.evaluator import DiagramEvaluator  # noqa: E402
 from eval.graph import DiagramGraph  # noqa: E402
 
-# Three multi-host pools, rotated across. Each physical host serves with ONE key
-# (148 → EMPTY; 163-170 → vs_task_only). We health-filter across all pools and
-# distribute over whatever is live, so a downed pool just drops out.
+# Three named host pools. Select ONE explicitly via DGEVAL_CLUSTER (no auto-
+# rotation across pools). Each physical host serves with one key (148 → EMPTY;
+# 163-170 → vs_task_only). _live_hosts still drops dead hosts WITHIN the pool.
 HOST_KEY = {"10.1.211.148": "EMPTY", "10.1.211.147": "EMPTY"}
 HOST_KEY.update({f"10.1.211.{h}": "vs_task_only" for h in range(163, 171)})
 POOLS = {
     "qwen148": ["10.1.211.148"],                                  # single-host pool
     "h100":    [f"10.1.211.{h}" for h in range(163, 171)],        # vs_task_only
     "qwen":    [f"10.1.211.{h}" for h in (148, 163, 164, 165, 166, 167, 168)],
-    "all":     ["10.1.211.148"] + [f"10.1.211.{h}" for h in range(163, 171)],
 }
-_CLUSTER = os.environ.get("DGEVAL_CLUSTER", "all")
+_CLUSTER = os.environ.get("DGEVAL_CLUSTER", "qwen148")
 _ALL_HOSTS = list(dict.fromkeys(POOLS.get(_CLUSTER, POOLS["all"])))
 if os.environ.get("DGEVAL_HOSTS"):
     _ALL_HOSTS = [h.strip() if ("." in h or "-" in h) else f"10.1.211.{h.strip()}"
