@@ -51,6 +51,41 @@ v0.4.2 (이전) 대비 변경된 핵심 결정은 두 가지이다.
 
 \textbf{대체된 항목}: 자문 단계에서 검토되었던 ``Q-COVE 멀티모달 도구 (질의 조건 시각 증거 추출기)''는 SEF에 통합된다. dots.mocr-svg가 그림에서 SVG와 데이터 표를 결정론적으로 추출하므로, 별도의 질의 조건 VLM 호출이 불필요하다.
 
+\textbf{입력 형태 분류 (핵심 명시)}: 출처별 원본 형태에 따라 전처리 절차가 다르다 (표 \ref{tab:preproc-exec}). 모든 출처가 공통적으로 두 산출물 — \emph{청크화된 텍스트} (모든 비교 대상 입력) 와 \emph{SEF} (B6 입력) — 을 보유해야 한다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+출처 & 원본 형태 & 청크 생성 & dots.mocr \\
+\midrule
+Loong & 텍스트 (ModelScope 마크다운) & 그대로 사용 & 아니오 \\
+MultiHop-RAG & 텍스트 (뉴스 기사) & 그대로 사용 & 아니오 \\
+FinAuditing & XBRL 구조화 & XBRL → 텍스트 변환 & 아니오 \\
+TEMPO & 시계열 구조화 & 그대로 사용 & 아니오 \\
+DocHop-QA & PubMed 텍스트 위주 & 텍스트 그대로 & 일부 PDF만 \\
+FinMMDocR & PDF & dots.mocr 파싱 & \textbf{예} \\
+VisDoMBench & PDF / 슬라이드 & dots.mocr 파싱 & \textbf{예} \\
+\bottomrule
+\end{tabular}
+\caption{출처별 입력 처리. dots.mocr 호출은 PDF 출처에만 필요.}
+\label{tab:preproc-exec}
+\end{table}
+
+\textbf{블록 식별자 (bid) 통일}: 청크와 SEF가 동일 bid를 공유해야 SAO 출처가 양쪽에 결정론적으로 도달한다. 출처별 명명 규칙:
+\begin{itemize}[leftmargin=*]
+    \item PDF 출처: \texttt{\{doc\_id\}\#p\{page\}\_b\{order\}} (dots.mocr 페이지 + 리딩 순서)
+    \item 텍스트 출처: \texttt{\{doc\_id\}\#c\{order\}} (출처 제공 청크 또는 단락 순서)
+    \item 구조화 출처: \texttt{\{doc\_id\}\#s\{section\}\_r\{row\}} (섹션 + 항목 순서)
+\end{itemize}
+
+SAO 출처 식별자 \texttt{\{bid\}\#\{cuid\}}는 청크 텍스트 조회 (도구로 텍스트 반환)와 SEF 블록 조회 (도구로 메타데이터 반환) 모두에 도달.
+
+\textbf{Agent 도구 (B6 전용, 외부 명세만)}: 본 연구의 harness가 제공하는 도구 — 문서 검색, 청크 텍스트 조회, SEF 블록 조회, 문서 개요 조회, 교차 참조 조회. 도구 내부 구현 (검색 알고리즘, 청크 크기, 임베딩 모델 등)은 본 계획서의 범위 밖이며 harness 운영자가 결정한다.
+
+비교 대상 (B1-B5, B7)은 도구 미사용. 청크 텍스트를 리딩 순서로 연결한 plain text만 입력.
+
 % =====================================================================
 \section{dots.mocr 사용 가이드 — 연구 agent용}
 \label{sec:dotsmocr}
@@ -110,16 +145,27 @@ PDF를 \texttt{pdf2image}로 페이지별 PNG (300 DPI)로 변환한 후, 각 �
 
 \textbf{호출 예산 제한}: 표본별 그림 블록이 평균 1-3개이며, 최대 호출 수는 표본당 5회로 제한한다. 5회 초과 시 retrieval 점수 상위 5개 그림만 처리하고 나머지는 SVG 추출 없이 caption 텍스트만 보존한다.
 
-\subsection{표준 마크다운 산출 — 비교 대상용}
+\subsection{청크화된 텍스트 산출 — 모든 비교 대상의 공통 substrate}
+\label{sec:layer1}
 
-1차 호출 결과로부터 dots.mocr의 표준 마크다운 변환 (\texttt{*\_nohf.md} — 페이지 머리/꼬리 제외)을 산출한다. 이 마크다운은 추가 가공 없이 비교 대상 (B1-B5, B7)의 입력으로 사용된다. 본 연구는 이 단계에서 마크다운에 어떠한 추가 정보도 주입하지 않는다.
+dots.mocr 1차 호출 결과의 각 블록에 고유 식별자를 부여하고 청크 텍스트를 생성한다. 본 절은 dots.mocr 적용 출처에 대한 절차이며, 텍스트 출처는 출처 제공 형태를 그대로 사용한다 (텍스트 출처의 청크 식별자 부여는 \S 2의 bid 명명 규칙 적용).
 
-\subsection{SEF JSON 산출 — B6 전용}
+\textbf{(a) 블록 식별자 (bid) 부여}: \texttt{bid = "\{doc\_id\}\#p\{page:03d\}\_b\{order:03d\}"} (예: \texttt{FinMMDocR\_AAPL\_10K\_2022\#p007\_b042}). 페이지 머리/꼬리 블록 (\texttt{Page-header}, \texttt{Page-footer})은 제외.
+
+\textbf{(b) Plain text 마크다운}: 모든 블록의 텍스트를 리딩 순서로 연결. Table 블록은 HTML 그대로, Formula는 LaTeX 그대로 포함. 비교 대상 (B1-B5, B7)의 입력으로 사용. 이 마크다운에는 \textbf{본 연구가 어떠한 추가 정보도 주입하지 않는다}.
+
+\textbf{(c) 블록 단위 인덱스}: 각 블록을 bid로 조회 가능한 형태로 저장. 정확한 저장 형식과 검색 방식은 harness 운영자가 결정.
+
+\textbf{도구 접근}: harness가 제공하는 도구가 (b)와 (c)에 접근하여 B6의 문서 검색과 청크 조회를 지원. 도구 내부 구현 (검색 알고리즘, 인덱스 방식 등)은 본 계획서의 범위 밖.
+
+비교 대상은 도구 미사용. (b) plain text 마크다운을 자신의 method에 따라 처리.
+
+\subsection{Layer 2 SEF JSON 산출 — B6 전용 enrichment}
 \label{sec:sef-build}
 
-dots.mocr 1차 + 2차 출력을 입력으로 받아 SEF JSON을 생성한다. 생성 과정은 \emph{모두 결정론적이며 LLM 호출이 없다}.
+Layer 1 (\S\ref{sec:layer1}) 산출 후 동일 bid를 키로 SEF JSON을 생성한다. \emph{Layer 1을 대체하지 않고 위에 부가}한다. 생성은 모두 결정론적이며 LLM 호출이 없다.
 
-\textbf{(a) 블록 식별자 부여}: 페이지 + 리딩 순서로 \texttt{bid = "B" + zero-padded(reading\_order)}.
+\textbf{(a) bid 통일}: Layer 1의 bid를 그대로 사용 (재명명 금지). SEF 블록의 \texttt{text\_md} / \texttt{text\_html} 필드는 Layer 1 (c) 인덱스의 텍스트와 \emph{동일 문자열}이어야 한다 (정합성).
 
 \textbf{(b) 청구 단위 분해 (Text/Title 등 텍스트 블록)}: spaCy NER로 개체 (인물, 조직, 금액, 날짜) 추출 + 정규식으로 수치-단위-시간 패턴 매칭. 동일 문장 내 ``수치 + 단위 + 시간 정박''의 조합을 한 청구 단위 (claim\_unit)로 묶는다. 청구 유형 분류 규칙:
 \begin{itemize}[leftmargin=*]
