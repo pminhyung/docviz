@@ -134,20 +134,24 @@ def _get_synth_client():
     global _SYNTH_CLIENT
     if _SYNTH_CLIENT is None:
         import openai
-        hosts_env = os.environ.get(
-            "DOCVIZ_SYNTH_HOSTS",
-            "10.1.211.147,10.1.211.148,10.1.211.163,10.1.211.164,"
-            "10.1.211.165,10.1.211.166,10.1.211.167,10.1.211.168")
+        # Named pools (select ONE via DOCVIZ_POOL — no auto-rotation). Each maps to
+        # (hosts, key). DOCVIZ_SYNTH_HOSTS/API_KEY still override if set explicitly.
+        _POOLS = {
+            "qwen148": (["10.1.211.148"], "EMPTY"),
+            "h100": ([f"10.1.211.{h}" for h in range(163, 171)], "vs_task_only"),
+            "qwen": (["10.1.211.147", "10.1.211.148"] + [f"10.1.211.{h}" for h in range(163, 169)], "EMPTY"),
+        }
+        pool = os.environ.get("DOCVIZ_POOL", "qwen148")
+        p_hosts, p_key = _POOLS.get(pool, _POOLS["qwen148"])
+        hosts_env = os.environ.get("DOCVIZ_SYNTH_HOSTS", ",".join(p_hosts))
+        key = os.environ.get("DOCVIZ_SYNTH_API_KEY", p_key)
         # Pick one randomly (cheap routing — vLLM batches per-host anyway).
         import random
         host = random.choice([h.strip() for h in hosts_env.split(",") if h.strip()])
-        # host may carry an explicit port ("localhost:8001" → weak 4B backbone);
-        # a bare host defaults to the :8000 cluster port.
+        # host may carry an explicit port ("localhost:8001" → weak 4B backbone).
         base_url = f"http://{host}/v1" if ":" in host else f"http://{host}:8000/v1"
-        _SYNTH_CLIENT = (openai.OpenAI(
-            base_url=base_url,
-            api_key=os.environ.get("DOCVIZ_SYNTH_API_KEY", "EMPTY"),
-        ), os.environ.get("DOCVIZ_SYNTH_MODEL", "Qwen3.5-397B-A17B-FP8"))
+        _SYNTH_CLIENT = (openai.OpenAI(base_url=base_url, api_key=key),
+                         os.environ.get("DOCVIZ_SYNTH_MODEL", "Qwen3.5-397B-A17B-FP8"))
     return _SYNTH_CLIENT
 
 

@@ -69,7 +69,13 @@ paper(`docviz_paper_draft_v0.4.2_ko.tex`) / plan(`docviz_execution_plan_v0.4.2_k
 ---
 
 ## E. 현재까지 결과 (요약 — 상세는 RESULTS_multisource_B1B7.md)
-- **Loong B1-B7**: B6 node 최고(0.396, 발표 SOTA 앞섬), path B7과 동률. Evidence B6 0.333 vs baseline 0.05.
-- **DocHop B1-B7**: B6 path 압도(0.552, +0.18), node B3와 동률(0.432 vs 0.437).
-- **MultiHop**: 채점 진행 중.
-- → 2+ source에서 B6 일반화. **단 evidence(C4)는 Loong full-agent에서만 측정됨 — 멀티소스 evidence가 다음 우선순위.**
+
+**3소스(Loong/DocHop/MultiHop) × B1-B7, seed-42 완료.**
+
+- **Evidence F1 (C4·핵심): B6가 3소스 전부 압도** — 0.408 / 0.766 / 0.880 vs 최강 baseline ~0.00 / 0.141 / 0.041 (B6 explicit source_eids vs baseline implicit 임베딩매칭). **C4(출처귀속 격차 파이프라인 무관 일관)의 멀티소스 입증.** node/path와 달리 robust·일관·압도.
+- **path (DiagramEval): B6가 3소스 전부 최고** (구조 엣지 정렬, VSC 이점).
+- **node (DiagramEval): 경쟁적** — Loong 최고, DocHop 동률(B3와), MultiHop 2위(B3가 1위). 노이즈 큼(단일시드).
+- intent: Loong만(B6 0.42 ≈ baseline) — 멀티소스 미측정.
+- 발표 SOTA 적응판(B1-B4)이 다문서서 단순 Direct(B5)보다도 약함.
+
+**남은 것**: 3시드(42/43/44) mean±std, intent 멀티소스, source 4-7(FinMMDocR/VisDoM/FinAuditing/TEMPO)+held-out, 논문 VSC제거·SEF정식측정.
