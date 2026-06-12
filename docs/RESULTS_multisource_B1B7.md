@@ -35,3 +35,21 @@ B6가 두 source 모두에서 최강 baseline과 동률 이상. Loong=node 우�
 ## caveat / 남은 것
 - B6-DocHop은 viz-synth 근사(CIS 검색 생략). Loong B6는 full-agent.
 - 진행 중: MultiHop(source 3). 남음: 3시드(42/43/44) 평균±std, source 4-7, held-out.
+
+## MultiHop-RAG (source 3, 96샘플) — B6 viz-synth 근사
+| arm | node | path |
+|---|---|---|
+| B3 CoDA | **0.289** | 0.129 |
+| B6 (ours) | 0.241 | **0.191** |
+| B2 NVAGENT | 0.237 | 0.085 |
+| B5 Direct | 0.227 | 0.087 |
+| B1 MatPlot | 0.196 | 0.024 |
+| B7 SelfRefine | 0.191 | 0.126 |
+| B4 ViviDoc | 0.182 | 0.087 |
+→ 전반 점수 낮음(뉴스 멀티홉 난이도). B6 node는 B3에 짐(-0.047), path는 최고(+0.062).
+
+## 3-source 종합 (node/path)
+- **path: B6가 3 source 전부 최고** (Loong 동률, DocHop +0.18, MultiHop +0.062) — VSC 구조적 엣지 이점 robust.
+- **node: 혼재** — Loong 최고, DocHop 동률, MultiHop은 B3 CoDA가 앞섬.
+- 즉 B6의 일관 우위는 **path(엣지구조)**. node는 경쟁적이나 균일하지 않음.
+- 미측정: **Evidence F1(C4)** 멀티소스 (B6 최강 차원). 다음 우선순위.
