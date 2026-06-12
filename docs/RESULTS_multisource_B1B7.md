@@ -53,3 +53,17 @@ B6가 두 source 모두에서 최강 baseline과 동률 이상. Loong=node 우�
 - **node: 혼재** — Loong 최고, DocHop 동률, MultiHop은 B3 CoDA가 앞섬.
 - 즉 B6의 일관 우위는 **path(엣지구조)**. node는 경쟁적이나 균일하지 않음.
 - 미측정: **Evidence F1(C4)** 멀티소스 (B6 최강 차원). 다음 우선순위.
+
+## Evidence F1 (C4) — 3소스, B6 explicit source_eids
+| arm | loong | dochop | multihop |
+|---|---|---|---|
+| **B6 (ours)** | **0.408** | **0.766** | **0.880** |
+| B4 ViviDoc | 0.004 | 0.141 | 0.041 |
+| B7 SelfRefine | — | 0.131 | 0.012 |
+| B5 Direct | — | 0.113 | 0.020 |
+| B3 CoDA | 0.000 | 0.058 | 0.008 |
+| B2 NVAGENT | 0.000 | 0.041 | 0.000 |
+| B1 MatPlot | 0.000 | 0.000 | 0.000 |
+→ **B6가 3소스 전부 압도 (+0.40~+0.84).** 출처귀속(SAO)이 node/path와 달리 robust·일관 우위.
+이것이 C4(출처귀속 격차 일관)의 멀티소스 입증. B6=explicit source_eids, baseline=implicit 임베딩매칭(cosine≥0.75).
+B6는 .148 단일 pool로 재생성(brief-gen이 인용 doc_id 출력). 계산은 ST 임베딩(cluster-free).
