@@ -1,0 +1,776 @@
+{
+  "generated_graph": {
+    "nodes": [
+      {
+        "id": "node1",
+        "text": "Diffusion Transformer (DiT) Methodology"
+      },
+      {
+        "id": "node2",
+        "text": "VAE Encoder"
+      },
+      {
+        "id": "node3",
+        "text": "Input Latent Noise (32x32x4)"
+      },
+      {
+        "id": "node4",
+        "text": "Patchify (p x p patches)"
+      },
+      {
+        "id": "node5",
+        "text": "Conditional Inputs (Timemep t, Label y)"
+      },
+      {
+        "id": "node6",
+        "text": "Positional Embeddings"
+      },
+      {
+        "id": "node7",
+        "text": "DiT Block with adaLN-Zero"
+      },
+      {
+        "id": "node8",
+        "text": "Multi-Head Self-Attention"
+      },
+      {
+        "id": "node9",
+        "text": "Input Tokens"
+      },
+      {
+        "id": "node10",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node11",
+        "text": "Scale, Shift (\u03b3, \u03b2)"
+      },
+      {
+        "id": "node12",
+        "text": "Pointwise Feedforward / MLP"
+      },
+      {
+        "id": "node13",
+        "text": "Inner Layer Norm"
+      },
+      {
+        "id": "node14",
+        "text": "Residual"
+      },
+      {
+        "id": "node15",
+        "text": "sccalest initletzs"
+      },
+      {
+        "id": "node16",
+        "text": "N x"
+      },
+      {
+        "id": "node17",
+        "text": "Transformer Decoder (Linear Layer & Reshape)"
+      },
+      {
+        "id": "node18",
+        "text": "VAE Decoder"
+      }
+    ],
+    "edges": [
+      {
+        "source": "node12",
+        "target": "node17"
+      },
+      {
+        "source": "node6",
+        "target": "node18"
+      },
+      {
+        "source": "node12",
+        "target": "node9"
+      },
+      {
+        "source": "node3",
+        "target": "node18"
+      },
+      {
+        "source": "node14",
+        "target": "node7"
+      },
+      {
+        "source": "node9",
+        "target": "node7"
+      },
+      {
+        "source": "node10",
+        "target": "node14"
+      },
+      {
+        "source": "node4",
+        "target": "node7"
+      },
+      {
+        "source": "node5",
+        "target": "node18"
+      },
+      {
+        "source": "node4",
+        "target": "node18"
+      },
+      {
+        "source": "node2",
+        "target": "node17"
+      },
+      {
+        "source": "node7",
+        "target": "node18"
+      },
+      {
+        "source": "node10",
+        "target": "node18"
+      },
+      {
+        "source": "node11",
+        "target": "node17"
+      },
+      {
+        "source": "node2",
+        "target": "node9"
+      },
+      {
+        "source": "node11",
+        "target": "node12"
+      },
+      {
+        "source": "node12",
+        "target": "node7"
+      },
+      {
+        "source": "node11",
+        "target": "node9"
+      },
+      {
+        "source": "node2",
+        "target": "node4"
+      },
+      {
+        "source": "node9",
+        "target": "node18"
+      },
+      {
+        "source": "node14",
+        "target": "node18"
+      },
+      {
+        "source": "node6",
+        "target": "node17"
+      },
+      {
+        "source": "node12",
+        "target": "node14"
+      },
+      {
+        "source": "node6",
+        "target": "node9"
+      },
+      {
+        "source": "node2",
+        "target": "node7"
+      },
+      {
+        "source": "node3",
+        "target": "node17"
+      },
+      {
+        "source": "node11",
+        "target": "node7"
+      },
+      {
+        "source": "node12",
+        "target": "node18"
+      },
+      {
+        "source": "node13",
+        "target": "node13"
+      },
+      {
+        "source": "node3",
+        "target": "node9"
+      },
+      {
+        "source": "node3",
+        "target": "node4"
+      },
+      {
+        "source": "node4",
+        "target": "node17"
+      },
+      {
+        "source": "node8",
+        "target": "node13"
+      },
+      {
+        "source": "node10",
+        "target": "node17"
+      },
+      {
+        "source": "node5",
+        "target": "node17"
+      },
+      {
+        "source": "node7",
+        "target": "node17"
+      },
+      {
+        "source": "node5",
+        "target": "node9"
+      },
+      {
+        "source": "node4",
+        "target": "node9"
+      },
+      {
+        "source": "node17",
+        "target": "node18"
+      },
+      {
+        "source": "node10",
+        "target": "node9"
+      },
+      {
+        "source": "node6",
+        "target": "node7"
+      },
+      {
+        "source": "node10",
+        "target": "node12"
+      },
+      {
+        "source": "node11",
+        "target": "node14"
+      },
+      {
+        "source": "node5",
+        "target": "node4"
+      },
+      {
+        "source": "node2",
+        "target": "node18"
+      },
+      {
+        "source": "node9",
+        "target": "node17"
+      },
+      {
+        "source": "node3",
+        "target": "node7"
+      },
+      {
+        "source": "node11",
+        "target": "node18"
+      },
+      {
+        "source": "node14",
+        "target": "node17"
+      },
+      {
+        "source": "node14",
+        "target": "node9"
+      },
+      {
+        "source": "node13",
+        "target": "node8"
+      },
+      {
+        "source": "node5",
+        "target": "node7"
+      },
+      {
+        "source": "node8",
+        "target": "node8"
+      },
+      {
+        "source": "node10",
+        "target": "node7"
+      }
+    ]
+  },
+  "reference_graph": {
+    "nodes": [
+      {
+        "id": "node1",
+        "text": "Noise\n32 x 32 x 4"
+      },
+      {
+        "id": "node2",
+        "text": "\u03a3\n32 x 32 x 4"
+      },
+      {
+        "id": "node3",
+        "text": "Linear and Reshape"
+      },
+      {
+        "id": "node4",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node5",
+        "text": "N x"
+      },
+      {
+        "id": "node6",
+        "text": "DiT Block"
+      },
+      {
+        "id": "node7",
+        "text": "Patchify"
+      },
+      {
+        "id": "node8",
+        "text": "Noised Latent\n32 x 32 x 4"
+      },
+      {
+        "id": "node9",
+        "text": "Embed"
+      },
+      {
+        "id": "node10",
+        "text": "Timestep t"
+      },
+      {
+        "id": "node11",
+        "text": "Label y"
+      },
+      {
+        "id": "node12",
+        "text": "Latent Diffusion Transformer"
+      },
+      {
+        "id": "node13",
+        "text": "Scale"
+      },
+      {
+        "id": "node14",
+        "text": "Pointwise Feedforward"
+      },
+      {
+        "id": "node15",
+        "text": "Scale, Shift"
+      },
+      {
+        "id": "node16",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node17",
+        "text": "\u03b12"
+      },
+      {
+        "id": "node18",
+        "text": "\u03b32,\u03b22"
+      },
+      {
+        "id": "node19",
+        "text": "Scale"
+      },
+      {
+        "id": "node20",
+        "text": "Multi-Head Self-Attention"
+      },
+      {
+        "id": "node21",
+        "text": "\u03b11"
+      },
+      {
+        "id": "node22",
+        "text": "\u03b31,\u03b21"
+      },
+      {
+        "id": "node23",
+        "text": "MLP"
+      },
+      {
+        "id": "node24",
+        "text": "Input Tokens"
+      },
+      {
+        "id": "node25",
+        "text": "Conditioning"
+      },
+      {
+        "id": "node26",
+        "text": "DiT Block with adaLN-Zero"
+      },
+      {
+        "id": "node27",
+        "text": "Pointwise Feedforward"
+      },
+      {
+        "id": "node28",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node29",
+        "text": "Multi-Head Cross-Attention"
+      },
+      {
+        "id": "node30",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node31",
+        "text": "Multi-Head Self-Attention"
+      },
+      {
+        "id": "node32",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node33",
+        "text": "Input Tokens"
+      },
+      {
+        "id": "node34",
+        "text": "Conditioning"
+      },
+      {
+        "id": "node35",
+        "text": "DiT Block with Cross-Attention"
+      },
+      {
+        "id": "node36",
+        "text": "Multi-Head Self-Attention"
+      },
+      {
+        "id": "node37",
+        "text": "Layer Norm"
+      },
+      {
+        "id": "node38",
+        "text": "Concatenate on Sequence Dimension"
+      },
+      {
+        "id": "node39",
+        "text": "Input Tokens"
+      },
+      {
+        "id": "node40",
+        "text": "Conditioning"
+      },
+      {
+        "id": "node41",
+        "text": "DiT Block with In-Context Conditioning"
+      }
+    ],
+    "edges": [
+      {
+        "source": "node19",
+        "target": "node13"
+      },
+      {
+        "source": "node3",
+        "target": "node6"
+      },
+      {
+        "source": "node1",
+        "target": "node3"
+      },
+      {
+        "source": "node8",
+        "target": "node6"
+      },
+      {
+        "source": "node15",
+        "target": "node14"
+      },
+      {
+        "source": "node16",
+        "target": "node19"
+      },
+      {
+        "source": "node16",
+        "target": "node16"
+      },
+      {
+        "source": "node4",
+        "target": "node6"
+      },
+      {
+        "source": "node7",
+        "target": "node6"
+      },
+      {
+        "source": "node18",
+        "target": "node20"
+      },
+      {
+        "source": "node10",
+        "target": "node6"
+      },
+      {
+        "source": "node15",
+        "target": "node19"
+      },
+      {
+        "source": "node22",
+        "target": "node19"
+      },
+      {
+        "source": "node22",
+        "target": "node16"
+      },
+      {
+        "source": "node23",
+        "target": "node13"
+      },
+      {
+        "source": "node17",
+        "target": "node13"
+      },
+      {
+        "source": "node15",
+        "target": "node16"
+      },
+      {
+        "source": "node19",
+        "target": "node20"
+      },
+      {
+        "source": "node21",
+        "target": "node14"
+      },
+      {
+        "source": "node9",
+        "target": "node6"
+      },
+      {
+        "source": "node20",
+        "target": "node13"
+      },
+      {
+        "source": "node18",
+        "target": "node15"
+      },
+      {
+        "source": "node11",
+        "target": "node9"
+      },
+      {
+        "source": "node2",
+        "target": "node4"
+      },
+      {
+        "source": "node18",
+        "target": "node14"
+      },
+      {
+        "source": "node21",
+        "target": "node19"
+      },
+      {
+        "source": "node23",
+        "target": "node20"
+      },
+      {
+        "source": "node1",
+        "target": "node4"
+      },
+      {
+        "source": "node19",
+        "target": "node14"
+      },
+      {
+        "source": "node21",
+        "target": "node16"
+      },
+      {
+        "source": "node16",
+        "target": "node13"
+      },
+      {
+        "source": "node18",
+        "target": "node19"
+      },
+      {
+        "source": "node18",
+        "target": "node16"
+      },
+      {
+        "source": "node20",
+        "target": "node20"
+      },
+      {
+        "source": "node19",
+        "target": "node19"
+      },
+      {
+        "source": "node22",
+        "target": "node13"
+      },
+      {
+        "source": "node23",
+        "target": "node15"
+      },
+      {
+        "source": "node15",
+        "target": "node13"
+      },
+      {
+        "source": "node23",
+        "target": "node14"
+      },
+      {
+        "source": "node3",
+        "target": "node4"
+      },
+      {
+        "source": "node19",
+        "target": "node16"
+      },
+      {
+        "source": "node16",
+        "target": "node20"
+      },
+      {
+        "source": "node2",
+        "target": "node6"
+      },
+      {
+        "source": "node10",
+        "target": "node9"
+      },
+      {
+        "source": "node1",
+        "target": "node6"
+      },
+      {
+        "source": "node11",
+        "target": "node6"
+      },
+      {
+        "source": "node22",
+        "target": "node20"
+      },
+      {
+        "source": "node20",
+        "target": "node14"
+      },
+      {
+        "source": "node23",
+        "target": "node19"
+      },
+      {
+        "source": "node23",
+        "target": "node16"
+      },
+      {
+        "source": "node15",
+        "target": "node20"
+      },
+      {
+        "source": "node21",
+        "target": "node13"
+      },
+      {
+        "source": "node22",
+        "target": "node14"
+      },
+      {
+        "source": "node8",
+        "target": "node7"
+      },
+      {
+        "source": "node14",
+        "target": "node13"
+      },
+      {
+        "source": "node16",
+        "target": "node14"
+      },
+      {
+        "source": "node18",
+        "target": "node13"
+      },
+      {
+        "source": "node20",
+        "target": "node19"
+      },
+      {
+        "source": "node20",
+        "target": "node16"
+      },
+      {
+        "source": "node22",
+        "target": "node15"
+      },
+      {
+        "source": "node2",
+        "target": "node3"
+      },
+      {
+        "source": "node21",
+        "target": "node20"
+      }
+    ]
+  },
+  "node_alignment": {
+    "matches": {
+      "node1": "node12",
+      "node3": "node1",
+      "node4": "node7",
+      "node6": "node9",
+      "node7": "node26",
+      "node8": "node20",
+      "node9": "node24",
+      "node10": "node4",
+      "node11": "node18",
+      "node12": "node14",
+      "node13": "node16",
+      "node14": "node6",
+      "node16": "node5",
+      "node17": "node3"
+    },
+    "scores": {
+      "precision": 0.7777777777777778,
+      "recall": 0.34146341463414637,
+      "f1": 0.4745762711864407
+    }
+  },
+  "path_alignment": {
+    "matched_paths": [
+      [
+        "node1",
+        "node3"
+      ],
+      [
+        "node16",
+        "node16"
+      ],
+      [
+        "node16",
+        "node20"
+      ],
+      [
+        "node18",
+        "node14"
+      ],
+      [
+        "node20",
+        "node16"
+      ],
+      [
+        "node20",
+        "node20"
+      ],
+      [
+        "node4",
+        "node6"
+      ]
+    ],
+    "scores": {
+      "precision": 0.20588235294117646,
+      "recall": 0.11290322580645161,
+      "f1": 0.14583333333333331
+    }
+  },
+  "generated_path": "test/output/generated/2212.09748_generated.png",
+  "reference_path": "test/output/extracted/2212.09748/2212.09748_diagrams/figure_overview.png"
+}

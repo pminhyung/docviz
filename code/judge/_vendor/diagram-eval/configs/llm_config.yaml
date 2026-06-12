@@ -1,0 +1,71 @@
+# Unified LLM/MLLM Configuration for Diagram Evaluation System
+
+# ============================================================================
+# Text Graph Extraction (for extracting graphs from text)
+# ============================================================================
+text_graph_extraction:
+  api_type: "openai"
+  model: "gpt-4o"
+  key_file: "key.yaml"
+  api_key: "openai_api_key"
+  base_url: null
+  temperature: 0
+  max_tokens: 10000
+
+# ============================================================================
+# Image Graph Extraction (for extracting graphs from images - vision model)
+# ============================================================================
+image_graph_extraction:
+  api_type: "openai"
+  model: "gpt-4o"  # Vision-capable model
+  key_file: "key.yaml"
+  api_key: "openai_api_key"
+  base_url: null
+  temperature: 0
+  max_tokens: 10000
+  timeout: 60
+
+# ============================================================================
+# Node Alignment (for aligning nodes between graphs)
+# ============================================================================
+node_alignment:
+  api_type: "openai"
+  model: "gpt-4o"
+  key_file: "key.yaml"
+  api_key: "openai_api_key"
+  base_url: null
+  temperature: 0
+  max_tokens: 5000
+
+# ============================================================================
+# Diagram Selection (for selecting best overview diagram from LaTeX)
+# ============================================================================
+diagram_selection:
+  api_type: "openai"
+  model: "gpt-4o"
+  key_file: "key.yaml"
+  api_key: "openai_api_key"
+  base_url: null
+  temperature: 0
+  max_tokens: 10000
+
+# ============================================================================
+# Layout Planner (optional - for planning diagram layout)
+# ============================================================================
+layout_planner:
+  api_type: "openai"
+  model: "gpt-4o"
+  key_file: "key.yaml"
+  api_key: "openai_api_key"
+  base_url: null
+  temperature: 0  # Slightly higher for creative planning
+  max_tokens: 2000
+
+# ============================================================================
+# Diagram Generator (Nano Banana via Google Gemini)
+# ============================================================================
+diagram_generator:
+  model: "gemini-2.5-flash-image"
+  key_file: "key.yaml"
+  api_key: "google_api_key"
+

@@ -1,0 +1,49 @@
+--extra-index-url https://download.pytorch.org/whl/cu121  # do not remove this line
+
+# Core dependencies
+requests>=2.31.0
+transformers==4.46.3
+torch==2.4.1
+pathlib>=1.0.1
+accelerate>=0.26.0
+sentencepiece
+
+# PDF processing
+PyMuPDF>=1.23.0  # PDF library with better image handling
+
+# LaTeX processing
+pylatexenc
+
+# Logging and utilities
+python-json-logger>=2.0.0
+
+# Optional: for better performance
+numpy>=1.24.0
+
+# HTML parsing
+beautifulsoup4
+lxml
+
+# Add other dependencies below if needed
+thefuzz[speedup]
+
+anthropic>=0.15.0
+google-generativeai>=0.3.0
+google-genai>=1.46.0  # For Gemini image generation (Nano Banana)
+Pillow>=9.0.0 # Needed by google-generativeai for image input
+openai
+PyYAML 
+tqdm>=4.65.0
+pdf2image>=1.16.3
+
+matplotlib
+seaborn
+pandas
+
+streamlit
+pytesseract>=0.3.10
+
+langchain
+langchain-core
+langchain-openai
+langchain-google-genai

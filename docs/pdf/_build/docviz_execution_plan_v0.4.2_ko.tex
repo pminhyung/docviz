@@ -1,0 +1,393 @@
+% =====================================================================
+% DocViz-Agent / QG-MDV — 실험 진행 계획서 v0.4.3 (한국어, Overleaf 호환)
+% 본 문서는 학술 논문이 아닌 *내부 실험 진행 계획*임.
+% 학술 논문 본문은 docviz_paper_draft_v0.4.2_ko.tex 참고.
+% 작성 기준일: 2026-06-07
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK KR}
+\setCJKsansfont{Noto Sans CJK KR}
+\setCJKmonofont{Noto Sans Mono CJK KR}
+\xeCJKsetup{CJKspace=true}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem}
+\usepackage{tcolorbox}
+
+\title{DocViz-Agent v0.4.3 \\
+       단계적 실험 진행 계획서 \\
+       \large{(Internal Execution Plan, not for publication)}}
+\author{연구진 (placeholder)}
+\date{2026년 6월}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+본 문서는 DocViz-Agent v0.4.3 연구의 실험 진행 계획서이다. 다섯 축 — CIS, SEF, TMG, SAO, VSC — 으로 구성된 DocViz-Agent의 단계적 실험 절차, dots.mocr 활용 가이드, 단계별 검증 기준 (go/no-go gate), 비용·시간 추정, 비교 대상 공정성 원칙을 정의한다.
+\end{abstract}
+
+% =====================================================================
+\section{문서 위치}
+% =====================================================================
+
+학술 논문 본문 (\texttt{docviz\_paper\_draft\_v0.4.2\_ko.tex})과 분리된 내부 운영 문서. 본 문서의 모든 결정은 학술 논문 본문의 ``실험 설정''과 일관된다.
+
+% =====================================================================
+\section{전체 방향 — v0.4.3 변경사항}
+% =====================================================================
+
+v0.4.2 (이전) 대비 변경된 핵심 결정은 두 가지이다.
+
+\textbf{(1) 다섯 축 파이프라인 (3축 → 5축)}: CIS + TMG + SAO 3축에 \textbf{SEF (Strategic Evidence Format)}와 \textbf{VSC (Visual Specification Contract)}가 추가된다. SEF는 dots.mocr의 결정론적 추출을 시각 사양 생성에 최적화된 표현으로 변환하며, VSC는 시각 도메인 특화 언어 (DSL)의 형식 계약과 위반 검증기, 일회성 보수 루프로 구성된다. 두 축은 시각화 고유 (viz-exclusive) 어려움 — 형식 오류 DSL, 차원 불일치, 끊어진 엣지, 미지원 표지, 출처 참조 무효 — 을 직접 처리한다.
+
+\textbf{(2) 비교 대상 공정성 원칙 명문화}: 비교 대상은 dots.mocr의 표준 마크다운 (\texttt{*\_nohf.md})만 받으며 (자신의 원래 입력 형식 가정에 따라 처리), B6는 SEF JSON을 받는다. 이는 정보 동등성 + 방법 보존성 + 방법 기여의 정당성의 세 원칙에 따른 결정이다 (\S \ref{sec:fairness}).
+
+\textbf{대체된 항목}: 자문 단계에서 검토되었던 ``Q-COVE 멀티모달 도구 (질의 조건 시각 증거 추출기)''는 SEF에 통합된다. dots.mocr-svg가 그림에서 SVG와 데이터 표를 결정론적으로 추출하므로, 별도의 질의 조건 VLM 호출이 불필요하다.
+
+% =====================================================================
+\section{dots.mocr 사용 가이드 — 연구 agent용}
+\label{sec:dotsmocr}
+% =====================================================================
+
+본 절은 dots.mocr을 운영하는 코드 작성이 아닌, \emph{dots.mocr이 이미 운영 중일 때 본 연구의 전처리 단계가 무엇을 호출하고 어떻게 그 출력을 처리하는지}의 지침이다. dots.mocr 서버 띄우기는 본 문서의 범위 밖이며, 별도 인프라 운영자가 담당한다.
+
+\subsection{대상 출처}
+
+dots.mocr 전처리 대상은 PDF 또는 이미지 페이지를 보유한 다섯 출처이다: DocHop-QA, FinMMDocR, VisDoMBench, FinAuditing, TEMPO. \textbf{Loong}은 ModelScope에서 이미 마크다운 추출본을 제공하므로 dots.mocr 호출 없이 그 마크다운을 사용한다. \textbf{MultiHop-RAG}은 뉴스 텍스트 형식이며 PDF가 아니므로 dots.mocr 호출 없이 원본 텍스트를 그대로 사용한다.
+
+\subsection{프롬프트 모드 선택}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+프롬프트 모드 & 모델 & 본 연구에서의 용도 \\
+\midrule
+\texttt{prompt\_layout\_all\_en} & dots.mocr & \textbf{1차 전처리 — 모든 PDF 페이지} \\
+\texttt{prompt\_image\_to\_svg} & dots.mocr-svg & \textbf{2차 전처리 — Picture 범주 블록만} \\
+\texttt{prompt\_layout\_only\_en} & dots.mocr & 미사용 (텍스트 필요) \\
+\texttt{prompt\_ocr} & dots.mocr & 미사용 (구조 필요) \\
+\texttt{prompt\_web\_parsing} & dots.mocr & 미사용 \\
+\texttt{prompt\_scene\_spotting} & dots.mocr & 미사용 \\
+\bottomrule
+\end{tabular}
+\caption{dots.mocr 프롬프트 모드 사용 지침.}
+\end{table}
+
+\subsection{1차 호출 — \texttt{prompt\_layout\_all\_en}}
+
+PDF를 \texttt{pdf2image}로 페이지별 PNG (300 DPI)로 변환한 후, 각 페이지를 \texttt{prompt\_layout\_all\_en} 모드로 dots.mocr에 전송한다. 출력 JSON은 다음 구조이다.
+
+\begin{tcolorbox}[colback=gray!5,colframe=gray!50,title=dots.mocr 페이지 출력 (1차 호출)]
+\small
+\begin{verbatim}
+[
+  {
+    "bbox": [x1, y1, x2, y2],
+    "category": "Text|Title|Section-header|Picture|Table|Caption|
+                 Formula|Footnote|List-item|Page-header|Page-footer",
+    "text": str  # Picture는 생략, Formula는 LaTeX,
+                 # Table은 HTML, 나머지는 마크다운
+  },
+  ...
+]
+\end{verbatim}
+\end{tcolorbox}
+
+리딩 순서는 사람의 읽기 순서대로 정렬되어 산출된다.
+
+\subsection{2차 호출 — \texttt{prompt\_image\_to\_svg} (그림 영역만)}
+
+1차 호출 결과에서 \texttt{category == "Picture"}인 블록의 \texttt{bbox}로 페이지 PNG를 자른 후, 자른 이미지를 dots.mocr-svg 서버의 \texttt{prompt\_image\_to\_svg} 모드로 전송한다. 출력은 SVG 코드 문자열이다.
+
+\textbf{호출 예산 제한}: 표본별 그림 블록이 평균 1-3개이며, 최대 호출 수는 표본당 5회로 제한한다. 5회 초과 시 retrieval 점수 상위 5개 그림만 처리하고 나머지는 SVG 추출 없이 caption 텍스트만 보존한다.
+
+\subsection{표준 마크다운 산출 — 비교 대상용}
+
+1차 호출 결과로부터 dots.mocr의 표준 마크다운 변환 (\texttt{*\_nohf.md} — 페이지 머리/꼬리 제외)을 산출한다. 이 마크다운은 추가 가공 없이 비교 대상 (B1-B5, B7)의 입력으로 사용된다. 본 연구는 이 단계에서 마크다운에 어떠한 추가 정보도 주입하지 않는다.
+
+\subsection{SEF JSON 산출 — B6 전용}
+\label{sec:sef-build}
+
+dots.mocr 1차 + 2차 출력을 입력으로 받아 SEF JSON을 생성한다. 생성 과정은 \emph{모두 결정론적이며 LLM 호출이 없다}.
+
+\textbf{(a) 블록 식별자 부여}: 페이지 + 리딩 순서로 \texttt{bid = "B" + zero-padded(reading\_order)}.
+
+\textbf{(b) 청구 단위 분해 (Text/Title 등 텍스트 블록)}: spaCy NER로 개체 (인물, 조직, 금액, 날짜) 추출 + 정규식으로 수치-단위-시간 패턴 매칭. 동일 문장 내 ``수치 + 단위 + 시간 정박''의 조합을 한 청구 단위 (claim\_unit)로 묶는다. 청구 유형 분류 규칙:
+\begin{itemize}[leftmargin=*]
+    \item \texttt{numeric\_value}: 단일 수치 + 단위 + 시간.
+    \item \texttt{numeric\_trend}: ``증가/감소/상승/하락'' 등 추세 키워드 + 두 시점 수치.
+    \item \texttt{ranking}: ``최고/최저/1위/2위'' 등 순위 키워드.
+    \item \texttt{categorical}: 비교 대상 집합 + 동일 단위 수치.
+    \item \texttt{temporal\_event}: 시간 정박만 보유.
+\end{itemize}
+
+\textbf{(c) 개체 정규화 (canonical 필드)}: 출처 도메인별 동의어 사전 (예: 금융에서 ``Revenue'' = ``Total net sales'' = ``매출액'')으로 매핑. 동의어 사전은 출처별로 30-50개 항목, 수동 작성 일회성. 정규화 실패 시 surface 형태 그대로 보존하되 \texttt{canonical = null}.
+
+\textbf{(d) 수치 정규화 (normalized\_value 필드)}: ``\$3.2B'', ``3.2 billion'', ``3,200,000,000'' 등을 모두 ``3.2e9'' (float)으로 통일. 단위 추출 후 \texttt{unit} 필드에 별도 보존. 정규화 실패 시 \texttt{normalized\_value = null}.
+
+\textbf{(e) Picture 메타데이터 생성 (Picture 범주 블록)}: 2차 호출의 SVG 코드를 보존. SVG 품질 검사 — lxml로 well-formedness + viewBox 속성 존재 — 통과 시 \texttt{svg\_quality\_score} $\geq$ \texttt{0.5}. 통과한 경우만 SVG 내부 \texttt{<text>} 요소 + \texttt{<rect>} 좌표 기반으로 데이터 표를 결정론적으로 추출 (막대/선 차트 한정). \texttt{safe\_to\_use\_numerics = true}는 데이터 표 추출 성공 시. 추출 실패 시 SVG 코드만 보존하고 \texttt{extracted\_data\_table = null, safe\_to\_use\_numerics = false}.
+
+\textbf{(f) Table 파싱 (Table 범주 블록)}: dots.mocr 출력의 HTML을 lxml로 파싱하여 헤더 + 행 행렬 생성. 단위는 헤더의 괄호 안 (예: ``Revenue (B USD)'')에서 정규식으로 추출.
+
+\textbf{(g) 교차 참조 (cross\_refs)}: 본문에서 ``Figure N'', ``Table N'', ``Section N.M'' 등의 명시 인용을 정규식으로 매칭하여 \texttt{\{from\_bid, to\_bid, rel\}} 트리플 생성. rel은 ``visualizes\_data\_supporting'', ``context\_elaborates'', ``defined\_in'' 등 사전 정의된 관계.
+
+\textbf{(h) 시각화 가능 색인 (viz\_affordance\_index)}: 청구 유형과 viz 출력 구조의 매핑 (예: \texttt{numeric\_trend} → \texttt{numeric\_trend} 색인) 및 그림/표 블록의 \texttt{chart\_subtype\_inferred} 기반 분류로 색인 생성.
+
+\textbf{(i) 추출 품질 표지 (extraction\_quality)}: \texttt{full} (모든 페이지 dots.mocr 성공), \texttt{partial} (일부 페이지 dots.mocr 실패 후 PyMuPDF 대체), \texttt{fallback} (전 페이지 PyMuPDF 대체).
+
+SEF JSON 스키마 전체는 학술 논문 본문 부록 A 참고.
+
+\subsection{실패 시 대체 — PyMuPDF}
+
+dots.mocr이 특정 페이지에서 응답 실패, 빈 출력, 또는 JSON 파싱 오류를 반환한 경우 해당 페이지를 PyMuPDF의 \texttt{page.get\_text("text")} 산출물로 대체한다. 대체된 페이지는 SEF의 그림/표 메타데이터를 생성하지 않으며 텍스트만 보존한다. 표본 단위 대체 비율을 추적하여 5단계 보고 시 한계로 명시한다.
+
+% =====================================================================
+\section{비교 대상 공정성 원칙}
+\label{sec:fairness}
+% =====================================================================
+
+\textbf{원칙 1 (정보 동등성)}: 모든 비교 대상이 동일한 원문 PDF에 접근. 추가 외부 정보 (Wikipedia, 검색 결과 등) 사용 금지.
+
+\textbf{원칙 2 (방법 보존성)}: 각 비교 대상은 자신의 원논문이 가정한 입력 형식으로 처리. 인위적 변형 금지. 예: B1 MatPlotAgent는 plain text query + dataset 가정 → dots.mocr 표준 마크다운을 전체 dataset으로 제공. B2 NVAGENT는 pseudo-table 가정 → 마크다운에 HTML 표 포함된 형태로 제공 (dots.mocr 기본 출력). B5 Direct LLM은 다문서 연결 텍스트 가정 → 마크다운 단순 결합.
+
+\textbf{원칙 3 (방법 기여의 정당성)}: 본 연구의 방법 기여 (SEF, VSC)는 B6에만 적용. ``비교 대상이 SEF를 활용하지 못함''은 비교 대상의 한계이지 불공정이 아니다. 이는 method paper의 본질 — 새 표현/메커니즘을 도입하는 것이 contribution이며, 그 표현을 활용하는 능력이 곧 method의 우위 — 과 정확히 일치한다.
+
+\textbf{명시적으로 회피하는 함정}:
+\begin{itemize}[leftmargin=*]
+    \item B6만 사용 가능한 외부 도구나 모델 (예: B6에만 GPT-5 비전 API 호출 허용) — 회피.
+    \item B6만 추가 정보 접근 (예: B6에만 정답 참조 제공) — 회피.
+    \item B6의 입력 마크다운을 추가 가공한 형태로 비교 대상에게 제공 (B6가 가공된 형태를 활용하는데 baseline은 못 활용) — 회피. 비교 대상은 dots.mocr의 표준 출력 그대로 받는다.
+    \item B6용 SEF를 ``baseline에도 동일하게 주어야 공정''하다고 주장 — \textbf{이는 잘못된 공정성 해석}. SEF는 본 연구의 방법 기여이며 비교 대상에게 SEF를 주면 본 연구의 contribution 자체가 사라진다.
+\end{itemize}
+
+% =====================================================================
+\section{단계별 진행 계획}
+% =====================================================================
+
+\subsection{1단계 — 기반 사전 검증과 시각 언어 모델 선택}
+
+\textbf{기간 / 비용}: 1.5주 / 약 33달러
+
+\textbf{목표}: 평가 파이프라인 변별력 검증 + DiagramEval 시각 언어 모델 (Qwen3.5-397B-VL 대 GPT-5-mini 비전) 선택. 추가로 dots.mocr 전처리 파이프라인의 산출물 품질 점검.
+
+\textbf{작업}:
+\begin{itemize}[leftmargin=*]
+    \item Loong 30개 표본 (Loong은 ModelScope 마크다운 사용, dots.mocr 불필요) + FinMMDocR 10개 + VisDoMBench 10개 표본에 dots.mocr 전처리 적용.
+    \item 50개 표본 중 무작위 10개에 대해 사람이 dots.mocr 산출 SEF의 청구 단위 분해 정확성과 SVG 데이터 표 추출 정확성을 점검 (약 1시간, 30달러).
+    \item Loong 30 표본에 B6 (Qwen3.5-397B 백본) + B5 (단일 시도) 실행. DiagramEval 통합 평가 (Qwen3.5-397B-VL vs GPT-5-mini 비전 두 후보 시각 언어 모델로 비교).
+\end{itemize}
+
+\textbf{검증 기준 (시각 언어 모델 선택)}:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lp{6.5cm}l}
+\toprule
+1단계 측정 결과 & 선택 모델 & 후속 단계 영향 \\
+\midrule
+Qwen 추출 정확도 $\geq 85\%$이고 두 모델 순위 일치 & Qwen3.5-397B-VL 로컬 & 후속 단계 추출 비용 0달러 \\
+Qwen 정확도 $\geq 85\%$이나 순위 불일치 & GPT-5-mini 비전 & 후속 단계 추출 비용 약 15달러 배치 \\
+Qwen 정확도 $< 85\%$ & GPT-5-mini 비전 & 후속 단계 추출 비용 약 15달러 배치 \\
+두 모델 모두 $< 85\%$ & DiagramEval 적용 재검토 & 단계 진행 중단 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{검증 기준 (평가 파이프라인 변별력)}:
+\begin{itemize}[leftmargin=*]
+    \item 다섯 종 mermaid 하위 유형 모두에서 시각 언어 모델 추출 성공률 $\geq 85\%$.
+    \item B6 vs B5 격차가 노드 F1, 경로 F1, Evidence F1, Intent Coverage 중 적어도 두 지표에서 $+0.020$ 이상.
+    \item 3시드 분산 $\leq 5\%$.
+\end{itemize}
+
+\textbf{검증 기준 (dots.mocr 산출물)}:
+\begin{itemize}[leftmargin=*]
+    \item 10개 표본의 청구 단위 분해 정확성 (수치 + 단위 + 시간 정박 모두 정확) $\geq 80\%$.
+    \item SVG 데이터 표 추출 정확성 (차트 막대 5개 중 5개 정확 추출) $\geq 70\%$.
+    \item dots.mocr 페이지 응답 성공률 $\geq 95\%$.
+\end{itemize}
+
+\textbf{미통과 시}: 모든 점검이 함께 점검되므로 어느 차원에서든 미통과 발생 시 그 차원 우선 수정 후 1단계 반복. 다음 단계 진입 금지.
+
+\subsection{2단계 — 최소 실효 실험}
+
+\textbf{기간 / 비용}: 1.5주 / 약 25달러
+
+\textbf{목표}: B6 5축 파이프라인의 실효성 입증. 핵심 ablation 두 가지 (−SEF, −VSC)를 포함하여 새 축의 가치를 직접 측정.
+
+\textbf{작업}: Loong에서 100개 표본 (다섯 추론 난이도 유형 각 20개). Qwen3.5-397B 단일 백본. 다섯 비교 대상: B5, B7, B6, B6 −SEF, B6 −VSC. 모든 1차 지표 (노드 F1, 경로 F1, Evidence F1, Intent Coverage) + VSC 위반 비율 보조 지표 (M1 렌더, 차원 불일치, 끊긴 엣지) 측정. Prolific 자연스러움 30표본 (약 30달러).
+
+\textbf{검증 기준}:
+\begin{itemize}[leftmargin=*]
+    \item B6 완전판이 두 개 이상 지표에서 B7 (가장 강한 비교 대상) 대비 $+0.020$ 이상.
+    \item B6 −SEF 변이가 완전판 대비 $-0.030$ 이상 감소 (SEF 효과 입증).
+    \item B6 −VSC 변이가 VSC 위반 비율 (M1 렌더 실패, 차원 불일치, 끊긴 엣지)에서 완전판 대비 2배 이상 증가 (VSC 효과 입증).
+    \item B6와 B7 격차의 3시드 표준편차 기준 통계적 유의성.
+\end{itemize}
+
+\textbf{미통과 시}: 새 축 (SEF, VSC)이 효과가 없다는 신호. 가장 큰 위험. SEF의 청구 단위 분해 품질부터 점검 (1단계 dots.mocr 산출물 검증 재점검).
+
+\subsection{3단계 — 다중 출처 강건성}
+
+\textbf{기간 / 비용}: 2주 / 약 30달러
+
+\textbf{목표}: Loong 외 출처로의 일반화. dots.mocr 전처리가 처음으로 사용되는 단계 (DocHop-QA, FinMMDocR 추가).
+
+\textbf{작업}: Loong + DocHop-QA + FinMMDocR 각 60개 표본. Qwen3.5-397B 단일 백본. 비교 대상 라인업: B5, B7, B6. (3단계는 ablation 변이 제외 — 4단계 이후 진행).
+
+\textbf{검증 기준}:
+\begin{itemize}[leftmargin=*]
+    \item B6 우위가 세 출처 중 두 개 이상에서 재현.
+    \item 출처 간 효과 분산 $\leq 50\%$ (단일 출처 주도 차단).
+    \item dots.mocr 페이지 응답 실패율 $\leq 5\%$, 표본 단위 \texttt{fallback} 비율 $\leq 10\%$.
+\end{itemize}
+
+\textbf{미통과 시}: 질의 생성 파이프라인의 출처별 적응을 점검. dots.mocr 응답 실패율 초과 시 대체 비율을 한계로 명시하고 진행.
+
+\subsection{4단계 — 백본 횡단 + 5축 절제}
+
+\textbf{기간 / 비용}: 2주 / 약 60달러 (클로즈드 API)
+
+\textbf{목표}: 다문서 출처 귀속 격차 (C4 진단적 발견)를 네 백본에서 입증. 동시에 5축 절제 완료 (−CIS, −SEF, −TMG, −SAO, −VSC).
+
+\textbf{작업}: 3단계 설정 (3 출처 × 60 표본) × 네 백본 (Qwen3.5-397B, DeepSeek-V4-Flash, GPT-5-mini, Claude Opus 4.8) × 일곱 비교 대상 (B1-B7) + 다섯 ablation 변이 (B6 −각 축). 총 셀 수: 3 × 60 × 4 × 12 = 8,640.
+
+\textbf{검증 기준}:
+\begin{itemize}[leftmargin=*]
+    \item Evidence F1 격차가 세 개 이상 백본에서 일관 (C4 발견).
+    \item B6 우위가 세 개 이상 백본에서 재현.
+    \item 5축 절제에서 각 축 단독 절제 시 완전판 대비 $-0.020$ 이상 감소 (모든 축의 효과 입증).
+\end{itemize}
+
+\textbf{미통과 시}: 특정 백본의 시각화 생성이 본질적으로 작동하지 않는 경우 해당 백본 교체 가능 (단 Opus 4.8 제외 — 주장 범위를 오픈 백본으로 한정).
+
+\subsection{5단계 — 완전 말뭉치 + 외부 보류 평가}
+
+\textbf{기간 / 비용}: 2주 / 약 100달러
+
+\textbf{목표}: 300 표본 전체 + 외부 보류 평가 + 시각화 고유 양상 (VSC 위반 비율)의 정량적 보고.
+
+\textbf{작업}: 일곱 출처 300 표본 × 네 백본 × 일곱 비교 대상. Text2Vis, Doc2Chart, SciDoc2DiagramBench 세 외부 보류 평가. VSC 위반 비율 표 (\S 6.4의 \texttt{tab:vsc}) 완성. 시드 42, 43, 44 평균과 표준편차.
+
+\textbf{검증 기준}:
+\begin{itemize}[leftmargin=*]
+    \item 엄격 게이트 (네 지표 모두 $+0.020$) 통과.
+    \item B6가 다섯 추론 난이도 유형 중 네 개 이상에서 우위.
+    \item 외부 보류 평가에서 전문가 대비 $-7\%$p 이내.
+    \item VSC 위반 비율 표에서 B6 (VSC 적용 후)가 B6 −VSC 대비 모든 양상에서 2배 이상 감소 (시각화 고유 어려움의 정량적 증거 확보).
+\end{itemize}
+
+\textbf{미통과 시}: 결과 시나리오 분석 (\S \ref{sec:scenarios})에 따라 논문 위치 (main vs Findings) 조정.
+
+\subsection{6단계 — 이미지 평가, 사람 검증, 논문 작성}
+
+\textbf{기간 / 비용}: 2주 / 약 50달러 + Prolific
+
+\textbf{작업}: M5 CLIPScore 전체 적용 (로컬, 비용 0). A5 시각 리커트 — Anthropic 배치 API의 Claude Sonnet 4.6 비전 × 100 부집합 (약 11달러). Prolific 50 시각화 × 3 평가자 (자연스러움 정박). 역방향 질의응답 100 질의 × 7 비교 대상 (약 3달러).
+
+\textbf{검증 기준}:
+\begin{itemize}[leftmargin=*]
+    \item 사람 정합성 스피어만 상관: $r \geq 0.4$ 시 ``DiagramEval 발표 0.43 범위 정합성'', $0.3 \leq r < 0.4$ 시 ``정성적 정합성, 한계 명시'', $r < 0.3$ 시 평가 재설계.
+    \item 모든 논문 표 빈 칸 충족.
+\end{itemize}
+
+% =====================================================================
+\section{누적 비용 / 시간}
+% =====================================================================
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrl}
+\toprule
+단계 & 누적 비용 (달러) & 누적 시간 & 차단 위험 \\
+\midrule
+1단계 사전 검증 + VLM 선택 + dots.mocr 점검 & 33 & 1.5주 & 평가 결함, VLM 부적합, SEF 추출 품질 \\
+2단계 최소 실효 (−SEF, −VSC 포함) & 58 & 3주 & 새 축 효과 실재성 \\
+3단계 다중 출처 & 88 & 5주 & 단일 출처 의존 + dots.mocr 일반화 \\
+4단계 백본 횡단 + 5축 절제 & 148 & 7주 & 진단적 발견 + 모든 축 효과 \\
+5단계 완전 말뭉치 (Qwen 선택 시) & 248 & 9주 & 결과 일반성 \\
+5단계 완전 말뭉치 (GPT-5-mini 선택 시) & 263 & 9주 & 결과 일반성 + 15달러 VLM 추가 \\
+6단계 검증 + 작성 & 363-378 (+ Prolific) & 11주 & 심사위원 정박 \\
+\bottomrule
+\end{tabular}
+\caption{단계별 누적 비용. dots.mocr 호출 비용은 0달러 (로컬 GPU 추론).}
+\end{table}
+
+% =====================================================================
+\section{질의 생성 파이프라인 — SEF 누출 차단}
+\label{sec:querygen}
+% =====================================================================
+
+질의 생성은 세 단계: 압축 문서 표현 (Loong 절차 차용), 과제별 프롬프트 + 출력 유형 휴리스틱 (25 템플릿), 자기 평가 관문 (Text2Chart31).
+
+\textbf{중요 — SEF 정보 누출 차단}: 질의 생성에 사용되는 입력은 \emph{dots.mocr 표준 마크다운만}이다. SEF 전용 필드 (\texttt{safe\_to\_use\_numerics}, \texttt{cross\_refs}, \texttt{normalized\_value} 등)는 질의에 노출되지 않는다. 이로써 ``B6만 답할 수 있는 질의''가 구조적으로 생성되지 않음을 보장한다.
+
+비용: GPT-4o-mini 900회 약 0.96달러 + Prolific 자연스러움 30 약 30달러.
+
+난이도 필터링: GPT-5 완전판 + Claude Opus 4.7 다수결. 두 모델 모두 통과 시 너무 쉬움으로 제거. 두 모델 모두 실패 100 (엄격) + 한 모델만 실패 200 (완화) = 300.
+
+% =====================================================================
+\section{골드 부집합 사람 검증}
+% =====================================================================
+
+90 표본 (유형별 15, 도메인 상한 6). 다중 LLM 합집합 추출 (GPT-5-mini + Claude Opus 4.8) → Prolific 세 평가자 × 90 표본. 출처 정확성 이진 (2/3 동의 보존), 완전성 자유 텍스트 추가 (네 번째 평가자 재검증). 총 약 200달러.
+
+% =====================================================================
+\section{결과 시나리오와 예비 논문 계획}
+\label{sec:scenarios}
+% =====================================================================
+
+\textbf{최선 시나리오} (외부 보류 $-5\%$p 이내, QG-MDV $+10\%$p, 교차 과제 평균 $+12\%$p, C4 강함, VSC 위반 감소 2배 이상): EMNLP main.
+
+\textbf{양호 시나리오} ($-7\%$p, $+8\%$p, $+8\%$p, C4 강함): main 또는 Findings.
+
+\textbf{보통 시나리오} ($-10\%$p, $+5\%$p, $+5\%$p, C4 약함): Findings.
+
+\textbf{B6 효과 약함} (외부 양호 + QG-MDV $+3\sim5\%$p): 자원 논문으로 Findings (벤치마크 + dots.mocr 기반 SEF 자체가 기여).
+
+\textbf{외부 보류 실패} ($-15\%$p 이상): 분석 논문 재구성 — 전문화 vs 일반화 트레이드오프.
+
+\textbf{진단적 발견만 유의} (B6 약함 + C4 강함): 발견 논문 재구성 — C4가 주 기여.
+
+\textbf{VSC만 강함} (다른 지표 약함이나 VSC 위반 비율 차이 강함): VSC + dots.mocr SEF가 주 기여인 ``decoupled visual specification'' 논문으로 재구성.
+
+% =====================================================================
+\section{위험 차단 전략}
+% =====================================================================
+
+\textbf{1단계 미통과}: 평가 결함 또는 dots.mocr 추출 품질 문제. DiagramEval 원본 코드 사용 점검 + dots.mocr 산출 SEF의 청구 단위 분해 규칙 (\S \ref{sec:sef-build}) 점검.
+
+\textbf{2단계 미통과}: 새 축 (SEF, VSC) 효과 부재. SEF의 청구 단위 분해 정확성과 viz\_affordance\_index 매핑 정확성을 5표본 수동 점검.
+
+\textbf{3단계 미통과}: 출처 의존. 질의 생성의 출처별 적응 + dots.mocr 응답 실패율 점검. \texttt{fallback} 비율이 출처 간 큰 차이를 보이면 한계로 명시 후 진행.
+
+\textbf{4단계 미통과}: 백본 종속. 특정 백본 교체 가능 (Opus 4.8 제외). 미통과 시 C4 주장 범위를 오픈 백본으로 한정.
+
+\textbf{5단계 미통과}: 결과 시나리오 (\S \ref{sec:scenarios})에 따라 위치 조정.
+
+\textbf{dots.mocr 운영 위험}: 서버 응답 지연 또는 OOM이 발생할 경우 페이지 일괄 처리 크기를 조정 (운영자와 협의). 본 연구 측면에서는 PyMuPDF 대체 비율이 5단계 한계로 보고된다.
+
+% =====================================================================
+\section{문서 간 일관성}
+% =====================================================================
+
+학술 논문 본문에 반영되는 항목: 5축 파이프라인, dots.mocr 전처리 (\S 6.1 ``원문 전처리''), 비교 대상 공정성 원칙 (\S 6.7), 질의 생성, 골드 부집합, 평가 프레임워크.
+
+본 문서에만 포함되는 항목: 단계별 일정과 비용, 단계별 go/no-go gate, dots.mocr 호출 절차 상세, SEF 생성 규칙 상세 (h 단계까지), 결과 시나리오, 위험 차단 전략.
+
+\end{document}

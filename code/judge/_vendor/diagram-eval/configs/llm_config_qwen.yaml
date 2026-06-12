@@ -1,0 +1,25 @@
+image_graph_extraction:
+  api_key: openai_api_key
+  api_type: nvidia
+  base_url: http://10.1.211.148:8000/v1
+  key_file: key.yaml
+  max_tokens: 4000
+  model: Qwen3.5-397B-A17B-FP8
+  temperature: 0
+  timeout: 120
+node_alignment:
+  api_key: openai_api_key
+  api_type: nvidia
+  base_url: http://10.1.211.148:8000/v1
+  key_file: key.yaml
+  max_tokens: 4000
+  model: Qwen3.5-397B-A17B-FP8
+  temperature: 0
+text_graph_extraction:
+  api_key: openai_api_key
+  api_type: nvidia
+  base_url: http://10.1.211.148:8000/v1
+  key_file: key.yaml
+  max_tokens: 4000
+  model: Qwen3.5-397B-A17B-FP8
+  temperature: 0

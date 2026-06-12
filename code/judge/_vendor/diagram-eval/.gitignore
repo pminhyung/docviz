@@ -1,0 +1,9 @@
+*.zip
+*.tar
+*.tar.gz
+
+*__pycache__*
+
+logs/
+test/
+configs/key.yaml
