@@ -1,0 +1,251 @@
+% =====================================================================
+% DocViz-Agent / QG-MDV — 실험 진행 계획 v0.5 (2026-06-12)
+% 목적: 리뷰어 리뷰에서 지적된 미완/취약 부분을, 목표결과(win condition) + 평가설계 +
+%       구현방향 + 가용 데이터·자원 기준 feasibility + 우선순위로 구체화.
+% 짝 문서: docviz_paper_draft_v0.5_ko.tex (placeholder 표들이 이 계획으로 채워짐).
+% 서술: 평범한 서술체 + English term 적극 사용.
+% =====================================================================
+
+\documentclass[11pt]{article}
+\usepackage[hangul]{kotex}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+
+\title{DocViz-Agent / QG-MDV — 실험 진행 계획 v0.5 \\
+       (리뷰어 대응 + 목표결과 정의)}
+\author{연구진 (placeholder)}
+\date{2026년 6월 (v0.5)}
+
+\begin{document}
+\maketitle
+
+\section{이 계획의 목적}
+
+리뷰어 리뷰는 현재 방향(``rendering이 아니라 multi-document data construction이 bottleneck'')을
+유망하다고 보면서도, accept로 가려면 (1) task가 MD-QA/doc-to-chart와 실질적으로 다름, (2) method가
+prompt wrapper가 아니라 구조적 mechanism, (3) attribution gain이 measurement artifact가 아님을
+강하게 입증해야 한다고 지적했다. 이 문서는 그 입증에 필요한 실험들을 \textbf{목표결과(win
+condition)} 중심으로 설계한다. 각 항목은 [목표결과 / 평가설계 / 구현방향 / 가용자원·feasibility]
+로 적는다. 핵심 원칙: 새 generation이 필요 없는 분석부터, 가용 backbone(Qwen3.5-397B)으로 가능한
+저비용 run, 그리고 closed-backbone·신규 source처럼 자원이 막힌 것은 뒤로 미룬다.
+
+\section{가용 데이터·자원 현황 (제약)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{측정 완료}: 세 source(Loong 100, DocHop-QA 100, MultiHop-RAG 96)에서 B1--B7의
+    node/path와 Evidence F1(explicit/implicit). 단일 seed(42).
+    \item \textbf{Gold 자원}: gold contradiction 44개(claim\_a/b, supported\_side, evidence\_ids),
+    gold table 106개(numeric cell $\geq 2$인 것 67개), gold evidence(doc-level) 300.
+    \item \textbf{B6 산출}: datapoint마다 $(\text{value}, \text{unit}, \text{source\_eid})$ 보유
+    $\rightarrow$ attributed value fidelity 측정 가능.
+    \item \textbf{Backbone}: Qwen3.5-397B 사용 가능(H100 cluster). closed(GPT-5-mini, Opus)는
+    API 예산 hold $\rightarrow$ multi-backbone C4 일부 차단. open MoE(DeepSeek)는 가용 시 추가.
+    \item \textbf{Judge}: DiagramEval(render$\rightarrow$VLM) 가동 중. VisJudge-7B는 공개 모델로
+    셋업 필요(backbone pool과 분리).
+    \item \textbf{Human eval}: Prolific 예산 제한(대략 gold \$200 + alignment \$50 수준).
+    \item \textbf{미완}: source 4--7(FinMMDocR/VisDoM/FinAuditing/TEMPO)·held-out(Doc2Chart/
+    SciDoc) loader. node/path 3-seed.
+\end{itemize}
+
+\section{목표결과 요약 (win conditions)}
+
+표 \ref{tab:targets}는 각 실험이 ``성공''으로 간주되는 조건이다. 이 조건이 충족돼야 해당 claim이
+방어된다. 충족 안 되면 그 자체가 정직한 finding(또는 claim 약화)으로 처리한다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3.2cm} p{8.5cm} p{1.6cm}}
+\toprule
+실험 & 목표결과 (win condition) & 우선순위 \\
+\midrule
+E1 challenge-type 분해 & B6$-$최강baseline의 Evidence F1 $\Delta$가 hard type(contradiction,
+distractor-heavy, multi-hop)에서 크고, easy type(artifact planning)에서 작다(단조 경향) & P1 \\
+E2 prompted-citation control & B5+cite의 explicit Evidence F1이 B6보다 크게 낮고, 특히
+contradiction/distractor에서 hallucinated-citation 비율이 높다 & P1 \\
+E3 attributed value fidelity & B6의 plotted value가 cite한 source와 5\% tol 내 일치하는 비율이
+baseline보다 크게 높고, Evidence F1과 같이 올라간다 & P1 \\
+E4 tool ablation & $-$conflict는 contradiction에서, $-$cross-doc-extract는 multi-hop/distractor
+에서, $-$SAO는 Evidence F1/value fidelity에서 각각 크게 하락(이중분리) & P2 \\
+E5 conflict adjudication eval & 44개 contradiction에서 B6의 supported-side 정확도가 baseline보다
+크게 높다 & P2 \\
+E6 implicit proxy human audit & cosine$\geq$0.75 implicit matching의 false-negative가 낮아
+(예 $<$15\%) baseline에 불리하지 않은 lower-bound임이 확인 & P2 \\
+E7 VisJudge non-regression & B6의 Fidelity/Expressiveness/Aesthetics가 최강 baseline 대비 유의
+하게 나쁘지 않다 & P2 \\
+E8 cost/latency & B6의 LLM call/token/runtime 보고. B6가 동일 compute급 B7(SelfRefine)보다
+grounding에서 앞서 ``compute 때문''을 배제 & P3 \\
+E9 3-seed 안정성 & node/path를 seed 42/43/44 mean$\pm$std로 보고, Evidence F1 결론 불변 & P3 \\
+E10 multi-backbone C4 & (예산 풀리면) 2--3 backbone에서 Evidence F1 격차 부호 유지 & P3 \\
+E11 held-out 일반화 & external benchmark에서 원 metric으로 B6가 grounding 우위(또는 비열위) & P4 \\
+\bottomrule
+\end{tabular}
+\caption{실험별 목표결과(win condition)와 우선순위.}
+\label{tab:targets}
+\end{table}
+
+\section{실험별 상세 설계}
+
+\subsection{E1 — Challenge-type breakdown (P1, 새 generation 불필요)}
+
+\textbf{목표결과.} 우리 thesis는 ``어려운 부분은 data construction''이다. 따라서 B6의 우위가
+data construction이 어려운 type일수록 커야 한다. 구체적으로 Evidence F1의 $\Delta$(B6$-$최강
+baseline)가 contradiction $\approx$ distractor-heavy $\approx$ multi-hop에서 크고 artifact
+planning에서 작은 단조 경향이 나오면 성공.
+
+\textbf{평가설계.} 기존 세 source의 sample을 challenge type 표지로 그룹핑하여 type별 Evidence
+F1과 node/path를 재집계한다. 새 inference 없음 — 기존 결과 재집계만.
+
+\textbf{구현방향.} 각 sample의 challenge type 표지는 corpus 구축 시 보존됨. type별 평균과
+$\Delta$, 그리고 type$\times$source 교차표를 만든다. paper 표 \ref{tab:bytype} 채움.
+
+\textbf{Feasibility.} 즉시 가능. 자원 0. \emph{이번 주 1순위.}
+
+\subsection{E2 — Prompted-citation control B5+cite (P1)}
+
+\textbf{목표결과.} Direct LLM(B5)에 ``datapoint마다 source를 cite하라''만 지시한 B5+cite가
+explicit Evidence F1에서 B6보다 크게 낮아야 한다. 특히 contradiction/distractor에서 cite한
+source가 실제로 값을 지지하지 않는 hallucinated-citation 비율이 높게 나오면, 격차의 원인이 ``id를
+출력하느냐''가 아니라 ``retrieval/정합/adjudication mechanism이 있느냐''임이 분리 입증된다.
+
+\textbf{평가설계.} B5+cite를 B6와 동일 explicit set F1로 채점(같은 gold evidence). 추가로
+hallucinated-citation rate = (cite했으나 그 source가 값을 지지하지 않는 datapoint) / (전체 cite
+datapoint)를 측정. B6, B5+cite, B5(implicit)를 나란히 표로.
+
+\textbf{구현방향.} B5 프롬프트에 citation 출력 형식(datapoint별 source\_eid)만 추가한 변형 1개.
+나머지 단일 패스 구조는 동일하게 유지(검색/정합 도구는 주지 않음 — 이게 control의 핵심).
+
+\textbf{Feasibility.} Qwen backbone으로 기존 query에 1회 추가 generation. 저비용. \emph{1순위.}
+
+\subsection{E3 — Attributed value fidelity (P1)}
+
+\textbf{목표결과.} ``맞는 source를 찾았지만 value는 틀린 것 아니냐''는 공격을 막는다. B6의 각
+plotted value가 \emph{자신이 cite한 source\_eid의 값}과 5\% tolerance 내에서 일치하는 비율이
+높고(예 $\geq$0.6), baseline보다 크게 높으며, Evidence F1과 같은 방향으로 움직이면 성공.
+
+\textbf{평가설계.} datapoint $(\text{value}, \text{source\_eid})$에 대해, source\_eid가 가리키는
+chunk/claim의 수치와 value를 5\% relaxed tolerance로 비교(id anchor라 label lexical matching
+회피). baseline은 source\_eid가 없으므로 implicit: plotted value가 retrieval된 source의 수치
+집합 안에 5\% tol로 존재하는지(RNSS류). chart subset에만 적용(diagram 제외).
+
+\textbf{구현방향.} 기존 B6 산출의 datapoint를 파싱(이미 \texttt{handle\_generate\_viz}가 value/
+unit/source\_eid 출력). source\_eid$\rightarrow$chunk 수치 조회 루틴 + 5\% 비교기. gold table
+106개(numeric 67)를 보조 anchor로 교차 확인.
+
+\textbf{Feasibility.} 새 generation 거의 불필요(기존 산출 재채점). 채점기 구현만. \emph{1순위.}
+
+\subsection{E4 — Tool ablation (P2)}
+
+\textbf{목표결과.} 이중 분리(double dissociation): $-$conflict adjudication은 contradiction에서만
+크게 하락, $-$cross-doc extraction은 multi-hop/distractor에서 크게 하락, $-$SAO는 Evidence F1/
+value fidelity에서 하락. 전반적으로 고르게 떨어지면 component 효과가 흐려지므로, type별로 다르게
+떨어지는 패턴이 핵심.
+
+\textbf{평가설계.} 각 tool을 끈 변형을 \textbf{native 산출}로 재생성(복구 경로 금지 — 과거
+recover 경로가 SEF eid를 모든 arm에 주입해 절제를 무력화한 전례 있음). type별 Evidence F1/value
+fidelity/CRC로 채점.
+
+\textbf{구현방향.} agent config에 tool on/off 스위치. native emission만 채점하도록 파이프라인
+정리. 4개 변형($-$conflict, $-$cross-doc, $-$CIS, $-$SAO) $\times$ 3 source.
+
+\textbf{Feasibility.} Qwen으로 가능하나 generation 양이 가장 큼(4변형$\times$3source). P2 후반.
+
+\subsection{E5 — Conflict adjudication evaluation (P2)}
+
+\textbf{목표결과.} 44개 gold contradiction에서 B6가 supported\_side 값을 맞게 encode하고 올바른
+evidence에 attribute하는 정확도가 baseline보다 크게 높다. 이건 전체 Evidence F1보다 novelty가
+선명한 분석이라 main paper에 둔다.
+
+\textbf{평가설계.} contradiction sample에서 arm별로 (a) encode한 값이 gold supported\_side와
+일치하는지, (b) 그 element의 source\_eid가 supported\_side의 evidence\_ids와 맞는지를 채점.
+정확도 + ``틀린 쪽을 골랐는가/충돌을 무시했는가'' error mode 분류.
+
+\textbf{구현방향.} 기존 B6 산출(+E4 변형)을 44개 위에서 채점하는 루틴. gold contradiction schema
+(supported\_side, evidence\_ids\_a/b) 직접 사용.
+
+\textbf{Feasibility.} 채점 위주, 새 generation 최소. 단 표본 44개로 작음 $\rightarrow$ Type E
+gold contradiction을 추가 추출해 보강(데이터 작업, P2).
+
+\subsection{E6 — Implicit proxy human audit (P2)}
+
+\textbf{목표결과.} baseline에 준 implicit matching(cosine$\geq$0.75)이 실제로 잘 근거한 baseline
+산출물을 부당하게 0점 주지 않음을 보인다. 사람 라벨 대비 false-negative가 낮으면(예 $<$15\%)
+proxy를 공정한 lower-bound로 쓸 수 있다.
+
+\textbf{평가설계.} baseline 산출 100--200개를 표본하여, 사람이 ``이 visual 내용이 옳은 source에
+근거하는가''를 라벨. implicit matching 판정과 비교해 confusion matrix(FN/FP) 산출. 동시에 gold
+attribution 자체의 사람 동의도(예 $\geq$0.8)도 점검해 benchmark validity 보강.
+
+\textbf{구현방향.} 표본 추출 + 사람 라벨 인터페이스. Prolific 또는 내부 expert 소규모.
+
+\textbf{Feasibility.} Prolific 예산 내 100--200개 가능. P2.
+
+\subsection{E7 — VisJudge non-regression (P2)}
+
+\textbf{목표결과.} B6의 Fidelity/Expressiveness/Aesthetics가 최강 baseline 대비 유의하게 나쁘지
+않다. 즉 grounding 이득이 visual quality 희생 없이 얻어짐(non-regression).
+
+\textbf{평가설계.} 기존 rendered 산출에 VisJudge-7B를 적용. backbone pool과 분리(순환 차단).
+B6 vs 최강 baseline의 세 점수 + 유의성.
+
+\textbf{구현방향.} VisJudge-7B(공개 가중치) 로컬 셋업, 기존 PNG 산출 입력. paper 표
+\ref{tab:visjudge} 채움.
+
+\textbf{Feasibility.} 공개 모델 + 기존 산출 재사용. 격리 실행. P2.
+
+\subsection{E8 — Cost / latency (P3)}
+
+\textbf{목표결과.} B6의 LLM call/token/runtime을 보고하고, 비슷한 compute를 쓰는 B7(SelfRefine)
+보다 grounding에서 앞서 ``성능이 단지 더 많은 compute 때문''을 배제.
+
+\textbf{평가설계.} arm별 평균 call/token/runtime 계측 + document 수 증가에 따른 성능·비용 곡선.
+
+\textbf{구현방향.} 파이프라인에 계측 훅. 기존 run 재실행 또는 로그 집계.
+
+\textbf{Feasibility.} 계측만. 저비용. P3.
+
+\subsection{E9--E11 — 안정성·backbone·held-out (P3--P4)}
+
+E9는 node/path를 seed 42/43/44로 돌려 mean$\pm$std 보고(Evidence F1 결론은 단일 seed로도 robust
+하므로 보조). E10은 예산이 풀리면 closed backbone 1--2개를 추가해 C4의 backbone 무관성을 강화하되,
+막히면 open MoE(DeepSeek) 1개로 최소 충족하고 한계로 명시. E11은 held-out(Doc2Chart/Text2Vis)
+loader 완성 후 \emph{원 benchmark metric}으로 B6만 새로 돌리고 baseline은 published score 인용
+(인용 전 1--2개 재현 일치 확인). E10/E11은 자원·시간이 가장 크므로 후순위.
+
+\section{단계별 일정 (자원 기준)}
+
+\textbf{Phase A (이번 주, 자원 거의 0).} E1(재집계), E3(기존 산출 재채점), E2(저비용 1 run).
+$\rightarrow$ thesis의 핵심(어려운 type에서 우위 + 격차가 형식 아닌 mechanism 때문 + value도
+맞음)을 가장 싸게 확정. 셋 중 하나라도 win condition 실패 시 framing 재검토.
+
+\textbf{Phase B (1--2주, Qwen run + 소규모 human).} E5(conflict eval + gold 보강), E7(VisJudge),
+E6(human audit), E4(ablation, generation 양 많음).
+
+\textbf{Phase C (이후).} E8(cost), E9(3-seed), E10(backbone, 예산 의존), E11(held-out, loader
+의존).
+
+\section{paper 표와의 대응}
+
+E1$\rightarrow$표 \texttt{tab:bytype}, E2$\rightarrow$\texttt{tab:capability}+control 행,
+E3$\rightarrow$attributed value fidelity 표(신규), E4$\rightarrow$ablation 표(신규),
+E5$\rightarrow$conflict 정확도 표(신규), E7$\rightarrow$\texttt{tab:visjudge},
+E8$\rightarrow$\texttt{tab:cost}. paper의 placeholder가 이 계획으로 채워진다.
+
+\section{실패 시 분기 (정직한 처리)}
+
+각 win condition이 실패하면 숨기지 않고 분기한다. E1이 단조가 아니면(쉬운 type에서도 격차 큼)
+``data construction''보다 일반적 grounding 이득으로 claim을 넓히거나 좁힌다. E2에서 B5+cite가
+B6에 근접하면 핵심 claim이 약해지므로, 그때는 conflict adjudication 등 \emph{형식으로 환원 안 되는}
+component로 contribution 무게를 옮긴다. E3에서 value fidelity가 낮으면 ``source는 맞히나 value는
+약함''을 한계로 명시하고 value fidelity 개선을 future work로 둔다. 즉 계획은 결과에 끼워맞추지
+않는다.
+
+\end{document}
