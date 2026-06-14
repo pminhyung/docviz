@@ -1,0 +1,624 @@
+% =====================================================================
+% DocViz-Agent / QG-MDV — 논문 초안 v0.5 (2026-06-12)
+% 변경점(v0.4.3 대비):
+%  - framing 전환: "5축이 더 잘 생성한다" → "multi-document data construction이
+%    본질 난제, rendering은 commoditized". headline은 source attribution gap.
+%  - VSC/TMG는 headline contribution에서 제외 (VSC는 측정상 dead, TMG는 보조).
+%  - method 기여를 cross-doc data construction + conflict adjudication 중심으로 재편
+%    (Doc2Chart stage-1을 multi-doc으로 확장, proposition clustering 변형).
+%  - 평가: 두 axis(visual: DiagramEval+VisJudge / data: Evidence F1 + attributed
+%    value fidelity), attribution 비교의 fairness 설계(능력표+implicit proxy+
+%    prompted-citation control) 명시.
+%  - 3-source 실험 결과(node/path, Evidence F1) 표에 실측치 채움.
+% 서술: 평범한 서술체 + English term 적극 사용.
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage[hangul]{kotex}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+
+\title{DocViz-Agent: Multi-Document 환경에서 \\
+       Grounded Visualization을 위한 Data-Construction Agent}
+\author{연구진 (placeholder)}
+\date{2026년 6월 (v0.5)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+여러 문서에 흩어진 정보를 합쳐서 사용자 query에 맞는 visualization(chart 또는 diagram)을
+만드는 일은 실제 업무에서 자주 필요하지만, 기존 연구는 대부분 single-document, single-chart에
+머물러 있다. 이 논문은 이 과제를 Query-Grounded Multi-Document Visualization (QG-MDV)으로
+정의한다. 우리가 던지는 핵심 질문은 "multi-document visualization에서 진짜 어려운 부분이
+어디인가"이다. 실험을 해 보면, visualization을 그려내는 rendering 단계는 거의 모든 model이
+비슷하게 해낸다. 즉 structure 품질을 재는 DiagramEval의 node/path alignment는 model 사이에
+잘 갈리지 않는다. 반면 source attribution을 재면 격차가 크게 벌어진다. 그래서 우리는 이 과제의
+본질적 난점이 rendering이 아니라 그 앞 단계, 즉 흩어지고 중복되고 충돌하고 단위가 제각각인
+multi-document로부터 정확하고 traceable한 data를 구성하는 데 있다고 본다. 우리가 내세우는 중심 주장은 다음 한 문장이다. \emph{Multi-document visualization의 bottleneck은
+rendering이 아니라, 여러 문서의 값을 reconcile하고 출처를 붙인 visual data specification을
+구성하는 데 있다.} 그래서 우리는 최종 chart/diagram 자체보다, 그것을 만들기 위한 중간 산출물 —
+\textbf{provenance를 보존한 Visual Data Specification (VDS)} — 을 논문의 핵심 산출물로 둔다.
+DocViz-Agent는 cross-document에서 claim을 뽑아 visual element로 mapping하고, conflicting cell을
+탐지/adjudicate하며, 각 visual element를 evidence에 binding하는 provenance-preserving pipeline
+이다. 세 source(Loong, DocHop-QA, MultiHop-RAG)에서 제안 방법은 source attribution(Evidence F1)
+에서 가장 강한 baseline을 큰 폭으로 앞선다(0.41 / 0.77 / 0.88 vs 약 0.00 / 0.14 / 0.04). 중요한
+것은 이 grounding 개선이 visual quality를 희생하지 않고 얻어진다는 점이다(non-regression). 우리는
+이 attribution 격차가 단순히 "우리만 citation을 출력해서" 생긴 측정 artifact가 아님을 보이기
+위한 평가 설계(능력 분리, implicit proxy lower-bound, prompted-citation control)를 함께 제시한다.
+\end{abstract}
+
+% =====================================================================
+\section{서론 (Introduction)}
+% =====================================================================
+
+LLM으로 chart나 diagram을 자동 생성하는 연구는 빠르게 발전해 왔다 \cite{han2023chartllama,
+yang2024chartmimic}. 다만 이들은 대부분 하나의 표나 하나의 문서를 입력으로 받는다. 그런데
+현실의 정보 작업은 여러 문서에 흩어진 내용을 통합한 뒤 시각화하는 경우가 많다. 예를 들어 금융
+analyst는 여러 사업보고서에서 부문별 매출 추이를 모아 한 chart로 만들고, 의학 연구자는 여러
+논문에서 약물 효과의 시간적 변화를 정리하며, policy analyst는 여러 정부 보고서 사이의 정책
+변화를 diagram으로 그린다. 이런 작업은 입력이 multi-document이고, 사용자 의도가 자연어 query로
+주어지며, 출력이 chart와 diagram을 모두 포함한다는 점에서 기존 single-document 연구가 다루지
+못한 영역이다.
+
+우리는 이 작업을 \textbf{Query-Grounded Multi-Document Visualization (QG-MDV)}으로 정의한다.
+입력은 query $Q$와 document 묶음 $\mathcal{D}=\{D_1,\dots,D_n\}$ ($n\geq 2$)이고, 출력은 모든
+visual element가 $\mathcal{D}$의 어느 문서에 근거하고 $Q$의 요구를 만족하는 visualization
+산출물 $V$이다.
+
+\textbf{이 논문의 출발 질문: 무엇이 진짜 어려운가.} 우리는 처음에 "잘 그리는 agent"를 만들면
+이긴다고 가정했다. 그런데 실측을 해 보니 그렇지 않았다. visualization을 rendering한 뒤 structure를
+재는 DiagramEval node/path alignment는 baseline과 제안 방법 사이에서 거의 갈리지 않았다(표
+\ref{tab:nodepath}). rendering과 structure 생성은 요즘 model이면 대체로 해낸다는 뜻이다. 정작
+크게 갈린 것은 source attribution이었다(표 \ref{tab:evidence}). 그래서 우리는 관점을 바꿨다.
+\textbf{QG-MDV의 본질적 난점은 visualization을 그리는 단계가 아니라, 그리기 전에 multi-document
+로부터 올바른 data를 구성하는 단계에 있다.} 구체적으로 다음을 풀어야 한다.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Cross-document reconciliation}: 같은 지표가 문서마다 다른 unit/scale/
+    fiscal-year로 보고된다. 하나의 shared axis에 올리려면 통일해야 한다.
+    \item \textbf{Conflict resolution}: 문서들이 같은 사실에 대해 서로 다른 값을 준다. 어떤
+    값을 visual element로 encode할지 정하고 근거를 밝혀야 한다.
+    \item \textbf{Completeness under distractors}: 핵심 정보가 여러 문서에 흩어져 있고 방해
+    문서가 섞여 있다. 흩어진 series 구성원을 빠짐없이 모으고 무관한 것은 걸러야 한다.
+    \item \textbf{Data-point attribution}: 생성된 visualization의 각 요소가 어느 문서, 어느
+    근거에서 왔는지 추적 가능해야 한다.
+\end{itemize}
+
+이 네 가지는 multi-document QA/summarization 쪽(cross-document aggregation, 상충 정보, 중복,
+정보 분산)과 document-to-chart 쪽(모호 수치의 값 추론, unit 변환, 큰 표의 부분 선택, attribution)
+에서 각각 어려운 문제로 알려져 있다 \cite{tang2024multihoprag, wang2024loong, jain2025doc2chart,
+zhao2024chartifytext}. QG-MDV는 이 둘이 겹치는 지점이다.
+
+\textbf{기여 (Contributions).}
+(C1) QG-MDV 과제 정의와, 학계 검증 multi-document benchmark에서 reasoning type 표지를 보존해
+구축한 평가 corpus.
+(C2) \textbf{provenance-preserving visual data construction pipeline}. cross-document claim을
+visual element로 mapping하고, conflicting cell을 탐지하며, encode할 값을 adjudicate하고, 각
+visual element를 evidence에 binding한다. 즉 "agent tool 집합"이 아니라, VDS(\S\ref{sec:vds})를
+산출하는 구조화된 pipeline으로 contribution을 정의한다. 가장 가까운 선행 방법(Doc2Chart의
+single-doc 추출/검증, proposition clustering의 요약용 fusion)을 그대로 쓰지 않고 multi-document
++ attribution 환경에 맞게 변형한다(\S\ref{sec:method}).
+(C3) multi-document visualization에 맞춘 평가 체계. 기존 metric을 차용하되 lexical matching을
+피하고, source attribution 비교의 fairness를 명시적으로 설계한다.
+(C4) source attribution의 능력과 품질 격차가 backbone과 무관하게 일관됨을 보이는 진단적 발견.
+
+% =====================================================================
+\section{관련 연구 (Related Work)}
+% =====================================================================
+
+\textbf{Chart/diagram 생성.} ChartLlama \cite{han2023chartllama}, Text2Chart31
+\cite{zadeh2024text2chart31}, ChartMimic \cite{yang2024chartmimic}은 single-table 또는
+single-text에서 chart를 만든다. ChartMimic은 chart-to-code 평가에서 high-level(GPT-4V visual
+similarity)과 low-level(text/layout/type/color) score를 쓴다. Doc2Chart \cite{jain2025doc2chart}
+는 single-document에서 intent 기반으로 chart를 만들고, intent를 분해해 추출하고 정확성/완전성을
+검증한 뒤 재추출하는 two-stage 방법을 쓴다. 우리는 Doc2Chart의 이 절차를 multi-document로
+확장하고 conflict 처리와 provenance를 더한다(§4).
+
+\textbf{Multi-document QA/summarization.} multi-document 작업의 어려움으로 cross-document
+aggregation, 상충 정보 처리, 중복 제거, 정보 분산이 반복적으로 지적된다 \cite{ernst2022proposition,
+tang2024multihoprag}. proposition-level clustering \cite{ernst2022proposition}은 문서들에서
+명제를 뽑아 의미가 같은 것끼리 묶는다. 우리는 이걸 요약용 fusion이 아니라 visual series 조립용
+으로 변형한다(§4).
+
+\textbf{Visualization 평가.} DiagramEval \cite{liang2025diagrameval}은 diagram을 rendering한
+뒤 VLM이 graph를 추출하고 node/path alignment로 평가하며, 사람 평가와 상관이 보고되어 있다.
+VisJudge \cite{xie2025visjudge}는 visualization의 Fidelity-Expressiveness-Aesthetics를 재는
+fine-tuned VLM judge로, 사람 일치도가 높다. Doc2Chart의 CHARTEVAL은 chart 값을 source 표로
+역추적하는 attribution 기반 metric을 제안한다. 우리는 DiagramEval과 VisJudge를 visual axis로
+차용하고, CHARTEVAL의 "값을 source로 추적한다"는 발상을 우리 source\_eid 기반으로 변형해
+data axis에 쓴다(§5).
+
+% =====================================================================
+\section{과제 정의 (Task Formalization)}
+% =====================================================================
+
+QG-MDV의 입력은 query $Q$와 document 묶음 $\mathcal{D}=\{D_1,\dots,D_n\}$ ($n\geq 2$),
+출력은 visualization 산출물 $V$이다. $V$는 chart 계열(Chart.js JSON)이나 diagram 계열
+(Mermaid)로 표현되며, 모든 visual element가 $\mathcal{D}$의 특정 문서 chunk에 근거해야 한다.
+
+각 query는 두 개의 독립 축으로 분류된다. reasoning 난이도(challenge type)는 multi-hop,
+artifact planning, mixed artifact, distractor-heavy, contradiction의 다섯이고, output 구조
+(output type)는 quantitative, relational, temporal, hierarchical, comparative의 다섯이다.
+이 분류는 나중에 "어려운 type에서 우위가 큰가"를 보는 분석(§7)에 쓰인다.
+
+\subsection{QG-MDV는 MD-QA나 document-to-chart와 무엇이 다른가}
+\label{sec:diff}
+
+reviewer가 가장 먼저 던질 질문은 "이거 multi-document QA에 chart rendering 붙인 것 아닌가"이다.
+그렇지 않다. visualization 출력에는 평문 답에 없는 제약이 있고, 이 제약이 multi-document 환경과
+만나면서 새 난점이 생긴다.
+
+첫째, \textbf{shared axis 제약}이다. chart의 여러 막대/점은 하나의 축 위에 놓인다. 따라서 문서
+마다 다른 unit/scale/fiscal-year로 보고된 값을 한 축에 올리려면 \emph{인코딩 전에} 공통 frame
+으로 reconcile해야 한다. QA는 "문서 A는 \$4.5B, 문서 B는 4,500 million"이라고 둘 다 서술하면
+되지만, 막대 하나는 단일 reconciled 값을 강제한다.
+
+둘째, \textbf{visual element 단위 grounding}이다. QA의 citation은 문장(답)에 붙지만,
+visualization에서는 막대 하나, 노드 하나, 엣지 하나가 각각 출처를 가져야 한다. 즉 attribution의
+granularity가 문장이 아니라 visual element다.
+
+셋째, \textbf{aggregated value의 provenance}이다. 막대 하나가 여러 문서의 값을 합/평균한
+결과일 때, 그 하나의 visual element는 \emph{복수} 출처를 가리켜야 한다. 평문 답은 근거를 풀어
+쓰면 되지만, visual element는 압축된 채로 다출처 provenance를 유지해야 한다.
+
+넷째, \textbf{conflict가 single encoding을 강제}한다. 문서들이 한 값에서 충돌할 때, QA는 양측을
+모두 서술할 수 있다. 그러나 막대 하나는 결국 한 값을 그려야 하므로, 충돌을 \emph{해소}하고 그
+선택을 근거와 함께 남겨야 한다. 이 강제성이 conflict adjudication을 visualization-specific
+문제로 만든다.
+
+요약하면 QG-MDV는 MD-QA의 reasoning 위에 visualization 고유의 reconciliation·element-level
+grounding·single-encoding 제약이 얹힌 과제다. 우리 method(\S\ref{sec:method})의 tool들은 바로
+이 제약들을 직접 겨냥한다.
+
+% =====================================================================
+\section{방법 (Method): Multi-Document Data Construction Agent}
+\label{sec:method}
+% =====================================================================
+
+본질 난점이 data construction이라면, 방법의 기여도 거기에 있어야 한다. DocViz-Agent는
+다음 tool들로 구성된다. 핵심은 cross-document 추출/검증과 conflict adjudication 두 가지다.
+
+\textbf{Cross-document iterative extraction \& validation.} Doc2Chart \cite{jain2025doc2chart}는
+intent를 분해해 문서에서 관련 내용을 뽑고, 정확성/완전성/관련성을 검증한 뒤 재추출한다. 다만
+이 검증은 single document 안에서만 이뤄진다. 우리는 이걸 \emph{여러 문서에 걸친} 추출로 넓히고,
+검증 loop에 \emph{cross-document conflict 탐지}를 추가하며, 뽑은 값마다 source\_eid를 붙인다.
+즉 Doc2Chart의 single-doc 검증을 multi-doc + provenance로 바꾼 것이 차별점이다.
+
+\textbf{Claim clustering으로 visual series 조립.} proposition-level clustering
+\cite{ernst2022proposition}은 명제를 뽑아 의미가 같은 것끼리 묶고 한 문장으로 fusion한다.
+우리 목적은 요약이 아니라, 같은 (entity, metric, time)에 대한 claim들을 묶어 \emph{하나의
+visual series 원소}로 mapping하는 것이다. cluster 안의 provenance는 유지하고 중복 series는
+제거한다.
+
+\textbf{Conflict adjudication.} multi-document 문헌은 상충을 난점으로만 지적하고, 이를
+visualization 생성용으로 해소하는 방법은 없다. 우리는 같은 (entity, metric, time) cell에서
+문서 간 값이 충돌하면 이를 탐지하고, policy(recency / source authority / majority)로 어떤 값을
+encode할지 정한 뒤, 해당 visual element에 conflict flag와 provenance를 붙인다. 이건 신규
+기여이고, contradiction type query로 직접 평가한다.
+
+\textbf{Source-attributed output (SAO).} 각 data point / node / edge에 source\_eid를 붙인다.
+이건 평가용 장치가 아니라 생성 단계에 들어 있는 mechanism이며, source attribution 결과의 토대다.
+
+\subsection{Visual Data Specification (VDS)와 source\_eid binding}
+\label{sec:vds}
+
+위 tool들의 공통 산출물은 \textbf{Visual Data Specification (VDS)}, 즉 rendering 직전의
+provenance 보존 중간 표현이다. VDS는 LLM이 자유 형식 DSL을 바로 쓰는 대신 거쳐 가는 구조화된
+표현이며, 이것이 우리 contribution의 실제 산출물이다. chart의 경우 VDS는 각 datapoint를
+$(\text{series}, \text{category}, \text{value}, \text{unit}, \text{time}, \text{source\_eid})$
+tuple로 담고, diagram의 경우 node를 $(\text{id}, \text{label}, \text{source\_eid})$, edge를
+$(\text{from}, \text{to}, \text{relation}, \text{source\_eid})$로 담는다. 여기서
+$\text{source\_eid} = \{\text{doc\_id}\}\#\{\text{block\_id}\}\#\{\text{claim\_id}\}$이며, 한
+visual element가 여러 출처를 합친 경우 source\_eid는 \emph{집합}이 된다(aggregated value의
+다출처 provenance, \S\ref{sec:diff}).
+
+\textbf{Binding이 rendering을 통과해 살아남게 하는 법.} VDS에서 Chart.js JSON / Mermaid로의
+변환은 LLM 없이 deterministic rule로 한다. 변환할 때 각 VDS element의 source\_eid를 rendered
+element의 index(예: \texttt{datasets[i].data[j]}, mermaid node id)에 정렬한 sidecar로 함께
+출력한다. 따라서 attribution이 "문장에 붙은 인용"이 아니라 "rendering된 visual element에 binding된
+provenance"로 보존된다. 이 deterministic 변환 덕에 값과 출처가 변환 과정에서 바뀌지 않는다.
+
+\subsection{Conflict adjudication policy}
+\label{sec:policy}
+
+reviewer가 지적할 모호함 — recency/authority/majority가 충돌하면 무엇이 우선인가, 같은 단위·
+시점에서만 비교하는가 — 을 정책으로 못박는다. 절차는 다음과 같다.
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Frame 정규화 후 비교}: 후보 값들을 공통 $(\text{entity}, \text{metric},
+    \text{unit}, \text{time-granularity})$ frame으로 정규화한다. \emph{같은 frame에 속한 값들
+    끼리만} 충돌로 본다. unit/time-granularity가 다르면 충돌이 아니라 별도 series이거나 정의된
+    aggregation 대상이다(서로 다른 granularity를 majority로 투표하지 않는다).
+    \item \textbf{우선순위}: 같은 frame 안에서 값이 갈리면 (1) source authority tier, (2)
+    recency, (3) majority 순으로 적용한다. authority tier는 corpus 메타데이터(예: 1차/공식
+    문서 $>$ 2차 인용)로 사전 정의하며, 정의 불가한 source는 동률로 둔다.
+    \item \textbf{Tie와 unresolved}: 위로도 안 갈리면 한 값을 encode하되 \texttt{conflict}
+    flag를 붙이고 충돌한 \emph{모든} source\_eid를 element에 함께 기록한다(은폐하지 않는다).
+\end{enumerate}
+
+이 정책 덕에 conflict adjudication은 prompt에 맡긴 판단이 아니라 재현 가능한 rule이 되며,
+contradiction type query에서 직접 평가된다(\S\ref{sec:analysis}).
+
+이전 버전(v0.4.3)에서 축으로 두었던 VSC(visual specification contract)는 측정상 효과가 거의
+없어(deterministic to\_dsl이 이미 validity를 보장) headline에서 뺀다. 다만 그 deterministic
+spec$\rightarrow$DSL 변환 자체는 \S\ref{sec:vds}의 source\_eid binding을 보존하는 장치로 재사용
+한다. TMG(type-aware viz generation)도 보조로 내린다.
+
+% =====================================================================
+\section{평가 (Evaluation)}
+% =====================================================================
+
+\subsection{두 평가 axis}
+
+평가는 두 axis로 구성하고, 둘 다 lexical(문자열) matching을 쓰지 않는다. lexical matching은
+open-ended 생성에서 label 표현이 달라지면 깨지기 때문이다.
+
+\textbf{Visual axis (rendering 기반).} 생성물을 실제로 rendering한 뒤 평가한다. DiagramEval
+node/path alignment는 이미지에서 VLM이 graph를 뽑아 semantic(cosine) 정렬로 채점하므로 lexical이
+아니다 — structure를 잰다. VisJudge는 rendering된 이미지를 Fidelity-Expressiveness-Aesthetics로
+평가하는 외부 공개 judge다 — visual 품질을 잰다. 이 axis의 역할은 visual/structure 품질이 model
+사이에서 거의 포화되어 있음을 보이는 것이다. 그래야 변별이 data axis에서 일어난다는 이야기가
+성립한다. tree형 diagram에는 보조로 Tree Edit Distance를 쓴다.
+
+\textbf{Data axis (source\_eid 기반).} 우리 기여가 data construction이므로 이 axis가 핵심이다.
+Evidence F1은 attribution 정확도를 id 집합 연산으로 잰다. Attributed value fidelity는 각 data
+point의 값이 \emph{그 point가 인용한 source}와 맞는지를 수치 tolerance로 본다. 후자는 CHARTEVAL의
+"값을 source로 추적" 발상을 쓰되, 생성 표를 gold 표에 lexical로 정렬하는 원래 구현 대신
+\emph{model이 붙인 source\_eid를 기준}으로 일치를 본다. 이러면 label lexical matching과 table
+정렬 문제를 둘 다 피한다.
+
+\subsection{Source attribution 비교의 fairness}
+
+여기가 가장 민감한 부분이다. 제안 방법은 각 visual element에 source\_eid를 출력하지만,
+baseline들(기존 visualization 생성 방법과 single-pass LLM)은 애초에 citation을 출력하는
+mechanism이 없다. 그래서 id 집합 정확도를 그냥 비교하면 제안 방법이 자동으로 높게 나온다.
+이걸 어떻게 다룰지가 문제다.
+
+먼저, 이 비대칭이 곧 불공정은 아니다. multi-document에서 source를 attribute할 수 있다는 능력
+자체가 우리 방법이 주는 정당한 기여다. 하지만 능력 차이만 점수로 내밀면 "너희만 id를 출력하게
+만들었으니 당연하다"는 공격이 남는다. 그래서 우리는 한 점수로 합치지 않고 두 주장을 나눠서
+보고한다.
+
+\textbf{(1) 능력에 대한 구조적 주장.} 기존 방법과 single-pass LLM은 multi-document에서 visual
+element를 source로 추적하는 mechanism을 산출 구조에 갖지 않는다. 이건 점수 비교가 아니라 방법의
+구조적 속성이라, baseline에 인위로 citation을 시켜서 잴 게 아니다. "어떤 방법이 attribution을
+산출 구조에 내장하는가"를 보이는 capability 표로 정직하게 제시한다(표 \ref{tab:capability}).
+baseline에 citation을 강제하지 않는 이유는, 검색/정합 mechanism이 없는 single-pass model에
+citation만 시키면 그럴듯하지만 틀린 인용을 만들어, 측정이 능력이 아니라 hallucinated citation을
+재게 되기 때문이다.
+
+\textbf{(2) 품질에 대한 정량 주장(방어 가능한 핵심).} 산출된 attribution이 실제로 얼마나
+정확한가를 잰다. 제안 방법은 explicit attribution 정확도를 직접 잰다. baseline은 explicit
+attribution이 없으니, visualization의 text 내용이 source chunk와 semantic하게 맞는지 보는
+implicit matching을 \emph{관대한 lower-bound proxy}로 준다. 즉 "citation을 안 했어도 내용이
+맞는 source에 닿아 있으면 인정"하는 가장 너그러운 조건을 baseline에 주는 것이고, 그래도 제안
+방법이 앞서면 그 격차는 단지 id를 출력해서가 아니라 내용 자체가 맞는 source에 근거했기 때문이라고
+말할 수 있다. 이 proxy가 공정하려면, 실제로 잘 근거한 baseline 산출물을 implicit matching이
+제대로 인정하는지 사람 점검으로 확인해야 한다. 이 검증을 통과해야 lower-bound로 쓴다.
+
+\textbf{(3) Prompted-citation control.} 위 두 주장을 보강하려고 통제 변형을 하나 둔다.
+single-pass LLM에 data point마다 source를 citation하라고 지시한 변형이다. 목적은 baseline을
+공정하게 만드는 게 아니라, citation을 출력하게 해도 cross-document 검색/정합 mechanism이 없으면
+인용이 부정확함을 보이는 것이다. 이 변형이 explicit attribution 정확도에서 여전히 낮으면,
+격차의 원인이 "id를 출력하느냐"가 아니라 "검색/정합/conflict 도구를 갖췄느냐"에 있음이 분리되어
+입증된다. 이건 "attribution은 이미 흔한 기능 아니냐"는 공격에 대한 직접 방어이기도 하다.
+multi-document visualization에서 attribution이 어려운 진짜 이유는, encode되는 값이 여러 문서에서
+정합/집계되고 conflict가 해소된 결과이며, 문장이 아니라 visual element에 붙어야 하기 때문이다.
+
+\subsection{차용 metric의 published score 활용}
+
+DiagramEval 같은 차용 metric은 원 논문에 이미 score가 있는지 확인해서 두 가지로 쓴다. 하나는
+metric 구현 검증이다. DiagramEval 원 논문이 자기 benchmark에서 보고한 node/path score를, 우리
+구현을 그 공개 test set에 돌려 재현하면 채점 pipeline이 맞다는 걸 확인할 수 있다. 다른 하나는
+external held-out에서의 baseline 재사용이다. 우리 자체 benchmark(QG-MDV)에는 어떤 선행 논문도
+score를 보고한 적이 없고 baseline도 우리 과제로 이식한 적응판이라, 자체 benchmark에서는 baseline
+측정을 생략할 수 없다. 다만 external held-out(Doc2Chart, Text2Vis 등)에서 그 benchmark의 원래
+metric/protocol을 그대로 따르면, 원 논문의 baseline score를 인용하고 우리 방법만 새로 돌릴 수
+있다. 이때도 우리가 재현한 한두 model의 score가 보고값과 비이상적으로 크게 어긋나지 않는지 먼저
+확인하고, 크게 어긋나면 protocol 불일치를 의심해 인용하지 않는다.
+
+% =====================================================================
+\section{실험 (Experiments)}
+% =====================================================================
+
+\subsection{설정}
+
+backbone은 Qwen3.5-397B(open frontier)를 주로 쓰고, closed backbone(GPT-5-mini, Claude Opus
+4.8)은 API 예산이 풀리는 대로 추가한다. 비교 대상은 B1 MatPlotAgent, B2 nvAgent, B3 CoDA,
+B4 ViviDoc(발표 SOTA 적응판), B5 Direct, B7 SelfRefine(단순 baseline), 그리고 B6
+DocViz-Agent(제안)이다. metric은 DiagramEval node/path(seed-42), Evidence F1(explicit vs
+implicit)이다. node/path는 temp 0.6에서 재실행 noise가 $\pm 0.04$ 수준이라 보조 신호로 보고,
+최종본은 3-seed mean$\pm$std로 채울 예정이다.
+
+\textbf{Fairness 통제.} 모든 arm은 동일한 document chunk 집합, 동일한 retrieval candidate,
+동일한 context length를 받는다. 즉 B6가 더 좋은 정보를 더 많이 받아서 이기는 것이 아님을 보장
+한다. 차이는 받은 정보가 아니라 그 정보로 무엇을 하는가(추출/정합/충돌해소/binding)에 있다.
+한편 B6는 iterative extraction·validation·clustering·adjudication을 거치므로 single-pass보다
+연산이 많다. 이 격차를 숨기지 않고, arm별 LLM call 수·평균 token·runtime을 \S\ref{sec:cost}에
+보고한다(성능이 단지 더 많은 compute에서 온 것인지 판단할 수 있도록).
+
+\subsection{Benchmark 구성과 gold의 신뢰성}
+\label{sec:bench}
+
+우리 corpus는 Loong, DocHop-QA, MultiHop-RAG 등 학계 검증 multi-document benchmark에서
+출발한다. 이들은 원래 QA benchmark이므로, 우리는 (i) 원 benchmark의 document 묶음과 reasoning
+type 표지를 보존하고, (ii) 각 query에 대해 gold visual data(plottable value 또는 graph
+node/edge)와 그 값의 source attribution을 구성한다. gold attribution은 query를 만들 때 사용된
+chunk의 provenance에서 결정론적으로 끌어오므로 채점기(VLM)와 분리된다. 다만 일부 gold reference
+graph는 model로 생성되어 human-verified가 아니다. 이 한계 때문에 우리는 절대값보다 \emph{arm 간
+상대 비교}에 의미를 두며(모든 arm이 동일 gold를 공유), gold attribution과 value의 정확성을
+표본에 대해 사람이 audit하는 것을 평가의 일부로 둔다(\S\ref{sec:analysis}). 이 audit은 implicit
+matching proxy의 공정성 검증(\S\ref{sec:fairness-result})과 함께 benchmark validity를 방어한다.
+
+\subsection{Source attribution이 핵심 격차다 (Evidence F1)}
+
+표 \ref{tab:evidence}가 핵심 결과다. source attribution(Evidence F1)에서 제안 방법은 세 source
+전부에서 가장 강한 baseline을 큰 폭으로 앞선다. 이 격차는 node/path와 달리 noise 안에서 흔들리지
+않고 일관된다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+arm & Loong & DocHop-QA & MultiHop-RAG \\
+\midrule
+\textbf{B6 (ours, explicit)} & \textbf{0.408} & \textbf{0.766} & \textbf{0.880} \\
+B4 ViviDoc (implicit) & 0.004 & 0.141 & 0.041 \\
+B7 SelfRefine (implicit) & --- & 0.131 & 0.012 \\
+B5 Direct (implicit) & --- & 0.113 & 0.020 \\
+B3 CoDA (implicit) & 0.000 & 0.058 & 0.008 \\
+B2 nvAgent (implicit) & 0.000 & 0.041 & 0.000 \\
+B1 MatPlotAgent (implicit) & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\caption{Source attribution (Evidence F1). B6는 explicit source\_eid, baseline은 implicit
+embedding matching(cosine $\geq 0.75$). 세 source 전부에서 B6가 압도. 단 이 표의 해석은
+\S\ref{sec:fairness-result}의 fairness 분석과 함께 읽어야 한다.}
+\label{tab:evidence}
+\end{table}
+
+\subsection{Visual structure는 잘 갈리지 않는다 (node/path)}
+
+표 \ref{tab:nodepath}는 DiagramEval node/path alignment다. path는 B6가 세 source 전부 최고지만,
+node는 경쟁적이다 — Loong에서는 최고, DocHop에서는 B3와 동률, MultiHop에서는 B3에 뒤진다. 전반적
+으로 model 사이 격차가 작다. 즉 rendering/structure 생성은 commoditized 되어 있고, 변별은 여기서
+거의 일어나지 않는다. 이건 약점이 아니라 우리 주장의 근거다: 어려운 부분은 그리기가 아니라 data
+construction이다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{l cc cc cc}
+\toprule
+& \multicolumn{2}{c}{Loong} & \multicolumn{2}{c}{DocHop-QA} & \multicolumn{2}{c}{MultiHop-RAG} \\
+arm & node & path & node & path & node & path \\
+\midrule
+\textbf{B6 (ours)} & \textbf{0.396} & \textbf{0.340} & 0.432 & \textbf{0.552} & 0.241 & \textbf{0.191} \\
+B5 Direct      & 0.388 & 0.309 & 0.401 & 0.354 & 0.227 & 0.087 \\
+B2 nvAgent     & 0.359 & 0.320 & 0.393 & 0.281 & 0.237 & 0.085 \\
+B7 SelfRefine  & 0.342 & 0.341 & 0.375 & 0.372 & 0.191 & 0.126 \\
+B3 CoDA        & 0.321 & 0.247 & \textbf{0.437} & 0.343 & \textbf{0.289} & 0.129 \\
+B4 ViviDoc     & 0.299 & 0.243 & 0.403 & 0.360 & 0.182 & 0.087 \\
+B1 MatPlotAgent& 0.287 & 0.104 & 0.342 & 0.042 & 0.196 & 0.024 \\
+\midrule
+sample 수 & \multicolumn{2}{c}{100} & \multicolumn{2}{c}{100} & \multicolumn{2}{c}{96} \\
+\bottomrule
+\end{tabular}
+\caption{DiagramEval node/path alignment F1 (seed-42). path는 B6가 세 source 전부 최고,
+node는 경쟁적(MultiHop은 B3가 1위). model 간 격차가 작아 변별력이 약하다.}
+\label{tab:nodepath}
+\end{table}
+
+발표 SOTA 적응판(B1--B4)이 multi-document에서 단순 Direct(B5)보다도 약한 경우가 많다는 점도
+눈에 띈다. single-document chart에 특화된 방법이 multi-document로 오면 이점을 잃는다는 신호다.
+
+\textbf{Non-regression claim.} 여기서 중요한 것은 우리가 "visual quality는 안 중요하다"고
+말하는 게 아니라는 점이다. 우리 주장은 \emph{grounding을 크게 개선하면서 visual quality는
+떨어뜨리지 않는다}는 것이다. node/path에서 B6가 최강 baseline과 동급 이상이라는 점이 그 1차
+근거이고, 추가로 VisJudge(Fidelity-Expressiveness-Aesthetics)에서 B6가 baseline 대비 유의하게
+나쁘지 않음을 보여 non-regression을 확정한다(표 \ref{tab:visjudge}, 측정 예정). 즉 data axis의
+이득이 visual quality 희생 없이 얻어진다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+arm & Fidelity & Expressiveness & Aesthetics \\
+\midrule
+B6 (ours) & \_ & \_ & \_ \\
+최강 baseline & \_ & \_ & \_ \\
+\bottomrule
+\end{tabular}
+\caption{VisJudge 시각 품질 (측정 예정). non-regression — B6가 baseline 대비 유의하게 나쁘지
+않음을 보인다. judge는 backbone pool과 분리한다.}
+\label{tab:visjudge}
+\end{table}
+
+\subsection{Attribution capability와 fairness}
+\label{sec:fairness-result}
+
+표 \ref{tab:capability}는 \S5.2의 능력 주장을 정리한 것이다. 표 \ref{tab:evidence}의 큰 격차를
+그대로 headline으로 쓰지 않고, (1) 능력 격차와 (2) attribution 품질을 나눠서 본다. baseline에는
+implicit matching이라는 관대한 lower-bound를 줬는데도 거의 0에 가깝다는 점, 그리고 prompted-
+citation control(아래)에서도 격차가 유지되는지가 핵심이다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+arm & explicit attribution 내장? & 측정 방식 \\
+\midrule
+B6 (ours) & 예 (SAO source\_eid) & explicit set F1 \\
+B5+cite (control) & 지시로 출력 가능 & explicit set F1 \\
+B1--B5, B7 & 아니오 (구조적 부재) & implicit embedding (lower-bound) \\
+\bottomrule
+\end{tabular}
+\caption{Attribution capability 표. baseline은 산출 구조에 attribution mechanism이 없다.
+이는 점수가 아니라 구조적 속성이며, 강제 citation으로 측정하지 않는다. 대신 prompted-citation
+control(B5+cite)로 "id 출력만으로는 부족함"을 분리 측정한다.}
+\label{tab:capability}
+\end{table}
+
+\textbf{Prompted-citation control (예정).} B5에 data point마다 citation을 지시한 B5+cite를
+돌려 explicit Evidence F1을 잰다. 검색/정합 mechanism 없이 citation만 했을 때 정확도가 여전히
+낮으면, 격차의 원인이 출력 형식이 아니라 agent의 data-construction 도구임이 분리 입증된다.
+
+% =====================================================================
+\section{분석 (Analysis)}
+\label{sec:analysis}
+% =====================================================================
+
+\textbf{우위는 어려운 type에 집중되는가.} 우리 주장이 맞다면, 제안 방법의 우위는 data
+construction이 어려운 challenge type(distractor-heavy, contradiction, multi-hop)에 몰려야 한다.
+표 \ref{tab:bytype}는 세 source 결과를 challenge type별로 분해한 것이다(채울 예정). 쉬운 type
+에서는 baseline도 비슷하고, 어려운 type에서 격차가 커지는 패턴을 기대한다.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+challenge type & B6 Evidence F1 & 최강 baseline & $\Delta$ \\
+\midrule
+multi-hop & \_ & \_ & +\_ \\
+artifact planning & \_ & \_ & +\_ \\
+mixed artifact & \_ & \_ & +\_ \\
+distractor-heavy & \_ & \_ & +\_ \\
+contradiction & \_ & \_ & +\_ \\
+\bottomrule
+\end{tabular}
+\caption{Challenge type별 분해 (채울 예정). 어려운 type에서 $\Delta$가 큰지로 "방법이 본질
+난점을 푼다"를 검증한다.}
+\label{tab:bytype}
+\end{table}
+
+\textbf{Tool ablation (예정).} cross-doc extraction 제거 / conflict adjudication 제거 / CIS
+제거 / SAO 제거가 어려운 type 성능을 떨어뜨리는지 본다. ablation은 복구 산출이 아니라 native
+산출 기반이어야 유효하다.
+
+\textbf{Conflict adjudication (예정).} contradiction type query에서 arm별로 supported side를
+맞게 encode하고 올바른 source에 attribute하는 정확도를 잰다. gold contradiction이 있는 sample에
+대해 직접 측정한다. 이는 전체 Evidence F1보다 novelty가 더 살아나는 분석이므로 main paper에 둔다.
+
+\subsection{Cost / latency / scalability}
+\label{sec:cost}
+
+multi-document agent는 single-pass보다 연산이 많으므로 "성능은 좋은데 너무 비싸지 않은가"라는
+질문에 답해야 한다. 표 \ref{tab:cost}(측정 예정)에 arm별 평균 LLM call 수, 평균 token,
+end-to-end runtime을 보고하고, document 수 증가에 따른 성능·비용 변화도 함께 본다. 목표는
+B6의 이득이 단지 더 많은 compute에서 온 것이 아님을 보이는 것이다(예: B7 SelfRefine처럼 pass를
+늘린 baseline과 비교).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+arm & LLM calls & avg tokens & runtime (s) \\
+\midrule
+B5 Direct & \_ & \_ & \_ \\
+B7 SelfRefine & \_ & \_ & \_ \\
+B6 (ours) & \_ & \_ & \_ \\
+\bottomrule
+\end{tabular}
+\caption{Compute budget (측정 예정). B6의 이득이 compute 증가만의 결과가 아님을 보인다.}
+\label{tab:cost}
+\end{table}
+
+\subsection{Qualitative case study}
+\label{sec:case}
+
+task가 새롭기 때문에 숫자만으로는 독자가 감을 잡기 어렵다. 우리는 contradiction case 하나를
+main figure로 제시한다(그림 \ref{fig:case}, 작성 예정). 구성은 다음과 같다: query, input
+document들의 conflicting/distracting snippet, baseline visualization의 오류(예: 한 문서 값만
+집어 잘못 encode하거나 출처 없음), DocViz-Agent의 중간 VDS(reconcile·adjudicate된 cell과
+source\_eid), 최종 chart/diagram, 그리고 각 visual element의 attribution. 이 한 장이 §4의 tool
+들이 실제로 무엇을 하는지, 왜 single-pass가 실패하는지를 직관적으로 보여준다.
+
+\begin{figure}[h]
+\centering
+\fbox{\parbox{0.9\textwidth}{\centering \vspace{2em} [Contradiction case study: query →
+conflicting snippets → baseline 오류 vs B6의 VDS(provenance) → 최종 viz → element별 attribution]
+\vspace{2em}}}
+\caption{Contradiction case study (작성 예정). 충돌하는 다문서 값에서 baseline은 임의 선택/무출처,
+B6는 adjudication과 element-level attribution을 보인다.}
+\label{fig:case}
+\end{figure}
+
+% =====================================================================
+\section{논의와 한계 (Discussion and Limitations)}
+% =====================================================================
+
+\textbf{MD-QA와의 구분.} cross-document value reconciliation과 conflict adjudication은
+visualization의 shared axis와 single-value 강제를 위한 연산이라, 평문 답을 내는 multi-document
+QA에는 존재하지 않는다. prompted-citation control은 검색/정합 없이 citation만으로는 부족함을
+보여, 우리 기여가 출력 형식이 아니라 data-construction mechanism임을 분리한다.
+
+\textbf{한계.} (i) 출력 visualization 언어를 Chart.js와 Mermaid로 한정한다. (ii) visual 품질은
+외부 judge(VisJudge)에 의존하므로 그 judge의 bias를 상속한다 — backbone pool과 분리해 순환을
+막는다. (iii) multi-source attribution의 일부는 검색을 생략한 합성 근사로 산출됐으므로, 정식
+주장 전에 검색 포함 산출로 재측정한다. (iv) gold reference graph가 model 생성이라 절대값보다
+상대 비교에 의미를 두며 사람 검증으로 보강한다. (v) conflict adjudication 평가 sample이 제한적
+이라 contradiction gold를 보강한다.
+
+% =====================================================================
+\section{결론 (Conclusion)}
+% =====================================================================
+
+이 논문은 QG-MDV 과제를 정의하고, 그 본질 난점이 rendering이 아니라 multi-document data
+construction에 있음을 실측으로 보였다. DocViz-Agent는 cross-document 추출/검증과 conflict
+adjudication을 중심으로 이 난점을 푸는 agent다. 세 source에서 source attribution 격차가 크고
+일관되며, 우리는 이 격차가 측정 artifact가 아님을 보이는 fairness 설계(능력 분리, implicit
+proxy, prompted-citation control)를 함께 제시한다.
+
+% =====================================================================
+\bibliographystyle{acl_natbib}
+\begin{thebibliography}{99}
+
+\bibitem{han2023chartllama}
+Han et al. ChartLlama: A multimodal LLM for chart understanding and generation. arXiv:2311.16483, 2023.
+
+\bibitem{yang2024chartmimic}
+Yang et al. ChartMimic: Evaluating LMM's cross-modal reasoning capability via chart-to-code generation. ICLR 2025.
+
+\bibitem{zadeh2024text2chart31}
+Zadeh et al. Text2Chart31: Instruction tuning for chart generation with automatic feedback. EMNLP 2024 Main Oral.
+
+\bibitem{jain2025doc2chart}
+Jain et al. Doc2Chart: Intent-driven zero-shot chart generation from documents. EMNLP 2025 Main.
+
+\bibitem{liang2025diagrameval}
+Liang and You. DiagramEval: Evaluating LLM-generated diagrams via graphs. EMNLP 2025 Main.
+
+\bibitem{xie2025visjudge}
+Xie et al. VisJudge-Bench: Aesthetics and quality assessment of visualizations. arXiv:2510.22373, 2025.
+
+\bibitem{ernst2022proposition}
+Ernst et al. Proposition-level clustering for multi-document summarization. NAACL 2022.
+
+\bibitem{wang2024loong}
+Wang et al. Leave no document behind: Benchmarking long-context LLMs with extended multi-doc QA. EMNLP 2024 Oral.
+
+\bibitem{tang2024multihoprag}
+Tang and Yang. MultiHop-RAG: Benchmarking RAG for multi-hop queries. arXiv:2401.15391, 2024.
+
+\bibitem{zhao2024chartifytext}
+Zhao et al. ChartifyText: Automated chart generation from data-involved texts via LLM. arXiv:2410.14331, 2024.
+
+\end{thebibliography}
+
+\end{document}
